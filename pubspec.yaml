@@ -1,6 +1,6 @@
 name: fadeplay
-description: "A new Flutter project."
-publish_to: 'none'
+description: "A transition-oriented music manager"
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  just_audio: ^0.10.4
+  audio_session: ^0.2.2
 
 dev_dependencies:
   flutter_test:
