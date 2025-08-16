@@ -4,6 +4,8 @@ Play music with a seekbar
 
 Play music from specific subset (playlist / humeur etc...)
 
+Global keyboard shortcuts
+
 Show lyrics if there are some available
 
 Store muic with: title (og & EN), artists (og & EN), album, cover, note, humeurs, instruments, language, source, date of creation, date of importation

@@ -1,10 +1,25 @@
 ## Inspiration
 
 https://github.com/KarimElghamry/chillify: Uses `flute_music_player`
+
 https://github.com/iampawan/Flutter-Music-Player: Also uses `flute_music_player`
+
+https://github.com/ubuntu-flutter-community/musicpod: Desktop app
 
 ## Libraries
 
 `just_audio`: Reading audio, seeking, fading, files etc...
-`flutter_sound`: I don't use that but it gives more low level access, closer to BASS
+
 `audio_session`: To handle system audio interruptions (like other media starting) on mobile
+
+### Interesting libraries
+
+[`flutter_sound`](https://pub.dev/packages/flutter_sound): I don't use that but it gives more low level access, closer to BASS
+
+[`musicbrainz_api_client`](https://pub.dev/packages/musicbrainz_api_client): Flutter client for musicbrainz
+
+[`audio_metadata_reader`](https://pub.dev/packages/audio_metadata_reader): Read and write metadata in ID3 with few dependancies
+
+[`audiotags`](https://pub.dev/packages/audiotags): Same but has rust dependancy that needs to be set up
+
+[`metadata_god`](https://pub.dev/packages/metadata_god): Same but no support for ogg and wav
