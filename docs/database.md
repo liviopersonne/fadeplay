@@ -25,7 +25,8 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 - All metadata except artists and albums become IDs
 - Id
 - Created at
-- Modified at
+- Start time (in case I trim the file)
+- End time
 - Mood
 - Score
 - Instruments
@@ -49,12 +50,26 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 - Image path
 - Id of corresponding tracks
 
+### Transitions
+
+- Id
+- Created at
+- Track 1 id
+- End fadeout (timestamp)
+- Fadeout duration
+- Track 2 id
+- Start fadein (timestamp)
+- Fadein duration
+- Delay (delay between the 2 tracks)
+- Type (boolean that tells if the transition was created manually or for a mix)
+
 ### Enums
 
 - Instruments
 - Moods
 - Languages
 - Safeties
+- Transition type (manual, automatic, mix)
 
 ## Filepath (try to keep this compatible with musicbee)
 
