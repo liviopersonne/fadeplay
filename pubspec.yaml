@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   just_audio: ^0.10.4
-  audio_session: ^0.2.2
 
 dev_dependencies:
   flutter_test:
