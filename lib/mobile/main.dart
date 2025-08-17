@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
-class MobileRootWidget extends StatelessWidget {
-  const MobileRootWidget({super.key});
+void mobileMain() {
+  runApp(const MobileApp());
+}
+
+class MobileApp extends StatelessWidget {
+  const MobileApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text('Hello World from Mobile!')));
+    return const MaterialApp(
+      home: Scaffold(body: Center(child: Text('Hello World from Mobile!'))),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
