@@ -188,6 +188,7 @@ class SingleMusicPlayer {
       return;
     }
 
+    await _player.setVolume(0);
     await play();
     await _fade(
       startVolume: 0,

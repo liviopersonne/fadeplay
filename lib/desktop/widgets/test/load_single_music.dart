@@ -74,11 +74,15 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
     if (loaded) {
       content = "Music load succeeded";
       await myPlayer.fadein(duration: Duration(seconds: 1));
-      content = "Playing 1st track";
       await Future.delayed(Duration(seconds: 5));
+
+      await myPlayer.pause();
       await myPlayer.next();
-      content = "Playing 2nd track";
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.fadein(duration: Duration(seconds: 1));
       await Future.delayed(Duration(seconds: 5));
+
       await myPlayer.fadeout(duration: Duration(seconds: 3));
       content = "Fadeout finished !";
     } else {
