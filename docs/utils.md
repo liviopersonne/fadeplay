@@ -23,3 +23,5 @@ https://github.com/ubuntu-flutter-community/musicpod: Desktop app
 [`audiotags`](https://pub.dev/packages/audiotags): Same but has rust dependancy that needs to be set up
 
 [`metadata_god`](https://pub.dev/packages/metadata_god): Same but no support for ogg and wav
+
+[`audio_video_progress_bar`](https://pub.dev/packages/audio_video_progress_bar): To see the progression of music
