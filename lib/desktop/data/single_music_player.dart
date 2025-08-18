@@ -4,36 +4,39 @@ import 'dart:ui';
 import 'package:fadeplay/desktop/data/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
-import 'package:media_kit/media_kit.dart';
+import 'package:media_kit/media_kit.dart' as media_kit;
 import 'package:just_audio/just_audio.dart';
 
 final logger = Logging("AudioPlayer");
 
 /// An music player with a single AudioPlayer than can fade in and out
-class MusicPlayer {
+class SingleMusicPlayer {
   static var _initialized = false;
   final _player = AudioPlayer();
+
+  /// Whether the player is playing
+  var playing = false;
 
   /// Dispose the player when you're done using it
   Future<void> dispose() async {
     await _player.dispose();
   }
 
-  /// Setup platform specific settings using the AudioPlayer
+  /// Setup platform specific settings
   static void initialize() {
-    logger.log("Initializing Audio Player...");
+    logger.debug("Initializing Audio Player...");
     switch (defaultTargetPlatform) {
       case TargetPlatform.linux:
       case TargetPlatform.windows:
         JustAudioMediaKit.ensureInitialized();
-        JustAudioMediaKit.mpvLogLevel = MPVLogLevel.debug;
+        JustAudioMediaKit.mpvLogLevel = media_kit.MPVLogLevel.warn;
         JustAudioMediaKit.bufferSize = 8 * 1024 * 1024; // 8 MB
         JustAudioMediaKit.title = "Fadeplay";
         JustAudioMediaKit.protocolWhitelist = const ["file", "http", "https"];
         JustAudioMediaKit.pitch = false;
         JustAudioMediaKit.prefetchPlaylist = false;
         _initialized = true;
-        logger.log("Audio Player successfully initialized");
+        logger.debug("Audio Player successfully initialized");
         break;
       default:
         throw UnimplementedError(
@@ -42,10 +45,18 @@ class MusicPlayer {
     }
   }
 
+  /// Setup listening streams
+  SingleMusicPlayer() {
+    _player.playerStateStream.listen((PlayerState newState) {
+      playing = newState.playing;
+      logger.debug("NEW PLAYING VALUE: $playing");
+    });
+  }
+
   /// Loads a music from its filepath
   Future<bool> loadMusicFile(String musicFilepath) async {
     if (!_initialized) initialize();
-    logger.log("Loading audio file at path $musicFilepath");
+    logger.debug("Loading audio file at path $musicFilepath");
     final duration = await _player.setFilePath(musicFilepath);
     if (duration == null) {
       logger.warn("Error while loading file at path $musicFilepath");
@@ -119,8 +130,11 @@ class MusicPlayer {
     required Duration duration,
     Duration stepTime = const Duration(milliseconds: 16),
   }) async {
-    if (_player.audioSource == null) {
-      logger.warn("Tried to fade in while no song was loaded");
+    final playerState = _player.playerState.processingState;
+    if (playerState != ProcessingState.ready) {
+      logger.warn(
+        "Tried to fade in while the player wasn't ready but in state $playerState",
+      );
       return;
     }
     if (_player.playing) {

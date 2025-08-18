@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:fadeplay/desktop/data/music_player.dart';
+import 'package:fadeplay/desktop/data/single_music_player.dart';
 import 'package:flutter/material.dart';
 
 class TestLoadMusicWidget extends StatelessWidget {
@@ -35,7 +35,7 @@ class TestLoadMusicWidget extends StatelessWidget {
 
     var content = "";
 
-    final myPlayer = MusicPlayer();
+    final myPlayer = SingleMusicPlayer();
 
     final loaded = await myPlayer.loadMusicFile(music1);
 

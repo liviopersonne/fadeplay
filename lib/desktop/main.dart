@@ -1,9 +1,9 @@
-import 'package:fadeplay/desktop/data/music_player.dart';
+import 'package:fadeplay/desktop/data/single_music_player.dart';
 import 'package:fadeplay/desktop/widgets/test/load_music.dart';
 import 'package:flutter/material.dart';
 
 void desktopMain() {
-  MusicPlayer.initialize();
+  SingleMusicPlayer.initialize();
   runApp(const DesktopApp());
 }
 
