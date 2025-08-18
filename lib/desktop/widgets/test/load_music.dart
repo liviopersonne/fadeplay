@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:fadeplay/desktop/data/music_player.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +41,11 @@ class TestLoadMusicWidget extends StatelessWidget {
 
     if (loaded) {
       content = "Music load succeeded";
-      myPlayer.play();
+      await myPlayer.fadein(duration: Duration(seconds: 3));
+      content = "Fadein finished !";
+      await Future.delayed(Duration(seconds: 5));
+      await myPlayer.fadeout(duration: Duration(seconds: 3));
+      content = "Fadeout finished !";
     } else {
       content = "Music load failed";
     }
