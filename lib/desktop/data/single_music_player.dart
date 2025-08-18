@@ -7,9 +7,9 @@ import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:media_kit/media_kit.dart' as media_kit;
 import 'package:just_audio/just_audio.dart';
 
-final logger = Logging("AudioPlayer");
+final logger = Logging("SingleMusicPlayer");
 
-/// An music player with a single AudioPlayer than can fade in and out
+/// A music player with a single AudioPlayer than can fade in and out
 class SingleMusicPlayer {
   static var _initialized = false;
   final _player = AudioPlayer();
@@ -17,14 +17,6 @@ class SingleMusicPlayer {
 
   /// Whether the player is playing
   var playing = false;
-
-  /// Dispose the player when you're done using it
-  Future<void> dispose() async {
-    _playerStateSubscription?.cancel();
-    _playerStateSubscription = null;
-    await _player.dispose();
-    logger.debug("Disposed a SingleMusicPlayer");
-  }
 
   /// Setup platform specific settings
   static void initialize() {
@@ -52,6 +44,7 @@ class SingleMusicPlayer {
   /// Setup listening streams
   SingleMusicPlayer() {
     logger.debug("Insianciating a new SingleMusicPlayer");
+    if (!_initialized) initialize();
     _playerStateSubscription = _player.playerStateStream.listen((
       PlayerState newState,
     ) {
@@ -59,14 +52,57 @@ class SingleMusicPlayer {
     });
   }
 
+  /// Dispose the player when you're done using it
+  Future<void> dispose() async {
+    _playerStateSubscription?.cancel();
+    _playerStateSubscription = null;
+    await _player.dispose();
+    logger.debug("Disposed a SingleMusicPlayer");
+  }
+
   /// Loads a music from its filepath
   Future<bool> loadMusicFile(String musicFilepath) async {
-    if (!_initialized) initialize();
     logger.debug("Loading audio file at path $musicFilepath");
+    if (playing) {
+      logger.error(
+        "Tried to load an audio file while the player was already playing",
+      );
+      return false;
+    }
     final duration = await _player.setFilePath(musicFilepath);
     if (duration == null) {
       logger.warn("Error while loading file at path $musicFilepath");
     }
+    return duration != null;
+  }
+
+  /// Sets the next music files that this player will play
+  Future<bool> loadPlaylist({
+    required List<AudioSource> audioSources,
+    bool preload = true,
+    int? initialIndex,
+    Duration? initialPosition,
+  }) async {
+    logger.debug("Loading playlist of ${audioSources.length} song(s)");
+    if (playing) {
+      logger.error(
+        "Tried to load a playlist while the player was already playing",
+      );
+      return false;
+    }
+    if (initialIndex != null && initialIndex > audioSources.length) {
+      logger.error(
+        "The initial index $initialIndex is greater than the playlist length ${audioSources.length}",
+      );
+      return false;
+    }
+
+    final duration = await _player.setAudioSources(
+      audioSources,
+      preload: preload,
+      initialIndex: initialIndex,
+      initialPosition: initialPosition,
+    );
     return duration != null;
   }
 
@@ -78,6 +114,10 @@ class SingleMusicPlayer {
   /// Pauses the player
   Future<void> pause() async {
     _player.pause();
+  }
+
+  Future<void> next() async {
+    _player.seekToNext();
   }
 
   /// Fades volume from startVolume to endVolume in duration time and with step steps
@@ -116,7 +156,7 @@ class SingleMusicPlayer {
     Duration stepTime = const Duration(milliseconds: 16),
   }) async {
     if (!_player.playing) {
-      logger.warn("Tried to fade out while player is not playing");
+      logger.error("Tried to fade out while player is not playing");
       return;
     }
 
@@ -138,13 +178,13 @@ class SingleMusicPlayer {
   }) async {
     final playerState = _player.playerState.processingState;
     if (playerState != ProcessingState.ready) {
-      logger.warn(
+      logger.error(
         "Tried to fade in while the player wasn't ready but in state $playerState",
       );
       return;
     }
     if (_player.playing) {
-      logger.warn("Tried to fade in while the player was already playing");
+      logger.error("Tried to fade in while the player was already playing");
       return;
     }
 

@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
-import 'package:fadeplay/desktop/data/single_music_player.dart';
+import 'package:fadeplay/desktop/data/full_music_player.dart';
 import 'package:flutter/material.dart';
 
-class TestLoadMusicWidget extends StatelessWidget {
-  const TestLoadMusicWidget({super.key});
+class TestLoadFullMusicWidget extends StatelessWidget {
+  const TestLoadFullMusicWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,23 +31,22 @@ class TestLoadMusicWidget extends StatelessWidget {
   Future<String> loadMusic() async {
     final music1 =
         "/home/livio/Musique/Musique/Songs/Super Mario Odyssey/SUPER MARIO ODYSSEY ORIGINAL SOUND TRACK/Steam Gardens.mp3";
+    final music2 =
+        "/home/livio/Musique/Musique/Songs/Toby Fox/UNDERTALE Soundtrack/Spider Dance.mp3";
+    final music3 =
+        "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/Chocobo Racing Theme.mp3";
 
     var content = "";
 
-    final myPlayer = SingleMusicPlayer();
+    final myPlayer = FullMusicPlayer();
 
-    final loaded = await myPlayer.loadMusicFile(music1);
+    final success = await myPlayer.loadPlaylist(
+      filePaths: [music1, music2, music3],
+      initialIndex: 4,
+      initialPosition: Duration.zero,
+    );
 
-    if (loaded) {
-      content = "Music load succeeded";
-      await myPlayer.fadein(duration: Duration(seconds: 3));
-      content = "Fadein finished !";
-      await Future.delayed(Duration(seconds: 5));
-      await myPlayer.fadeout(duration: Duration(seconds: 3));
-      content = "Fadeout finished !";
-    } else {
-      content = "Music load failed";
-    }
+    content = success ? "Loaded playlist" : "Failed to load playlist";
 
     return content;
   }
