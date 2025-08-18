@@ -13,13 +13,17 @@ final logger = Logging("AudioPlayer");
 class SingleMusicPlayer {
   static var _initialized = false;
   final _player = AudioPlayer();
+  StreamSubscription? _playerStateSubscription;
 
   /// Whether the player is playing
   var playing = false;
 
   /// Dispose the player when you're done using it
   Future<void> dispose() async {
+    _playerStateSubscription?.cancel();
+    _playerStateSubscription = null;
     await _player.dispose();
+    logger.debug("Disposed a SingleMusicPlayer");
   }
 
   /// Setup platform specific settings
@@ -47,9 +51,11 @@ class SingleMusicPlayer {
 
   /// Setup listening streams
   SingleMusicPlayer() {
-    _player.playerStateStream.listen((PlayerState newState) {
+    logger.debug("Insianciating a new SingleMusicPlayer");
+    _playerStateSubscription = _player.playerStateStream.listen((
+      PlayerState newState,
+    ) {
       playing = newState.playing;
-      logger.debug("NEW PLAYING VALUE: $playing");
     });
   }
 
