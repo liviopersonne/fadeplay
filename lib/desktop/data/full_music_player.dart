@@ -48,6 +48,8 @@ class FullMusicPlayer {
 
   /// Goes to next music without any transition
   Future<void> next() async {
+    // TODO: Deal with end of playlist
+
     final wasPlaying = _getActivePlayer().playing;
     await _getActivePlayer().pause();
     await _getActivePlayer().next();
@@ -55,13 +57,28 @@ class FullMusicPlayer {
     if (wasPlaying) await _getActivePlayer().play();
   }
 
-  Future<void> crossfade({Duration? crossfadeDuration}) async {
+  /// Goes to the previous music without any transition
+  Future<void> prev() async {
+    // TODO: Deal with start of playlist
+
+    final wasPlaying = _getActivePlayer().playing;
+    await _getActivePlayer().pause();
+    await _getActivePlayer().restartSong();
+    _switchActivePlayer();
+    await _getActivePlayer().prev();
+    await _getActivePlayer().restartSong();
+    if (wasPlaying) await _getActivePlayer().play();
+  }
+
+  Future<void> crossfadeNext({Duration? crossfadeDuration}) async {
     final duration = crossfadeDuration ?? Settings.crossfadeDuration;
 
     if (!_getActivePlayer().playing) {
       logger.warn("Tried to crossfade while paused");
       return await next();
     }
+
+    // TODO: Warn if there is no music left
 
     await Future.wait([
       _getActivePlayer().fadeout(duration: duration),
@@ -80,6 +97,8 @@ class FullMusicPlayer {
     Duration? initialPosition,
   }) async {
     logger.debug("Loading playlist of ${filePaths.length} song(s)");
+
+    // FIXME: Deal with end of playlist
 
     // Set audio sources
     final audioSources = filePaths
@@ -109,25 +128,21 @@ class FullMusicPlayer {
         ? (initialPosition, null)
         : (null, initialPosition);
 
-    // set active player to _player0 if the initial index is pair, and vice versa
-    _activePlayerIndex = (initialIndex ?? 0) % 2;
-
-    // Set respective playlists
-    final activePlayer = _getActivePlayer();
-    final inactivePlayer = _getInactivePlayer();
-
-    final success1 = await activePlayer.loadPlaylist(
+    final success1 = await _player0.loadPlaylist(
       audioSources: audioSources1,
       preload: preload,
       initialIndex: initialIndex1,
       initialPosition: initialPosition1,
     );
-    final success2 = await inactivePlayer.loadPlaylist(
+    final success2 = await _player1.loadPlaylist(
       audioSources: audioSources2,
       preload: preload,
       initialIndex: initialIndex2,
       initialPosition: initialPosition2,
     );
+
+    // set active player to _player0 if the initial index is pair, and vice versa
+    _activePlayerIndex = (initialIndex ?? 0) % 2;
 
     return success1 && success2;
   }

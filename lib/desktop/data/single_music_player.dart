@@ -122,7 +122,23 @@ class SingleMusicPlayer {
 
   /// Goes to next music without any transition
   Future<void> next() async {
+    if (!player.hasNext) {
+      logger.warn("Tried to seek next track when there weren't any");
+    }
     await player.seekToNext();
+  }
+
+  /// Goes to the previous music without any transition
+  Future<void> prev() async {
+    if (!player.hasPrevious) {
+      logger.warn("Tried to seek previous track when there weren't any");
+    }
+    await player.seekToPrevious();
+  }
+
+  /// Seeks to the start of the music
+  Future<void> restartSong() async {
+    await player.seek(Duration.zero);
   }
 
   /// Fades volume from startVolume to endVolume in duration time and with step steps
