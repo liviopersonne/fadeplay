@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/data/logger.dart';
 import 'package:fadeplay/desktop/data/single_music_player.dart';
+import 'package:fadeplay/desktop/settings/settings.dart';
 import 'package:just_audio/just_audio.dart';
 
 final logger = Logging("FullMusicPlayer");
@@ -28,6 +29,47 @@ class FullMusicPlayer {
     final newIndex = 1 - _activePlayerIndex;
     logger.debug("Switching active player from $oldIndex to $newIndex");
     _activePlayerIndex = newIndex;
+  }
+
+  /// Plays the loaded music
+  Future<void> play() async {
+    logger.debug("Playing with activePlayer $_activePlayerIndex");
+    await _getActivePlayer().play();
+  }
+
+  /// Pauses the player
+  Future<void> pause() async {
+    logger.debug("Paused player");
+    await Future.wait([
+      _getActivePlayer().pause(),
+      _getInactivePlayer().pause(),
+    ]);
+  }
+
+  /// Goes to next music without any transition
+  Future<void> next() async {
+    final wasPlaying = _getActivePlayer().playing;
+    await _getActivePlayer().pause();
+    await _getActivePlayer().next();
+    _switchActivePlayer();
+    if (wasPlaying) await _getActivePlayer().play();
+  }
+
+  Future<void> crossfade({Duration? crossfadeDuration}) async {
+    final duration = crossfadeDuration ?? Settings.crossfadeDuration;
+
+    if (!_getActivePlayer().playing) {
+      logger.warn("Tried to crossfade while paused");
+      return await next();
+    }
+
+    await Future.wait([
+      _getActivePlayer().fadeout(duration: duration),
+      _getInactivePlayer().fadein(duration: duration),
+    ]);
+
+    await _getActivePlayer().next();
+    _switchActivePlayer();
   }
 
   /// Loads a list of music in order

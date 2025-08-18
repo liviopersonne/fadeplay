@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:fadeplay/desktop/data/logger.dart';
+import 'package:fadeplay/desktop/settings/settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:media_kit/media_kit.dart' as media_kit;
@@ -12,7 +13,7 @@ final logger = Logging("SingleMusicPlayer");
 /// A music player with a single AudioPlayer than can fade in and out
 class SingleMusicPlayer {
   static var _initialized = false;
-  final _player = AudioPlayer();
+  final player = AudioPlayer();
   StreamSubscription? _playerStateSubscription;
 
   /// Whether the player is playing
@@ -45,7 +46,7 @@ class SingleMusicPlayer {
   SingleMusicPlayer() {
     logger.debug("Insianciating a new SingleMusicPlayer");
     if (!_initialized) initialize();
-    _playerStateSubscription = _player.playerStateStream.listen((
+    _playerStateSubscription = player.playerStateStream.listen((
       PlayerState newState,
     ) {
       playing = newState.playing;
@@ -56,7 +57,7 @@ class SingleMusicPlayer {
   Future<void> dispose() async {
     _playerStateSubscription?.cancel();
     _playerStateSubscription = null;
-    await _player.dispose();
+    await player.dispose();
     logger.debug("Disposed a SingleMusicPlayer");
   }
 
@@ -69,7 +70,7 @@ class SingleMusicPlayer {
       );
       return false;
     }
-    final duration = await _player.setFilePath(musicFilepath);
+    final duration = await player.setFilePath(musicFilepath);
     if (duration == null) {
       logger.warn("Error while loading file at path $musicFilepath");
     }
@@ -97,7 +98,7 @@ class SingleMusicPlayer {
       return false;
     }
 
-    final duration = await _player.setAudioSources(
+    final duration = await player.setAudioSources(
       audioSources,
       preload: preload,
       initialIndex: initialIndex,
@@ -108,16 +109,20 @@ class SingleMusicPlayer {
 
   /// Plays the loaded music
   Future<void> play() async {
-    _player.play();
+    logger.debug(
+      "Reading ${player.audioSources.length} tracks at position ${player.currentIndex} with volume ${player.volume}",
+    );
+    await player.play();
   }
 
   /// Pauses the player
   Future<void> pause() async {
-    _player.pause();
+    await player.pause();
   }
 
+  /// Goes to next music without any transition
   Future<void> next() async {
-    _player.seekToNext();
+    await player.seekToNext();
   }
 
   /// Fades volume from startVolume to endVolume in duration time and with step steps
@@ -133,7 +138,7 @@ class SingleMusicPlayer {
     Timer.periodic(stepTime, (timer) {
       final t = (elapsed / duration.inMilliseconds).clamp(0.0, 1.0);
       final volume = lerpDouble(startVolume, endVolume, t)!;
-      _player.setVolume(volume);
+      player.setVolume(volume);
       elapsed += stepTime.inMilliseconds;
 
       if (t >= 1) {
@@ -155,18 +160,19 @@ class SingleMusicPlayer {
     required Duration duration,
     Duration stepTime = const Duration(milliseconds: 16),
   }) async {
-    if (!_player.playing) {
+    if (!player.playing) {
       logger.error("Tried to fade out while player is not playing");
       return;
     }
 
     await _fade(
-      startVolume: _player.volume,
+      startVolume: player.volume,
       endVolume: 0,
       duration: duration,
       stepTime: stepTime,
     );
     await pause();
+    await player.setVolume(Settings.playerVolume);
   }
 
   /// Fades a music in if there is music loaded
@@ -176,23 +182,23 @@ class SingleMusicPlayer {
     required Duration duration,
     Duration stepTime = const Duration(milliseconds: 16),
   }) async {
-    final playerState = _player.playerState.processingState;
+    final playerState = player.playerState.processingState;
     if (playerState != ProcessingState.ready) {
       logger.error(
         "Tried to fade in while the player wasn't ready but in state $playerState",
       );
       return;
     }
-    if (_player.playing) {
+    if (player.playing) {
       logger.error("Tried to fade in while the player was already playing");
       return;
     }
 
-    await _player.setVolume(0);
+    await player.setVolume(0);
     await play();
     await _fade(
       startVolume: 0,
-      endVolume: 1, // TODO: Get correct player volume
+      endVolume: Settings.playerVolume,
       duration: duration,
       stepTime: stepTime,
     );

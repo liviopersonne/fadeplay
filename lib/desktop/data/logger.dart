@@ -28,7 +28,7 @@ class Logging {
   }
 
   void warn(String message) {
-    _fullLogger.w(" $scopedMessage(message)");
+    _fullLogger.w(scopedMessage(message));
   }
 
   void error(String message, {String? errorName}) {

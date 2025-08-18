@@ -34,7 +34,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
     final music2 =
         "/home/livio/Musique/Musique/Songs/Toby Fox/UNDERTALE Soundtrack/Spider Dance.mp3";
     final music3 =
-        "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/Chocobo Racing Theme.mp3";
+        "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/No Promises to Keep.mp3";
 
     var content = "";
 
@@ -42,9 +42,26 @@ class TestLoadFullMusicWidget extends StatelessWidget {
 
     final success = await myPlayer.loadPlaylist(
       filePaths: [music1, music2, music3],
-      initialIndex: 4,
-      initialPosition: Duration.zero,
     );
+
+    if (success) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 3));
+
+      await myPlayer.crossfade(crossfadeDuration: Duration(seconds: 2));
+      // await myPlayer.next();
+      await Future.delayed(Duration(seconds: 1));
+
+      await myPlayer.pause();
+      await myPlayer.crossfade(crossfadeDuration: Duration(seconds: 1));
+      // await myPlayer.next();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 5));
+
+      await myPlayer.dispose();
+    }
 
     content = success ? "Loaded playlist" : "Failed to load playlist";
 
