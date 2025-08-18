@@ -14,62 +14,93 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 
 - Title
 - Artist
-- Album
-- Track number
-- Year
+- ? Album
+- ? Track number
+- ? Disk number
+- ? Year
 
 ## Database
 
 ### Tracks
 
-- All metadata except artists and albums become IDs
+- All metadata except
+  - ? salbum becomes an id
+  - artist becomes
+    - artistString (for representation)
+    - the many to many link between track and artist is stored in a separate table TrackArtists
 - Id
 - Created at
-- Start time (in case I trim the file)
-- End time
-- Mood
-- Score
-- Instruments
-- Source
-- Language
-- Solos
-- Safety
-- Image path (try to keep this compatible with musicbee)
-- Lyrics path
+- Duration (in ms) > 0
+- ? Start time (> 0 < duration) (in ms) (in case I trim the file)
+- ? End time (> 0 < duration) (in ms)
+- ? Rating
+- ? Mood (many to many)
+- ? Instruments (many to many)
+- ? SourceId (many to one)
+- ? Languages (many to many)
+- ? Solos (many to many)
+- ? Safety (many to many)
+- ? Image path (try to keep this compatible with musicbee)
+- ? Lyrics path
 
 ### Artists / Albums
 
 - Id
-- Original name
-- Translated name
-- Image path (try to keep this compatible with musicbee)
+- Name / Title
+- ? Original name / title (in original language)
+- ? Image path (try to keep this compatible with musicbee)
+
+### Sources
+
+- Id
+- Title
+- ? Original title
+- ? Image path
+
+### TrackArtists
+
+- Track id
+- Artist id
+- ArtistType
 
 ### Playlists
 
 - Id
+- Name
 - Image path
-- Id of corresponding tracks
+- Id of corresponding tracks (many to many)
 
 ### Transitions
 
 - Id
 - Created at
 - Track 1 id
-- End fadeout (timestamp)
-- Fadeout duration
 - Track 2 id
-- Start fadein (timestamp)
+- Fadeout end (in ms)
+- Fadeout duration (in ms)
+- Fadein start
 - Fadein duration
-- Delay (delay between the 2 tracks)
-- Type (boolean that tells if the transition was created manually or for a mix)
+- (= 0) Delay (delay between the 2 tracks)
+- ? Comment
+- Type (enuma that tells if the transition was created manually or for a mix)
 
-### Enums
+### Real enums
 
-- Instruments
-- Moods
-- Languages
-- Safeties
-- Transition type (manual, automatic, mix)
+- TransitionType
+  - manual automatic mix
+- ArtistType
+  - artist featured composer remixer cover
+- Safety
+  - safe lyrics language weirdVoice screaming ost other
+
+### Enums defined during seeding (can add values)
+
+- Mood
+  - banger battle bop chill epic exploration melancholy
+- Instrument
+  - amenDrums bass choir cuivres flute guitare guitareElectrique harpe piano saxophone traditionalJapanese violon voix
+- Language
+  - franch english japanese chaosLanguage latin
 
 ## Filepath (try to keep this compatible with musicbee)
 
