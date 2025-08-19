@@ -5,6 +5,8 @@ import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';
 import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
 import 'package:flutter/material.dart';
 
+late final AppDatabase database;
+
 void desktopMain() {
   WidgetsFlutterBinding.ensureInitialized();
   SingleMusicPlayer.initialize();

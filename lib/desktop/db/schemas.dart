@@ -33,7 +33,12 @@ part 'schemas.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  AppDatabase._internal([QueryExecutor? executor])
+    : super(executor ?? _openConnection());
+
+  // Singleton definition
+  static final AppDatabase _instance = AppDatabase._internal();
+  factory AppDatabase() => _instance;
 
   // Database seed
   Future<void> seedMoods() async {
