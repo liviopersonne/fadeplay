@@ -14,7 +14,7 @@ void desktopMain() {
       .insert(
         TracksCompanion.insert(
           duration: 1,
-          year: 1,
+          filePath: "",
           title: "Test",
           artistString: "Test",
         ),

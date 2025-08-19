@@ -29,6 +29,7 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
     - artistString (for representation)
     - the many to many link between track and artist is stored in a separate table TrackArtists
 - Id
+- File path
 - Created at
 - Duration (in ms) > 0
 - ? Start time (> 0 < duration) (in ms) (in case I trim the file)

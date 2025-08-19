@@ -65,13 +65,14 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
-      // This is to enable foreign keys in sqlite3, so that we can delete cascade
       beforeOpen: (details) async {
         if (details.wasCreated) {
+          // Seeding the database
           await seedMoods();
           await seedInstruments();
           await seedLanguages();
         }
+        // This is to enable foreign keys in sqlite3, so that we can delete cascade
         await customStatement('PRAGMA foreign_keys = ON;');
       },
     );

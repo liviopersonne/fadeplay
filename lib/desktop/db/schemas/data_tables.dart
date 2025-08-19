@@ -5,6 +5,7 @@ import 'checks.dart';
 
 class Tracks extends Table with DateAndId {
   TextColumn get title => text()();
+  TextColumn get filePath => text().unique()();
   TextColumn get artistString => text()();
   late final IntColumn trackNumber = integer().nullable().check(
     validTrackDiskNumbers(trackNumber, diskNumber),
@@ -15,7 +16,9 @@ class Tracks extends Table with DateAndId {
   late final IntColumn duration = integer().check(
     duration.isBiggerThanValue(0),
   )();
-  late final IntColumn year = integer().check(positiveOrNull(year))();
+  late final IntColumn year = integer().nullable().check(
+    positiveOrNull(year),
+  )();
   late final IntColumn startTime = integer().nullable().check(
     clipTimeCondition(startTime, duration),
   )();
@@ -43,8 +46,8 @@ class Tracks extends Table with DateAndId {
 
 class Artists extends Table with Id {
   TextColumn get name => text()();
-  TextColumn get originalName => text()();
-  TextColumn get imagePath => text()();
+  TextColumn get originalName => text().nullable()();
+  TextColumn get imagePath => text().nullable()();
 }
 
 class Albums extends Table with Id {
@@ -61,7 +64,7 @@ class Sources extends Table with Id {
 
 class Playlists extends Table with Id {
   TextColumn get name => text()();
-  TextColumn get imagePath => text()();
+  TextColumn get imagePath => text().nullable()();
 }
 
 class Transitions extends Table with DateAndId {
