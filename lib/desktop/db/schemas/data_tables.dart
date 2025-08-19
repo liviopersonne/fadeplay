@@ -25,8 +25,18 @@ class Tracks extends Table with DateAndId {
   late final RealColumn rating = real().nullable().check(
     ratingCondition(rating),
   )();
-  IntColumn get albumId => integer().nullable().references(Albums, #id)();
-  IntColumn get sourceId => integer().nullable().references(Sources, #id)();
+  IntColumn get albumId => integer().nullable().references(
+    Albums,
+    #id,
+    onUpdate: KeyAction.cascade, // if the album's id is modified, albumId too
+    onDelete: KeyAction.restrict, // can't delete album if a track has it
+  )();
+  IntColumn get sourceId => integer().nullable().references(
+    Sources,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.restrict,
+  )();
   TextColumn get imagePath => text().nullable()();
   TextColumn get lyricsPath => text().nullable()();
 }
@@ -56,9 +66,19 @@ class Playlists extends Table with Id {
 
 class Transitions extends Table with DateAndId {
   @ReferenceName("track1Transitions")
-  IntColumn get trackId1 => integer().references(Tracks, #id)();
+  IntColumn get trackId1 => integer().references(
+    Tracks,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
   @ReferenceName("track2Transitions")
-  IntColumn get trackId2 => integer().references(Tracks, #id)();
+  IntColumn get trackId2 => integer().references(
+    Tracks,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
   late final IntColumn fadeoutEnd = integer().check(
     fadeoutEnd.isBiggerOrEqualValue(0),
   )();

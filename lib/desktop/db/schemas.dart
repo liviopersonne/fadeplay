@@ -7,6 +7,7 @@ import 'schemas/data_tables.dart';
 import 'schemas/enum_tables.dart';
 import 'schemas/relation_tables.dart';
 import 'schemas/enums.dart';
+import 'schemas/checks.dart';
 
 part 'schemas.g.dart';
 
@@ -36,6 +37,18 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      // This is to enable foreign keys in sqlite3, so that we can delete cascade
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON;');
+
+        // TODO: Seeding happens here
+      },
+    );
+  }
 
   static QueryExecutor _openConnection() {
     return driftDatabase(

@@ -12,5 +12,10 @@ mixin DateAndId on Table {
 }
 
 mixin TrackId on Table {
-  IntColumn get trackId => integer().references(Tracks, #id)();
+  IntColumn get trackId => integer().references(
+    Tracks,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
 }

@@ -756,7 +756,7 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES albums (id)',
+      'REFERENCES albums (id) ON UPDATE CASCADE ON DELETE RESTRICT',
     ),
   );
   static const VerificationMeta _sourceIdMeta = const VerificationMeta(
@@ -770,7 +770,7 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES sources (id)',
+      'REFERENCES sources (id) ON UPDATE CASCADE ON DELETE RESTRICT',
     ),
   );
   static const VerificationMeta _imagePathMeta = const VerificationMeta(
@@ -2125,7 +2125,7 @@ class $TransitionsTable extends Transitions
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _trackId2Meta = const VerificationMeta(
@@ -2139,7 +2139,7 @@ class $TransitionsTable extends Transitions
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _delayMeta = const VerificationMeta('delay');
@@ -3286,7 +3286,7 @@ class $TrackMoodsTable extends TrackMoods
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _moodIdMeta = const VerificationMeta('moodId');
@@ -3298,7 +3298,7 @@ class $TrackMoodsTable extends TrackMoods
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES moods (id)',
+      'REFERENCES moods (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -3504,7 +3504,7 @@ class $TrackInstrumentsTable extends TrackInstruments
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _instrumentIdMeta = const VerificationMeta(
@@ -3518,7 +3518,7 @@ class $TrackInstrumentsTable extends TrackInstruments
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES instruments (id)',
+      'REFERENCES instruments (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -3733,7 +3733,7 @@ class $TrackSolosTable extends TrackSolos
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _instrumentIdMeta = const VerificationMeta(
@@ -3747,7 +3747,7 @@ class $TrackSolosTable extends TrackSolos
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES instruments (id)',
+      'REFERENCES instruments (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -3961,7 +3961,7 @@ class $TrackLanguagesTable extends TrackLanguages
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _languageIdMeta = const VerificationMeta(
@@ -3975,7 +3975,7 @@ class $TrackLanguagesTable extends TrackLanguages
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES languages (id)',
+      'REFERENCES languages (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -4186,7 +4186,7 @@ class $TrackArtistsTable extends TrackArtists
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _artistIdMeta = const VerificationMeta(
@@ -4200,7 +4200,7 @@ class $TrackArtistsTable extends TrackArtists
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES artists (id)',
+      'REFERENCES artists (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -4465,7 +4465,7 @@ class $TrackSafetiesTable extends TrackSafeties
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -4690,7 +4690,7 @@ class $PlaylistTracksTable extends PlaylistTracks
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES playlists (id)',
+      'REFERENCES playlists (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _trackIdMeta = const VerificationMeta(
@@ -4704,7 +4704,7 @@ class $PlaylistTracksTable extends PlaylistTracks
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tracks (id)',
+      'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
   @override
@@ -4941,6 +4941,233 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     trackSafeties,
     playlistTracks,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'albums',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('tracks', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'sources',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('tracks', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('transitions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('transitions', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('transitions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('transitions', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_moods', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_moods', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'moods',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_moods', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'moods',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_moods', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_instruments', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_instruments', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'instruments',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_instruments', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'instruments',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_instruments', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_solos', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_solos', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'instruments',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_solos', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'instruments',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_solos', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_languages', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_languages', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'languages',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_languages', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'languages',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_languages', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_artists', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_artists', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'artists',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_artists', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'artists',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_artists', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_safeties', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_safeties', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'playlists',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('playlist_tracks', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'playlists',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('playlist_tracks', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('playlist_tracks', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tracks',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('playlist_tracks', kind: UpdateKind.update)],
+    ),
+  ]);
   @override
   DriftDatabaseOptions get options =>
       const DriftDatabaseOptions(storeDateTimeAsText: true);
