@@ -18,6 +18,9 @@ class SingleMusicPlayer {
   /// Whether the player is playing
   var playing = false;
 
+  /// A precise stream of the current position in the song used for transitionf
+  late final Stream<Duration> precisePositionStream;
+
   /// Setup platform specific settings
   static void initialize() {
     logger.debug("Initializing Audio Player settings...");
@@ -44,6 +47,10 @@ class SingleMusicPlayer {
   SingleMusicPlayer() {
     logger.debug("Insianciating a new SingleMusicPlayer");
     if (!_initialized) initialize();
+    precisePositionStream = player.createPositionStream(
+      minPeriod: Settings.bestTransitionPrecision,
+      maxPeriod: Settings.worstTransitionPrecision,
+    );
   }
 
   /// Dispose the player when you're done using it

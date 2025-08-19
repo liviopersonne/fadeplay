@@ -13,6 +13,7 @@ class FullMusicPlayer {
   final _player0 = SingleMusicPlayer();
   final _player1 = SingleMusicPlayer();
   StreamSubscription? _playerStatesSubscription;
+  StreamSubscription? _precisePositionSubscription;
   int _activePlayerIndex = 0;
 
   /// Whether the player is playing
@@ -33,7 +34,7 @@ class FullMusicPlayer {
 
     _playerStatesSubscription = playerStatesStream.listen((states) {
       final (s0, s1) = states;
-      _onNewState(s0, s1);
+      _onNewPlayerStates(s0, s1);
     });
   }
 
@@ -41,17 +42,22 @@ class FullMusicPlayer {
   Future<void> dispose() async {
     _playerStatesSubscription?.cancel();
     _playerStatesSubscription = null;
+    _precisePositionSubscription?.cancel();
+    _precisePositionSubscription = null;
     _player0.dispose();
     _player1.dispose();
     logger.debug("Disposed a FullMusicPlayer");
   }
 
+  /// Gets the SingleMusicPlayer that is currently playing
   SingleMusicPlayer _getActivePlayer() =>
       _activePlayerIndex == 0 ? _player0 : _player1;
 
+  /// Gets the SingleMusicPlayer that isn't currently playing
   SingleMusicPlayer _getInactivePlayer() =>
       _activePlayerIndex == 0 ? _player1 : _player0;
 
+  /// Switches between the two SingleMusicPlayers
   void _switchActivePlayer() {
     final oldIndex = _activePlayerIndex;
     final newIndex = 1 - _activePlayerIndex;
@@ -59,20 +65,49 @@ class FullMusicPlayer {
     _activePlayerIndex = newIndex;
   }
 
-  void _onNewState(PlayerState s0, PlayerState s1) {
+  /// Actions to do when one of the player states changes
+  void _onNewPlayerStates(PlayerState s0, PlayerState s1) {
     playing = s0.playing | s1.playing;
     state = _activePlayerIndex == 0 ? s0.processingState : s1.processingState;
+  }
+
+  /// Activates the more precise but ressource intensive stream
+  /// that tracks the current position in the song
+  /// - The `callback` function decides what to do when a new position is recieved
+  void _activatePrecisePositionSubscription(void Function(Duration)? callback) {
+    if (_precisePositionSubscription != null) {
+      logger.error(
+        "Tried to activate precise position subscription when it already existed",
+      );
+      _deactivatePrecisePositionSubscription();
+    }
+    _precisePositionSubscription = _getActivePlayer().precisePositionStream
+        .listen(callback);
+  }
+
+  /// Deactivates the precise position stream to free ressources.
+  /// This should always be called after a transition is completed
+  void _deactivatePrecisePositionSubscription() {
+    if (_precisePositionSubscription == null) {
+      logger.error(
+        "Tried to deactivate precise position subscription when it didn't exist",
+      );
+    }
+    _precisePositionSubscription?.cancel();
+    _precisePositionSubscription = null;
   }
 
   /// Plays the loaded music
   Future<void> play() async {
     logger.debug("Playing with activePlayer $_activePlayerIndex");
+    if (playing) logger.warn("Called 'play' while already playing");
     await _getActivePlayer().play();
   }
 
   /// Pauses the player
   Future<void> pause() async {
     logger.debug("Paused player");
+    if (!playing) logger.warn("Called 'pause' while already paused");
     await Future.wait([
       _getActivePlayer().pause(),
       _getInactivePlayer().pause(),
