@@ -10,8 +10,15 @@ void desktopMain() {
   SingleMusicPlayer.initialize();
   final database = AppDatabase();
   database
-      .into(database.instruments)
-      .insert(InstrumentsCompanion.insert(label: "coucou!"))
+      .into(database.tracks)
+      .insert(
+        TracksCompanion.insert(
+          duration: 1,
+          year: 1,
+          title: "Test",
+          artistString: "Test",
+        ),
+      )
       .then((value) {
         Logging("main").log("Set up database ! $value");
       });

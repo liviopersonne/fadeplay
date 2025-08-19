@@ -35,6 +35,30 @@ part 'schemas.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
+  // Database seed
+  Future<void> seedMoods() async {
+    for (String mood in moodElems) {
+      await into(moods).insert(MoodsCompanion.insert(label: mood.toString()));
+    }
+  }
+
+  Future<void> seedInstruments() async {
+    for (String instrument in instrumentElems) {
+      await into(
+        instruments,
+      ).insert(InstrumentsCompanion.insert(label: instrument.toString()));
+    }
+  }
+
+  Future<void> seedLanguages() async {
+    for (String language in languageElems) {
+      await into(
+        languages,
+      ).insert(LanguagesCompanion.insert(label: language.toString()));
+    }
+  }
+
+  // Database generator
   @override
   int get schemaVersion => 1;
 
@@ -43,9 +67,12 @@ class AppDatabase extends _$AppDatabase {
     return MigrationStrategy(
       // This is to enable foreign keys in sqlite3, so that we can delete cascade
       beforeOpen: (details) async {
+        if (details.wasCreated) {
+          await seedMoods();
+          await seedInstruments();
+          await seedLanguages();
+        }
         await customStatement('PRAGMA foreign_keys = ON;');
-
-        // TODO: Seeding happens here
       },
     );
   }
