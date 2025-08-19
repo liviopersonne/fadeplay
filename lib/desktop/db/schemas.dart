@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -203,9 +205,6 @@ class PlaylistTracks extends Table {
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  // After generating code, this class needs to define a `schemaVersion` getter
-  // and a constructor telling drift where the database should be stored.
-  // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
@@ -214,11 +213,21 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'my_database',
-      native: const DriftNativeOptions(
-        // By default, `driftDatabase` from `package:drift_flutter` stores the
-        // database files in `getApplicationDocumentsDirectory()`.
-        databaseDirectory: getApplicationSupportDirectory,
+      native: DriftNativeOptions(
+        // NOTE: For a private database in ~/.local/share/<appName> | .../data/data/<package>/files
+        // databaseDirectory: getApplicationSupportDirectory,
+
+        // NOTE: For a public database in ~/Documents | .../data/data/<package>/app_flutter
+        // databaseDirectory: getApplicationDocumentsDirectory,
+
+        // NOTE: For perfect control of the db path
+        databasePath: () async {
+          final dir = Directory('lib/desktop/db');
+          await dir.create(recursive: true);
+          return '${dir.path}/db.sqlite';
+        },
       ),
+      // TODO: Set this up correctly
       // If you need web support, see https://drift.simonbinder.eu/platforms/web/
     );
   }
