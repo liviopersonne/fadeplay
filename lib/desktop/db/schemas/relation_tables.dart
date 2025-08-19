@@ -11,6 +11,11 @@ class TrackMoods extends Table with TrackId {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
+
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {trackId, moodId},
+  ];
 }
 
 class TrackInstruments extends Table with TrackId {
@@ -20,6 +25,11 @@ class TrackInstruments extends Table with TrackId {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
+
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {trackId, instrumentId},
+  ];
 }
 
 class TrackSolos extends Table with TrackId {
@@ -29,6 +39,11 @@ class TrackSolos extends Table with TrackId {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
+
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {trackId, instrumentId},
+  ];
 }
 
 class TrackLanguages extends Table with TrackId {
@@ -38,6 +53,11 @@ class TrackLanguages extends Table with TrackId {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
+
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {trackId, languageId},
+  ];
 }
 
 class TrackArtists extends Table with TrackId {
@@ -48,10 +68,19 @@ class TrackArtists extends Table with TrackId {
     onDelete: KeyAction.cascade,
   )();
   IntColumn get artistType => intEnum<ArtistType>()();
+
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {trackId, artistId},
+  ];
 }
 
 class TrackSafeties extends Table with TrackId {
   IntColumn get safetyId => intEnum<Safety>()();
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {trackId, safetyId},
+  ];
 }
 
 class PlaylistTracks extends Table {
@@ -67,4 +96,9 @@ class PlaylistTracks extends Table {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
+
+  @override
+  List<Set<Column>>? get uniqueKeys => [
+    {playlistId, trackId},
+  ];
 }

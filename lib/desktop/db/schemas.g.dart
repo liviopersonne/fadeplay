@@ -2788,6 +2788,7 @@ class $MoodsTable extends Moods with TableInfo<$MoodsTable, Mood> {
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   @override
   List<GeneratedColumn> get $columns => [id, label];
@@ -2973,6 +2974,7 @@ class $InstrumentsTable extends Instruments
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   @override
   List<GeneratedColumn> get $columns => [id, label];
@@ -3160,6 +3162,7 @@ class $LanguagesTable extends Languages
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   @override
   List<GeneratedColumn> get $columns => [id, label];
@@ -3388,6 +3391,10 @@ class $TrackMoodsTable extends TrackMoods
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {trackId, moodId},
+  ];
+  @override
   TrackMood map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrackMood(
@@ -3610,6 +3617,10 @@ class $TrackInstrumentsTable extends TrackInstruments
 
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {trackId, instrumentId},
+  ];
   @override
   TrackInstrument map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -3840,6 +3851,10 @@ class $TrackSolosTable extends TrackSolos
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {trackId, instrumentId},
+  ];
+  @override
   TrackSolo map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrackSolo(
@@ -4064,6 +4079,10 @@ class $TrackLanguagesTable extends TrackLanguages
 
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {trackId, languageId},
+  ];
   @override
   TrackLanguage map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -4298,6 +4317,10 @@ class $TrackArtistsTable extends TrackArtists
 
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {trackId, artistId},
+  ];
   @override
   TrackArtist map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -4556,6 +4579,10 @@ class $TrackSafetiesTable extends TrackSafeties
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {trackId, safetyId},
+  ];
+  @override
   TrackSafety map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrackSafety(
@@ -4793,6 +4820,10 @@ class $PlaylistTracksTable extends PlaylistTracks
 
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {playlistId, trackId},
+  ];
   @override
   PlaylistTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
