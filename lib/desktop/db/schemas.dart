@@ -4,16 +4,17 @@ part 'schemas.g.dart';
 
 // Mixins
 mixin Id on Table {
-  late final id = integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement()();
 }
 
 mixin DateAndId on Table {
-  late final id = integer().autoIncrement()();
-  late final creationTime = dateTime().withDefault(currentDateAndTime)();
+  IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get creationTime =>
+      dateTime().withDefault(currentDateAndTime)();
 }
 
 mixin TrackId on Table {
-  late final trackId = integer().references(Tracks, #id)();
+  IntColumn get trackId => integer().references(Tracks, #id)();
 }
 
 // ENUMS
@@ -41,80 +42,70 @@ Expression<bool> ratingCondition(Column<double> rating) =>
 
 // Data tables
 class Tracks extends Table with DateAndId {
-  late final title = text()();
-  late final artistString = text()();
-  late final Column<int> trackNumber = integer().nullable().check(
+  TextColumn get title => text()();
+  TextColumn get artistString => text()();
+  IntColumn get trackNumber => integer().nullable().check(
     validTrackDiskNumbers(trackNumber, diskNumber),
   )();
-  late final Column<int> diskNumber = integer().nullable().check(
+  IntColumn get diskNumber => integer().nullable().check(
     validTrackDiskNumbers(trackNumber, diskNumber),
   )();
-  late final Column<int> duration = integer().check(
-    duration.isBiggerThanValue(0),
-  )();
-  late final Column<int> year = integer().check(positiveOrNull(year))();
-  late final Column<int> startTime = integer().nullable().check(
-    clipTimeCondition(startTime, duration),
-  )();
-  late final Column<int> endTime = integer().nullable().check(
-    clipTimeCondition(endTime, duration),
-  )();
-  late final Column<double> rating = real().nullable().check(
-    ratingCondition(rating),
-  )();
-  late final albumId = integer().nullable().references(Albums, #id)();
-  late final sourceId = integer().nullable().references(Sources, #id)();
-  late final imagePath = text().nullable()();
-  late final lyricsPath = text().nullable()();
+  IntColumn get duration => integer().check(duration.isBiggerThanValue(0))();
+  IntColumn get year => integer().check(positiveOrNull(year))();
+  IntColumn get startTime =>
+      integer().nullable().check(clipTimeCondition(startTime, duration))();
+  IntColumn get endTime =>
+      integer().nullable().check(clipTimeCondition(endTime, duration))();
+  RealColumn get rating => real().nullable().check(ratingCondition(rating))();
+  IntColumn get albumId => integer().nullable().references(Albums, #id)();
+  IntColumn get sourceId => integer().nullable().references(Sources, #id)();
+  TextColumn get imagePath => text().nullable()();
+  TextColumn get lyricsPath => text().nullable()();
 }
 
 class Artists extends Table with Id {
-  late final name = text()();
-  late final originalName = text()();
-  late final imagePath = text()();
+  TextColumn get name => text()();
+  TextColumn get originalName => text()();
+  TextColumn get imagePath => text()();
 }
 
 class Albums extends Table with Id {
-  late final title = text()();
-  late final originalTitle = text().nullable()();
-  late final imagePath = text().nullable()();
+  TextColumn get title => text()();
+  TextColumn get originalTitle => text().nullable()();
+  TextColumn get imagePath => text().nullable()();
 }
 
 class Sources extends Table with Id {
-  late final title = text()();
-  late final originalTitle = text().nullable()();
-  late final imagePath = text().nullable()();
+  TextColumn get title => text()();
+  TextColumn get originalTitle => text().nullable()();
+  TextColumn get imagePath => text().nullable()();
 }
 
 class Playlists extends Table with Id {
-  late final name = text()();
-  late final imagePath = text()();
+  TextColumn get name => text()();
+  TextColumn get imagePath => text()();
 }
 
 class Transitions extends Table with DateAndId {
-  late final trackId1 = integer().references(Tracks, #id)();
-  late final trackId2 = integer().references(Tracks, #id)();
-  late final Column<int> fadeoutEnd = integer().check(
-    fadeoutEnd.isBiggerOrEqualValue(0),
-  )();
-  late final Column<int> fadeoutduration = integer().check(
-    fadeoutEnd.isBiggerOrEqualValue(0),
-  )();
-  late final Column<int> fadeinStart = integer().check(
-    fadeoutEnd.isBiggerOrEqualValue(0),
-  )();
-  late final Column<int> fadeinduration = integer().check(
-    fadeoutEnd.isBiggerOrEqualValue(0),
-  )();
-  late final delay = real().withDefault(const Constant(0.0))();
-  late final comment = text().nullable()();
-  late final type = intEnum<TransitionType>()();
+  IntColumn get trackId1 => integer().references(Tracks, #id)();
+  IntColumn get trackId2 => integer().references(Tracks, #id)();
+  IntColumn get fadeoutEnd =>
+      integer().check(fadeoutEnd.isBiggerOrEqualValue(0))();
+  IntColumn get fadeoutduration =>
+      integer().check(fadeoutEnd.isBiggerOrEqualValue(0))();
+  IntColumn get fadeinStart =>
+      integer().check(fadeoutEnd.isBiggerOrEqualValue(0))();
+  IntColumn get fadeinduration =>
+      integer().check(fadeoutEnd.isBiggerOrEqualValue(0))();
+  RealColumn get delay => real().withDefault(const Constant(0.0))();
+  TextColumn get comment => text().nullable()();
+  IntColumn get type => intEnum<TransitionType>()();
 }
 
 // Enum tables
 // enum Mood { banger, battle, bop, chill, epic, exploration, melancholy }
 class Moods extends Table with Id {
-  late final label = text()();
+  TextColumn get label => text()();
 }
 
 /*enum Instrument {
@@ -134,43 +125,43 @@ class Moods extends Table with Id {
 }
 */
 class Instruments extends Table with Id {
-  late final label = text()();
+  TextColumn get label => text()();
 }
 
 //enum Language { franch, english, japanese, chaosLanguage, latin }
 class Languages extends Table with Id {
-  late final label = text()();
+  TextColumn get label => text()();
 }
 
 // Relation tables
 class TrackMoods extends Table with TrackId {
-  late final moodId = integer().references(Moods, #id)();
+  IntColumn get moodId => integer().references(Moods, #id)();
 }
 
 class TrackInstruments extends Table with TrackId {
-  late final instrumentId = integer().references(Instruments, #id)();
+  IntColumn get instrumentId => integer().references(Instruments, #id)();
 }
 
 class TrackSolos extends Table with TrackId {
-  late final instrumentId = integer().references(Instruments, #id)();
+  IntColumn get instrumentId => integer().references(Instruments, #id)();
 }
 
 class TrackLanguages extends Table with TrackId {
-  late final languageId = integer().references(Languages, #id)();
+  IntColumn get languageId => integer().references(Languages, #id)();
 }
 
 class TrackArtists extends Table with TrackId {
-  late final artistId = integer().references(Artists, #id)();
-  late final artistType = intEnum<ArtistType>()();
+  IntColumn get artistId => integer().references(Artists, #id)();
+  IntColumn get artistType => intEnum<ArtistType>()();
 }
 
 class TrackSafeties extends Table with TrackId {
-  late final safetyId = intEnum<Safety>()();
+  IntColumn get safetyId => intEnum<Safety>()();
 }
 
 class PlaylistTracks extends Table {
-  late final playlistId = integer().references(Playlists, #id);
-  late final trackId = integer().references(Tracks, #id)();
+  IntColumn get playlistId => integer().references(Playlists, #id)();
+  IntColumn get trackId => integer().references(Tracks, #id)();
 }
 
 // Database generate

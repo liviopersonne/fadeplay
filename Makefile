@@ -1,6 +1,6 @@
 run:
 	flutter run
 db-generate:
-	dart run build_runner build
+	dart run build_runner build --delete-conflicting-outputs  
 db-generate-continuous:
-	dart run build_runner watch
+	dart run build_runner watch --delete-conflicting-outputs  
