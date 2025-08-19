@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:fadeplay/desktop/data/logger.dart';
 import 'package:fadeplay/desktop/data/single_music_player.dart';
 import 'package:fadeplay/desktop/settings/settings.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:rxdart/rxdart.dart';
 
 final logger = Logging("FullMusicPlayer");
 
@@ -9,10 +12,35 @@ final logger = Logging("FullMusicPlayer");
 class FullMusicPlayer {
   final _player0 = SingleMusicPlayer();
   final _player1 = SingleMusicPlayer();
+  StreamSubscription? _playerStatesSubscription;
   int _activePlayerIndex = 0;
+
+  /// Whether the player is playing
+  var playing = false;
+
+  /// The player's current state
+  var state = ProcessingState.idle;
+
+  FullMusicPlayer() {
+    logger.debug("Insianciating a new FullMusicPlayer");
+
+    // Setup listening streams
+    final playerStatesStream = Rx.combineLatest2(
+      _player0.player.playerStateStream,
+      _player1.player.playerStateStream,
+      (s0, s1) => (s0, s1),
+    );
+
+    _playerStatesSubscription = playerStatesStream.listen((states) {
+      final (s0, s1) = states;
+      _onNewState(s0, s1);
+    });
+  }
 
   /// Dispose the player when you're done using it
   Future<void> dispose() async {
+    _playerStatesSubscription?.cancel();
+    _playerStatesSubscription = null;
     _player0.dispose();
     _player1.dispose();
     logger.debug("Disposed a FullMusicPlayer");
@@ -29,6 +57,11 @@ class FullMusicPlayer {
     final newIndex = 1 - _activePlayerIndex;
     logger.debug("Switching active player from $oldIndex to $newIndex");
     _activePlayerIndex = newIndex;
+  }
+
+  void _onNewState(PlayerState s0, PlayerState s1) {
+    playing = s0.playing | s1.playing;
+    state = _activePlayerIndex == 0 ? s0.processingState : s1.processingState;
   }
 
   /// Plays the loaded music

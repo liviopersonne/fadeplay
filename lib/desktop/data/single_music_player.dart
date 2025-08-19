@@ -14,14 +14,13 @@ final logger = Logging("SingleMusicPlayer");
 class SingleMusicPlayer {
   static var _initialized = false;
   final player = AudioPlayer();
-  StreamSubscription? _playerStateSubscription;
 
   /// Whether the player is playing
   var playing = false;
 
   /// Setup platform specific settings
   static void initialize() {
-    logger.debug("Initializing Audio Player...");
+    logger.debug("Initializing Audio Player settings...");
     switch (defaultTargetPlatform) {
       case TargetPlatform.linux:
       case TargetPlatform.windows:
@@ -33,7 +32,7 @@ class SingleMusicPlayer {
         JustAudioMediaKit.pitch = false;
         JustAudioMediaKit.prefetchPlaylist = false;
         _initialized = true;
-        logger.debug("Audio Player successfully initialized");
+        logger.debug("Audio Player settings successfully initialized");
         break;
       default:
         throw UnimplementedError(
@@ -42,21 +41,13 @@ class SingleMusicPlayer {
     }
   }
 
-  /// Setup listening streams
   SingleMusicPlayer() {
     logger.debug("Insianciating a new SingleMusicPlayer");
     if (!_initialized) initialize();
-    _playerStateSubscription = player.playerStateStream.listen((
-      PlayerState newState,
-    ) {
-      playing = newState.playing;
-    });
   }
 
   /// Dispose the player when you're done using it
   Future<void> dispose() async {
-    _playerStateSubscription?.cancel();
-    _playerStateSubscription = null;
     await player.dispose();
     logger.debug("Disposed a SingleMusicPlayer");
   }
