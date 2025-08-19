@@ -645,6 +645,86 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _trackNumberMeta = const VerificationMeta(
+    'trackNumber',
+  );
+  @override
+  late final GeneratedColumn<int> trackNumber = GeneratedColumn<int>(
+    'track_number',
+    aliasedName,
+    true,
+    check: () => validTrackDiskNumbers(trackNumber, diskNumber),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _diskNumberMeta = const VerificationMeta(
+    'diskNumber',
+  );
+  @override
+  late final GeneratedColumn<int> diskNumber = GeneratedColumn<int>(
+    'disk_number',
+    aliasedName,
+    true,
+    check: () => validTrackDiskNumbers(trackNumber, diskNumber),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<int> duration = GeneratedColumn<int>(
+    'duration',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(duration).isBiggerThanValue(0),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    false,
+    check: () => positiveOrNull(year),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startTimeMeta = const VerificationMeta(
+    'startTime',
+  );
+  @override
+  late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
+    'start_time',
+    aliasedName,
+    true,
+    check: () => clipTimeCondition(startTime, duration),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endTimeMeta = const VerificationMeta(
+    'endTime',
+  );
+  @override
+  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
+    'end_time',
+    aliasedName,
+    true,
+    check: () => clipTimeCondition(endTime, duration),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  @override
+  late final GeneratedColumn<double> rating = GeneratedColumn<double>(
+    'rating',
+    aliasedName,
+    true,
+    check: () => ratingCondition(rating),
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -664,79 +744,6 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _trackNumberMeta = const VerificationMeta(
-    'trackNumber',
-  );
-  @override
-  late final GeneratedColumn<int> trackNumber = GeneratedColumn<int>(
-    'track_number',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _diskNumberMeta = const VerificationMeta(
-    'diskNumber',
-  );
-  @override
-  late final GeneratedColumn<int> diskNumber = GeneratedColumn<int>(
-    'disk_number',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _durationMeta = const VerificationMeta(
-    'duration',
-  );
-  @override
-  late final GeneratedColumn<int> duration = GeneratedColumn<int>(
-    'duration',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _yearMeta = const VerificationMeta('year');
-  @override
-  late final GeneratedColumn<int> year = GeneratedColumn<int>(
-    'year',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _startTimeMeta = const VerificationMeta(
-    'startTime',
-  );
-  @override
-  late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
-    'start_time',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _endTimeMeta = const VerificationMeta(
-    'endTime',
-  );
-  @override
-  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
-    'end_time',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
-  @override
-  late final GeneratedColumn<double> rating = GeneratedColumn<double>(
-    'rating',
-    aliasedName,
-    true,
-    type: DriftSqlType.double,
-    requiredDuringInsert: false,
   );
   static const VerificationMeta _albumIdMeta = const VerificationMeta(
     'albumId',
@@ -792,8 +799,6 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
   List<GeneratedColumn> get $columns => [
     id,
     creationTime,
-    title,
-    artistString,
     trackNumber,
     diskNumber,
     duration,
@@ -801,6 +806,8 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     startTime,
     endTime,
     rating,
+    title,
+    artistString,
     albumId,
     sourceId,
     imagePath,
@@ -829,25 +836,6 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
           _creationTimeMeta,
         ),
       );
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-        _titleMeta,
-        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_titleMeta);
-    }
-    if (data.containsKey('artist_string')) {
-      context.handle(
-        _artistStringMeta,
-        artistString.isAcceptableOrUnknown(
-          data['artist_string']!,
-          _artistStringMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_artistStringMeta);
     }
     if (data.containsKey('track_number')) {
       context.handle(
@@ -898,6 +886,25 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
         rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta),
       );
     }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('artist_string')) {
+      context.handle(
+        _artistStringMeta,
+        artistString.isAcceptableOrUnknown(
+          data['artist_string']!,
+          _artistStringMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_artistStringMeta);
+    }
     if (data.containsKey('album_id')) {
       context.handle(
         _albumIdMeta,
@@ -939,14 +946,6 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}creation_time'],
       )!,
-      title: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}title'],
-      )!,
-      artistString: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}artist_string'],
-      )!,
       trackNumber: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}track_number'],
@@ -975,6 +974,14 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
         DriftSqlType.double,
         data['${effectivePrefix}rating'],
       ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      artistString: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}artist_string'],
+      )!,
       albumId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}album_id'],
@@ -1003,8 +1010,6 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
 class Track extends DataClass implements Insertable<Track> {
   final int id;
   final DateTime creationTime;
-  final String title;
-  final String artistString;
   final int? trackNumber;
   final int? diskNumber;
   final int duration;
@@ -1012,6 +1017,8 @@ class Track extends DataClass implements Insertable<Track> {
   final int? startTime;
   final int? endTime;
   final double? rating;
+  final String title;
+  final String artistString;
   final int? albumId;
   final int? sourceId;
   final String? imagePath;
@@ -1019,8 +1026,6 @@ class Track extends DataClass implements Insertable<Track> {
   const Track({
     required this.id,
     required this.creationTime,
-    required this.title,
-    required this.artistString,
     this.trackNumber,
     this.diskNumber,
     required this.duration,
@@ -1028,6 +1033,8 @@ class Track extends DataClass implements Insertable<Track> {
     this.startTime,
     this.endTime,
     this.rating,
+    required this.title,
+    required this.artistString,
     this.albumId,
     this.sourceId,
     this.imagePath,
@@ -1038,8 +1045,6 @@ class Track extends DataClass implements Insertable<Track> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['creation_time'] = Variable<DateTime>(creationTime);
-    map['title'] = Variable<String>(title);
-    map['artist_string'] = Variable<String>(artistString);
     if (!nullToAbsent || trackNumber != null) {
       map['track_number'] = Variable<int>(trackNumber);
     }
@@ -1057,6 +1062,8 @@ class Track extends DataClass implements Insertable<Track> {
     if (!nullToAbsent || rating != null) {
       map['rating'] = Variable<double>(rating);
     }
+    map['title'] = Variable<String>(title);
+    map['artist_string'] = Variable<String>(artistString);
     if (!nullToAbsent || albumId != null) {
       map['album_id'] = Variable<int>(albumId);
     }
@@ -1076,8 +1083,6 @@ class Track extends DataClass implements Insertable<Track> {
     return TracksCompanion(
       id: Value(id),
       creationTime: Value(creationTime),
-      title: Value(title),
-      artistString: Value(artistString),
       trackNumber: trackNumber == null && nullToAbsent
           ? const Value.absent()
           : Value(trackNumber),
@@ -1095,6 +1100,8 @@ class Track extends DataClass implements Insertable<Track> {
       rating: rating == null && nullToAbsent
           ? const Value.absent()
           : Value(rating),
+      title: Value(title),
+      artistString: Value(artistString),
       albumId: albumId == null && nullToAbsent
           ? const Value.absent()
           : Value(albumId),
@@ -1118,8 +1125,6 @@ class Track extends DataClass implements Insertable<Track> {
     return Track(
       id: serializer.fromJson<int>(json['id']),
       creationTime: serializer.fromJson<DateTime>(json['creationTime']),
-      title: serializer.fromJson<String>(json['title']),
-      artistString: serializer.fromJson<String>(json['artistString']),
       trackNumber: serializer.fromJson<int?>(json['trackNumber']),
       diskNumber: serializer.fromJson<int?>(json['diskNumber']),
       duration: serializer.fromJson<int>(json['duration']),
@@ -1127,6 +1132,8 @@ class Track extends DataClass implements Insertable<Track> {
       startTime: serializer.fromJson<int?>(json['startTime']),
       endTime: serializer.fromJson<int?>(json['endTime']),
       rating: serializer.fromJson<double?>(json['rating']),
+      title: serializer.fromJson<String>(json['title']),
+      artistString: serializer.fromJson<String>(json['artistString']),
       albumId: serializer.fromJson<int?>(json['albumId']),
       sourceId: serializer.fromJson<int?>(json['sourceId']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
@@ -1139,8 +1146,6 @@ class Track extends DataClass implements Insertable<Track> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'creationTime': serializer.toJson<DateTime>(creationTime),
-      'title': serializer.toJson<String>(title),
-      'artistString': serializer.toJson<String>(artistString),
       'trackNumber': serializer.toJson<int?>(trackNumber),
       'diskNumber': serializer.toJson<int?>(diskNumber),
       'duration': serializer.toJson<int>(duration),
@@ -1148,6 +1153,8 @@ class Track extends DataClass implements Insertable<Track> {
       'startTime': serializer.toJson<int?>(startTime),
       'endTime': serializer.toJson<int?>(endTime),
       'rating': serializer.toJson<double?>(rating),
+      'title': serializer.toJson<String>(title),
+      'artistString': serializer.toJson<String>(artistString),
       'albumId': serializer.toJson<int?>(albumId),
       'sourceId': serializer.toJson<int?>(sourceId),
       'imagePath': serializer.toJson<String?>(imagePath),
@@ -1158,8 +1165,6 @@ class Track extends DataClass implements Insertable<Track> {
   Track copyWith({
     int? id,
     DateTime? creationTime,
-    String? title,
-    String? artistString,
     Value<int?> trackNumber = const Value.absent(),
     Value<int?> diskNumber = const Value.absent(),
     int? duration,
@@ -1167,6 +1172,8 @@ class Track extends DataClass implements Insertable<Track> {
     Value<int?> startTime = const Value.absent(),
     Value<int?> endTime = const Value.absent(),
     Value<double?> rating = const Value.absent(),
+    String? title,
+    String? artistString,
     Value<int?> albumId = const Value.absent(),
     Value<int?> sourceId = const Value.absent(),
     Value<String?> imagePath = const Value.absent(),
@@ -1174,8 +1181,6 @@ class Track extends DataClass implements Insertable<Track> {
   }) => Track(
     id: id ?? this.id,
     creationTime: creationTime ?? this.creationTime,
-    title: title ?? this.title,
-    artistString: artistString ?? this.artistString,
     trackNumber: trackNumber.present ? trackNumber.value : this.trackNumber,
     diskNumber: diskNumber.present ? diskNumber.value : this.diskNumber,
     duration: duration ?? this.duration,
@@ -1183,6 +1188,8 @@ class Track extends DataClass implements Insertable<Track> {
     startTime: startTime.present ? startTime.value : this.startTime,
     endTime: endTime.present ? endTime.value : this.endTime,
     rating: rating.present ? rating.value : this.rating,
+    title: title ?? this.title,
+    artistString: artistString ?? this.artistString,
     albumId: albumId.present ? albumId.value : this.albumId,
     sourceId: sourceId.present ? sourceId.value : this.sourceId,
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
@@ -1194,10 +1201,6 @@ class Track extends DataClass implements Insertable<Track> {
       creationTime: data.creationTime.present
           ? data.creationTime.value
           : this.creationTime,
-      title: data.title.present ? data.title.value : this.title,
-      artistString: data.artistString.present
-          ? data.artistString.value
-          : this.artistString,
       trackNumber: data.trackNumber.present
           ? data.trackNumber.value
           : this.trackNumber,
@@ -1209,6 +1212,10 @@ class Track extends DataClass implements Insertable<Track> {
       startTime: data.startTime.present ? data.startTime.value : this.startTime,
       endTime: data.endTime.present ? data.endTime.value : this.endTime,
       rating: data.rating.present ? data.rating.value : this.rating,
+      title: data.title.present ? data.title.value : this.title,
+      artistString: data.artistString.present
+          ? data.artistString.value
+          : this.artistString,
       albumId: data.albumId.present ? data.albumId.value : this.albumId,
       sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
       imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
@@ -1223,8 +1230,6 @@ class Track extends DataClass implements Insertable<Track> {
     return (StringBuffer('Track(')
           ..write('id: $id, ')
           ..write('creationTime: $creationTime, ')
-          ..write('title: $title, ')
-          ..write('artistString: $artistString, ')
           ..write('trackNumber: $trackNumber, ')
           ..write('diskNumber: $diskNumber, ')
           ..write('duration: $duration, ')
@@ -1232,6 +1237,8 @@ class Track extends DataClass implements Insertable<Track> {
           ..write('startTime: $startTime, ')
           ..write('endTime: $endTime, ')
           ..write('rating: $rating, ')
+          ..write('title: $title, ')
+          ..write('artistString: $artistString, ')
           ..write('albumId: $albumId, ')
           ..write('sourceId: $sourceId, ')
           ..write('imagePath: $imagePath, ')
@@ -1244,8 +1251,6 @@ class Track extends DataClass implements Insertable<Track> {
   int get hashCode => Object.hash(
     id,
     creationTime,
-    title,
-    artistString,
     trackNumber,
     diskNumber,
     duration,
@@ -1253,6 +1258,8 @@ class Track extends DataClass implements Insertable<Track> {
     startTime,
     endTime,
     rating,
+    title,
+    artistString,
     albumId,
     sourceId,
     imagePath,
@@ -1264,8 +1271,6 @@ class Track extends DataClass implements Insertable<Track> {
       (other is Track &&
           other.id == this.id &&
           other.creationTime == this.creationTime &&
-          other.title == this.title &&
-          other.artistString == this.artistString &&
           other.trackNumber == this.trackNumber &&
           other.diskNumber == this.diskNumber &&
           other.duration == this.duration &&
@@ -1273,6 +1278,8 @@ class Track extends DataClass implements Insertable<Track> {
           other.startTime == this.startTime &&
           other.endTime == this.endTime &&
           other.rating == this.rating &&
+          other.title == this.title &&
+          other.artistString == this.artistString &&
           other.albumId == this.albumId &&
           other.sourceId == this.sourceId &&
           other.imagePath == this.imagePath &&
@@ -1282,8 +1289,6 @@ class Track extends DataClass implements Insertable<Track> {
 class TracksCompanion extends UpdateCompanion<Track> {
   final Value<int> id;
   final Value<DateTime> creationTime;
-  final Value<String> title;
-  final Value<String> artistString;
   final Value<int?> trackNumber;
   final Value<int?> diskNumber;
   final Value<int> duration;
@@ -1291,6 +1296,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
   final Value<int?> startTime;
   final Value<int?> endTime;
   final Value<double?> rating;
+  final Value<String> title;
+  final Value<String> artistString;
   final Value<int?> albumId;
   final Value<int?> sourceId;
   final Value<String?> imagePath;
@@ -1298,8 +1305,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
   const TracksCompanion({
     this.id = const Value.absent(),
     this.creationTime = const Value.absent(),
-    this.title = const Value.absent(),
-    this.artistString = const Value.absent(),
     this.trackNumber = const Value.absent(),
     this.diskNumber = const Value.absent(),
     this.duration = const Value.absent(),
@@ -1307,6 +1312,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
     this.startTime = const Value.absent(),
     this.endTime = const Value.absent(),
     this.rating = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artistString = const Value.absent(),
     this.albumId = const Value.absent(),
     this.sourceId = const Value.absent(),
     this.imagePath = const Value.absent(),
@@ -1315,8 +1322,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
   TracksCompanion.insert({
     this.id = const Value.absent(),
     this.creationTime = const Value.absent(),
-    required String title,
-    required String artistString,
     this.trackNumber = const Value.absent(),
     this.diskNumber = const Value.absent(),
     required int duration,
@@ -1324,19 +1329,19 @@ class TracksCompanion extends UpdateCompanion<Track> {
     this.startTime = const Value.absent(),
     this.endTime = const Value.absent(),
     this.rating = const Value.absent(),
+    required String title,
+    required String artistString,
     this.albumId = const Value.absent(),
     this.sourceId = const Value.absent(),
     this.imagePath = const Value.absent(),
     this.lyricsPath = const Value.absent(),
-  }) : title = Value(title),
-       artistString = Value(artistString),
-       duration = Value(duration),
-       year = Value(year);
+  }) : duration = Value(duration),
+       year = Value(year),
+       title = Value(title),
+       artistString = Value(artistString);
   static Insertable<Track> custom({
     Expression<int>? id,
     Expression<DateTime>? creationTime,
-    Expression<String>? title,
-    Expression<String>? artistString,
     Expression<int>? trackNumber,
     Expression<int>? diskNumber,
     Expression<int>? duration,
@@ -1344,6 +1349,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
     Expression<int>? startTime,
     Expression<int>? endTime,
     Expression<double>? rating,
+    Expression<String>? title,
+    Expression<String>? artistString,
     Expression<int>? albumId,
     Expression<int>? sourceId,
     Expression<String>? imagePath,
@@ -1352,8 +1359,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (creationTime != null) 'creation_time': creationTime,
-      if (title != null) 'title': title,
-      if (artistString != null) 'artist_string': artistString,
       if (trackNumber != null) 'track_number': trackNumber,
       if (diskNumber != null) 'disk_number': diskNumber,
       if (duration != null) 'duration': duration,
@@ -1361,6 +1366,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
       if (startTime != null) 'start_time': startTime,
       if (endTime != null) 'end_time': endTime,
       if (rating != null) 'rating': rating,
+      if (title != null) 'title': title,
+      if (artistString != null) 'artist_string': artistString,
       if (albumId != null) 'album_id': albumId,
       if (sourceId != null) 'source_id': sourceId,
       if (imagePath != null) 'image_path': imagePath,
@@ -1371,8 +1378,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
   TracksCompanion copyWith({
     Value<int>? id,
     Value<DateTime>? creationTime,
-    Value<String>? title,
-    Value<String>? artistString,
     Value<int?>? trackNumber,
     Value<int?>? diskNumber,
     Value<int>? duration,
@@ -1380,6 +1385,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
     Value<int?>? startTime,
     Value<int?>? endTime,
     Value<double?>? rating,
+    Value<String>? title,
+    Value<String>? artistString,
     Value<int?>? albumId,
     Value<int?>? sourceId,
     Value<String?>? imagePath,
@@ -1388,8 +1395,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
     return TracksCompanion(
       id: id ?? this.id,
       creationTime: creationTime ?? this.creationTime,
-      title: title ?? this.title,
-      artistString: artistString ?? this.artistString,
       trackNumber: trackNumber ?? this.trackNumber,
       diskNumber: diskNumber ?? this.diskNumber,
       duration: duration ?? this.duration,
@@ -1397,6 +1402,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       rating: rating ?? this.rating,
+      title: title ?? this.title,
+      artistString: artistString ?? this.artistString,
       albumId: albumId ?? this.albumId,
       sourceId: sourceId ?? this.sourceId,
       imagePath: imagePath ?? this.imagePath,
@@ -1412,12 +1419,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
     }
     if (creationTime.present) {
       map['creation_time'] = Variable<DateTime>(creationTime.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (artistString.present) {
-      map['artist_string'] = Variable<String>(artistString.value);
     }
     if (trackNumber.present) {
       map['track_number'] = Variable<int>(trackNumber.value);
@@ -1440,6 +1441,12 @@ class TracksCompanion extends UpdateCompanion<Track> {
     if (rating.present) {
       map['rating'] = Variable<double>(rating.value);
     }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artistString.present) {
+      map['artist_string'] = Variable<String>(artistString.value);
+    }
     if (albumId.present) {
       map['album_id'] = Variable<int>(albumId.value);
     }
@@ -1460,8 +1467,6 @@ class TracksCompanion extends UpdateCompanion<Track> {
     return (StringBuffer('TracksCompanion(')
           ..write('id: $id, ')
           ..write('creationTime: $creationTime, ')
-          ..write('title: $title, ')
-          ..write('artistString: $artistString, ')
           ..write('trackNumber: $trackNumber, ')
           ..write('diskNumber: $diskNumber, ')
           ..write('duration: $duration, ')
@@ -1469,6 +1474,8 @@ class TracksCompanion extends UpdateCompanion<Track> {
           ..write('startTime: $startTime, ')
           ..write('endTime: $endTime, ')
           ..write('rating: $rating, ')
+          ..write('title: $title, ')
+          ..write('artistString: $artistString, ')
           ..write('albumId: $albumId, ')
           ..write('sourceId: $sourceId, ')
           ..write('imagePath: $imagePath, ')
@@ -2059,6 +2066,54 @@ class $TransitionsTable extends Transitions
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _fadeoutEndMeta = const VerificationMeta(
+    'fadeoutEnd',
+  );
+  @override
+  late final GeneratedColumn<int> fadeoutEnd = GeneratedColumn<int>(
+    'fadeout_end',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(fadeoutEnd).isBiggerOrEqualValue(0),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fadeoutdurationMeta = const VerificationMeta(
+    'fadeoutduration',
+  );
+  @override
+  late final GeneratedColumn<int> fadeoutduration = GeneratedColumn<int>(
+    'fadeoutduration',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(fadeoutduration).isBiggerOrEqualValue(0),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fadeinStartMeta = const VerificationMeta(
+    'fadeinStart',
+  );
+  @override
+  late final GeneratedColumn<int> fadeinStart = GeneratedColumn<int>(
+    'fadein_start',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(fadeinStart).isBiggerOrEqualValue(0),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fadeindurationMeta = const VerificationMeta(
+    'fadeinduration',
+  );
+  @override
+  late final GeneratedColumn<int> fadeinduration = GeneratedColumn<int>(
+    'fadeinduration',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(fadeinduration).isBiggerOrEqualValue(0),
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _trackId1Meta = const VerificationMeta(
     'trackId1',
   );
@@ -2086,50 +2141,6 @@ class $TransitionsTable extends Transitions
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES tracks (id)',
     ),
-  );
-  static const VerificationMeta _fadeoutEndMeta = const VerificationMeta(
-    'fadeoutEnd',
-  );
-  @override
-  late final GeneratedColumn<int> fadeoutEnd = GeneratedColumn<int>(
-    'fadeout_end',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _fadeoutdurationMeta = const VerificationMeta(
-    'fadeoutduration',
-  );
-  @override
-  late final GeneratedColumn<int> fadeoutduration = GeneratedColumn<int>(
-    'fadeoutduration',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _fadeinStartMeta = const VerificationMeta(
-    'fadeinStart',
-  );
-  @override
-  late final GeneratedColumn<int> fadeinStart = GeneratedColumn<int>(
-    'fadein_start',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _fadeindurationMeta = const VerificationMeta(
-    'fadeinduration',
-  );
-  @override
-  late final GeneratedColumn<int> fadeinduration = GeneratedColumn<int>(
-    'fadeinduration',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
   );
   static const VerificationMeta _delayMeta = const VerificationMeta('delay');
   @override
@@ -2165,12 +2176,12 @@ class $TransitionsTable extends Transitions
   List<GeneratedColumn> get $columns => [
     id,
     creationTime,
-    trackId1,
-    trackId2,
     fadeoutEnd,
     fadeoutduration,
     fadeinStart,
     fadeinduration,
+    trackId1,
+    trackId2,
     delay,
     comment,
     type,
@@ -2198,22 +2209,6 @@ class $TransitionsTable extends Transitions
           _creationTimeMeta,
         ),
       );
-    }
-    if (data.containsKey('track_id1')) {
-      context.handle(
-        _trackId1Meta,
-        trackId1.isAcceptableOrUnknown(data['track_id1']!, _trackId1Meta),
-      );
-    } else if (isInserting) {
-      context.missing(_trackId1Meta);
-    }
-    if (data.containsKey('track_id2')) {
-      context.handle(
-        _trackId2Meta,
-        trackId2.isAcceptableOrUnknown(data['track_id2']!, _trackId2Meta),
-      );
-    } else if (isInserting) {
-      context.missing(_trackId2Meta);
     }
     if (data.containsKey('fadeout_end')) {
       context.handle(
@@ -2256,6 +2251,22 @@ class $TransitionsTable extends Transitions
     } else if (isInserting) {
       context.missing(_fadeindurationMeta);
     }
+    if (data.containsKey('track_id1')) {
+      context.handle(
+        _trackId1Meta,
+        trackId1.isAcceptableOrUnknown(data['track_id1']!, _trackId1Meta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackId1Meta);
+    }
+    if (data.containsKey('track_id2')) {
+      context.handle(
+        _trackId2Meta,
+        trackId2.isAcceptableOrUnknown(data['track_id2']!, _trackId2Meta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackId2Meta);
+    }
     if (data.containsKey('delay')) {
       context.handle(
         _delayMeta,
@@ -2285,14 +2296,6 @@ class $TransitionsTable extends Transitions
         DriftSqlType.dateTime,
         data['${effectivePrefix}creation_time'],
       )!,
-      trackId1: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}track_id1'],
-      )!,
-      trackId2: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}track_id2'],
-      )!,
       fadeoutEnd: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}fadeout_end'],
@@ -2308,6 +2311,14 @@ class $TransitionsTable extends Transitions
       fadeinduration: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}fadeinduration'],
+      )!,
+      trackId1: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id1'],
+      )!,
+      trackId2: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_id2'],
       )!,
       delay: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
@@ -2338,24 +2349,24 @@ class $TransitionsTable extends Transitions
 class Transition extends DataClass implements Insertable<Transition> {
   final int id;
   final DateTime creationTime;
-  final int trackId1;
-  final int trackId2;
   final int fadeoutEnd;
   final int fadeoutduration;
   final int fadeinStart;
   final int fadeinduration;
+  final int trackId1;
+  final int trackId2;
   final double delay;
   final String? comment;
   final TransitionType type;
   const Transition({
     required this.id,
     required this.creationTime,
-    required this.trackId1,
-    required this.trackId2,
     required this.fadeoutEnd,
     required this.fadeoutduration,
     required this.fadeinStart,
     required this.fadeinduration,
+    required this.trackId1,
+    required this.trackId2,
     required this.delay,
     this.comment,
     required this.type,
@@ -2365,12 +2376,12 @@ class Transition extends DataClass implements Insertable<Transition> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['creation_time'] = Variable<DateTime>(creationTime);
-    map['track_id1'] = Variable<int>(trackId1);
-    map['track_id2'] = Variable<int>(trackId2);
     map['fadeout_end'] = Variable<int>(fadeoutEnd);
     map['fadeoutduration'] = Variable<int>(fadeoutduration);
     map['fadein_start'] = Variable<int>(fadeinStart);
     map['fadeinduration'] = Variable<int>(fadeinduration);
+    map['track_id1'] = Variable<int>(trackId1);
+    map['track_id2'] = Variable<int>(trackId2);
     map['delay'] = Variable<double>(delay);
     if (!nullToAbsent || comment != null) {
       map['comment'] = Variable<String>(comment);
@@ -2385,12 +2396,12 @@ class Transition extends DataClass implements Insertable<Transition> {
     return TransitionsCompanion(
       id: Value(id),
       creationTime: Value(creationTime),
-      trackId1: Value(trackId1),
-      trackId2: Value(trackId2),
       fadeoutEnd: Value(fadeoutEnd),
       fadeoutduration: Value(fadeoutduration),
       fadeinStart: Value(fadeinStart),
       fadeinduration: Value(fadeinduration),
+      trackId1: Value(trackId1),
+      trackId2: Value(trackId2),
       delay: Value(delay),
       comment: comment == null && nullToAbsent
           ? const Value.absent()
@@ -2407,12 +2418,12 @@ class Transition extends DataClass implements Insertable<Transition> {
     return Transition(
       id: serializer.fromJson<int>(json['id']),
       creationTime: serializer.fromJson<DateTime>(json['creationTime']),
-      trackId1: serializer.fromJson<int>(json['trackId1']),
-      trackId2: serializer.fromJson<int>(json['trackId2']),
       fadeoutEnd: serializer.fromJson<int>(json['fadeoutEnd']),
       fadeoutduration: serializer.fromJson<int>(json['fadeoutduration']),
       fadeinStart: serializer.fromJson<int>(json['fadeinStart']),
       fadeinduration: serializer.fromJson<int>(json['fadeinduration']),
+      trackId1: serializer.fromJson<int>(json['trackId1']),
+      trackId2: serializer.fromJson<int>(json['trackId2']),
       delay: serializer.fromJson<double>(json['delay']),
       comment: serializer.fromJson<String?>(json['comment']),
       type: $TransitionsTable.$convertertype.fromJson(
@@ -2426,12 +2437,12 @@ class Transition extends DataClass implements Insertable<Transition> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'creationTime': serializer.toJson<DateTime>(creationTime),
-      'trackId1': serializer.toJson<int>(trackId1),
-      'trackId2': serializer.toJson<int>(trackId2),
       'fadeoutEnd': serializer.toJson<int>(fadeoutEnd),
       'fadeoutduration': serializer.toJson<int>(fadeoutduration),
       'fadeinStart': serializer.toJson<int>(fadeinStart),
       'fadeinduration': serializer.toJson<int>(fadeinduration),
+      'trackId1': serializer.toJson<int>(trackId1),
+      'trackId2': serializer.toJson<int>(trackId2),
       'delay': serializer.toJson<double>(delay),
       'comment': serializer.toJson<String?>(comment),
       'type': serializer.toJson<int>(
@@ -2443,24 +2454,24 @@ class Transition extends DataClass implements Insertable<Transition> {
   Transition copyWith({
     int? id,
     DateTime? creationTime,
-    int? trackId1,
-    int? trackId2,
     int? fadeoutEnd,
     int? fadeoutduration,
     int? fadeinStart,
     int? fadeinduration,
+    int? trackId1,
+    int? trackId2,
     double? delay,
     Value<String?> comment = const Value.absent(),
     TransitionType? type,
   }) => Transition(
     id: id ?? this.id,
     creationTime: creationTime ?? this.creationTime,
-    trackId1: trackId1 ?? this.trackId1,
-    trackId2: trackId2 ?? this.trackId2,
     fadeoutEnd: fadeoutEnd ?? this.fadeoutEnd,
     fadeoutduration: fadeoutduration ?? this.fadeoutduration,
     fadeinStart: fadeinStart ?? this.fadeinStart,
     fadeinduration: fadeinduration ?? this.fadeinduration,
+    trackId1: trackId1 ?? this.trackId1,
+    trackId2: trackId2 ?? this.trackId2,
     delay: delay ?? this.delay,
     comment: comment.present ? comment.value : this.comment,
     type: type ?? this.type,
@@ -2471,8 +2482,6 @@ class Transition extends DataClass implements Insertable<Transition> {
       creationTime: data.creationTime.present
           ? data.creationTime.value
           : this.creationTime,
-      trackId1: data.trackId1.present ? data.trackId1.value : this.trackId1,
-      trackId2: data.trackId2.present ? data.trackId2.value : this.trackId2,
       fadeoutEnd: data.fadeoutEnd.present
           ? data.fadeoutEnd.value
           : this.fadeoutEnd,
@@ -2485,6 +2494,8 @@ class Transition extends DataClass implements Insertable<Transition> {
       fadeinduration: data.fadeinduration.present
           ? data.fadeinduration.value
           : this.fadeinduration,
+      trackId1: data.trackId1.present ? data.trackId1.value : this.trackId1,
+      trackId2: data.trackId2.present ? data.trackId2.value : this.trackId2,
       delay: data.delay.present ? data.delay.value : this.delay,
       comment: data.comment.present ? data.comment.value : this.comment,
       type: data.type.present ? data.type.value : this.type,
@@ -2496,12 +2507,12 @@ class Transition extends DataClass implements Insertable<Transition> {
     return (StringBuffer('Transition(')
           ..write('id: $id, ')
           ..write('creationTime: $creationTime, ')
-          ..write('trackId1: $trackId1, ')
-          ..write('trackId2: $trackId2, ')
           ..write('fadeoutEnd: $fadeoutEnd, ')
           ..write('fadeoutduration: $fadeoutduration, ')
           ..write('fadeinStart: $fadeinStart, ')
           ..write('fadeinduration: $fadeinduration, ')
+          ..write('trackId1: $trackId1, ')
+          ..write('trackId2: $trackId2, ')
           ..write('delay: $delay, ')
           ..write('comment: $comment, ')
           ..write('type: $type')
@@ -2513,12 +2524,12 @@ class Transition extends DataClass implements Insertable<Transition> {
   int get hashCode => Object.hash(
     id,
     creationTime,
-    trackId1,
-    trackId2,
     fadeoutEnd,
     fadeoutduration,
     fadeinStart,
     fadeinduration,
+    trackId1,
+    trackId2,
     delay,
     comment,
     type,
@@ -2529,12 +2540,12 @@ class Transition extends DataClass implements Insertable<Transition> {
       (other is Transition &&
           other.id == this.id &&
           other.creationTime == this.creationTime &&
-          other.trackId1 == this.trackId1 &&
-          other.trackId2 == this.trackId2 &&
           other.fadeoutEnd == this.fadeoutEnd &&
           other.fadeoutduration == this.fadeoutduration &&
           other.fadeinStart == this.fadeinStart &&
           other.fadeinduration == this.fadeinduration &&
+          other.trackId1 == this.trackId1 &&
+          other.trackId2 == this.trackId2 &&
           other.delay == this.delay &&
           other.comment == this.comment &&
           other.type == this.type);
@@ -2543,24 +2554,24 @@ class Transition extends DataClass implements Insertable<Transition> {
 class TransitionsCompanion extends UpdateCompanion<Transition> {
   final Value<int> id;
   final Value<DateTime> creationTime;
-  final Value<int> trackId1;
-  final Value<int> trackId2;
   final Value<int> fadeoutEnd;
   final Value<int> fadeoutduration;
   final Value<int> fadeinStart;
   final Value<int> fadeinduration;
+  final Value<int> trackId1;
+  final Value<int> trackId2;
   final Value<double> delay;
   final Value<String?> comment;
   final Value<TransitionType> type;
   const TransitionsCompanion({
     this.id = const Value.absent(),
     this.creationTime = const Value.absent(),
-    this.trackId1 = const Value.absent(),
-    this.trackId2 = const Value.absent(),
     this.fadeoutEnd = const Value.absent(),
     this.fadeoutduration = const Value.absent(),
     this.fadeinStart = const Value.absent(),
     this.fadeinduration = const Value.absent(),
+    this.trackId1 = const Value.absent(),
+    this.trackId2 = const Value.absent(),
     this.delay = const Value.absent(),
     this.comment = const Value.absent(),
     this.type = const Value.absent(),
@@ -2568,31 +2579,31 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
   TransitionsCompanion.insert({
     this.id = const Value.absent(),
     this.creationTime = const Value.absent(),
-    required int trackId1,
-    required int trackId2,
     required int fadeoutEnd,
     required int fadeoutduration,
     required int fadeinStart,
     required int fadeinduration,
+    required int trackId1,
+    required int trackId2,
     this.delay = const Value.absent(),
     this.comment = const Value.absent(),
     required TransitionType type,
-  }) : trackId1 = Value(trackId1),
-       trackId2 = Value(trackId2),
-       fadeoutEnd = Value(fadeoutEnd),
+  }) : fadeoutEnd = Value(fadeoutEnd),
        fadeoutduration = Value(fadeoutduration),
        fadeinStart = Value(fadeinStart),
        fadeinduration = Value(fadeinduration),
+       trackId1 = Value(trackId1),
+       trackId2 = Value(trackId2),
        type = Value(type);
   static Insertable<Transition> custom({
     Expression<int>? id,
     Expression<DateTime>? creationTime,
-    Expression<int>? trackId1,
-    Expression<int>? trackId2,
     Expression<int>? fadeoutEnd,
     Expression<int>? fadeoutduration,
     Expression<int>? fadeinStart,
     Expression<int>? fadeinduration,
+    Expression<int>? trackId1,
+    Expression<int>? trackId2,
     Expression<double>? delay,
     Expression<String>? comment,
     Expression<int>? type,
@@ -2600,12 +2611,12 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (creationTime != null) 'creation_time': creationTime,
-      if (trackId1 != null) 'track_id1': trackId1,
-      if (trackId2 != null) 'track_id2': trackId2,
       if (fadeoutEnd != null) 'fadeout_end': fadeoutEnd,
       if (fadeoutduration != null) 'fadeoutduration': fadeoutduration,
       if (fadeinStart != null) 'fadein_start': fadeinStart,
       if (fadeinduration != null) 'fadeinduration': fadeinduration,
+      if (trackId1 != null) 'track_id1': trackId1,
+      if (trackId2 != null) 'track_id2': trackId2,
       if (delay != null) 'delay': delay,
       if (comment != null) 'comment': comment,
       if (type != null) 'type': type,
@@ -2615,12 +2626,12 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
   TransitionsCompanion copyWith({
     Value<int>? id,
     Value<DateTime>? creationTime,
-    Value<int>? trackId1,
-    Value<int>? trackId2,
     Value<int>? fadeoutEnd,
     Value<int>? fadeoutduration,
     Value<int>? fadeinStart,
     Value<int>? fadeinduration,
+    Value<int>? trackId1,
+    Value<int>? trackId2,
     Value<double>? delay,
     Value<String?>? comment,
     Value<TransitionType>? type,
@@ -2628,12 +2639,12 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     return TransitionsCompanion(
       id: id ?? this.id,
       creationTime: creationTime ?? this.creationTime,
-      trackId1: trackId1 ?? this.trackId1,
-      trackId2: trackId2 ?? this.trackId2,
       fadeoutEnd: fadeoutEnd ?? this.fadeoutEnd,
       fadeoutduration: fadeoutduration ?? this.fadeoutduration,
       fadeinStart: fadeinStart ?? this.fadeinStart,
       fadeinduration: fadeinduration ?? this.fadeinduration,
+      trackId1: trackId1 ?? this.trackId1,
+      trackId2: trackId2 ?? this.trackId2,
       delay: delay ?? this.delay,
       comment: comment ?? this.comment,
       type: type ?? this.type,
@@ -2649,12 +2660,6 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     if (creationTime.present) {
       map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
-    if (trackId1.present) {
-      map['track_id1'] = Variable<int>(trackId1.value);
-    }
-    if (trackId2.present) {
-      map['track_id2'] = Variable<int>(trackId2.value);
-    }
     if (fadeoutEnd.present) {
       map['fadeout_end'] = Variable<int>(fadeoutEnd.value);
     }
@@ -2666,6 +2671,12 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     }
     if (fadeinduration.present) {
       map['fadeinduration'] = Variable<int>(fadeinduration.value);
+    }
+    if (trackId1.present) {
+      map['track_id1'] = Variable<int>(trackId1.value);
+    }
+    if (trackId2.present) {
+      map['track_id2'] = Variable<int>(trackId2.value);
     }
     if (delay.present) {
       map['delay'] = Variable<double>(delay.value);
@@ -2686,12 +2697,12 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     return (StringBuffer('TransitionsCompanion(')
           ..write('id: $id, ')
           ..write('creationTime: $creationTime, ')
-          ..write('trackId1: $trackId1, ')
-          ..write('trackId2: $trackId2, ')
           ..write('fadeoutEnd: $fadeoutEnd, ')
           ..write('fadeoutduration: $fadeoutduration, ')
           ..write('fadeinStart: $fadeinStart, ')
           ..write('fadeinduration: $fadeinduration, ')
+          ..write('trackId1: $trackId1, ')
+          ..write('trackId2: $trackId2, ')
           ..write('delay: $delay, ')
           ..write('comment: $comment, ')
           ..write('type: $type')
@@ -5480,8 +5491,6 @@ typedef $$TracksTableCreateCompanionBuilder =
     TracksCompanion Function({
       Value<int> id,
       Value<DateTime> creationTime,
-      required String title,
-      required String artistString,
       Value<int?> trackNumber,
       Value<int?> diskNumber,
       required int duration,
@@ -5489,6 +5498,8 @@ typedef $$TracksTableCreateCompanionBuilder =
       Value<int?> startTime,
       Value<int?> endTime,
       Value<double?> rating,
+      required String title,
+      required String artistString,
       Value<int?> albumId,
       Value<int?> sourceId,
       Value<String?> imagePath,
@@ -5498,8 +5509,6 @@ typedef $$TracksTableUpdateCompanionBuilder =
     TracksCompanion Function({
       Value<int> id,
       Value<DateTime> creationTime,
-      Value<String> title,
-      Value<String> artistString,
       Value<int?> trackNumber,
       Value<int?> diskNumber,
       Value<int> duration,
@@ -5507,6 +5516,8 @@ typedef $$TracksTableUpdateCompanionBuilder =
       Value<int?> startTime,
       Value<int?> endTime,
       Value<double?> rating,
+      Value<String> title,
+      Value<String> artistString,
       Value<int?> albumId,
       Value<int?> sourceId,
       Value<String?> imagePath,
@@ -5736,16 +5747,6 @@ class $$TracksTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get artistString => $composableBuilder(
-    column: $table.artistString,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get trackNumber => $composableBuilder(
     column: $table.trackNumber,
     builder: (column) => ColumnFilters(column),
@@ -5778,6 +5779,16 @@ class $$TracksTableFilterComposer
 
   ColumnFilters<double> get rating => $composableBuilder(
     column: $table.rating,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get artistString => $composableBuilder(
+    column: $table.artistString,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6082,16 +6093,6 @@ class $$TracksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get artistString => $composableBuilder(
-    column: $table.artistString,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get trackNumber => $composableBuilder(
     column: $table.trackNumber,
     builder: (column) => ColumnOrderings(column),
@@ -6124,6 +6125,16 @@ class $$TracksTableOrderingComposer
 
   ColumnOrderings<double> get rating => $composableBuilder(
     column: $table.rating,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get artistString => $composableBuilder(
+    column: $table.artistString,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -6201,14 +6212,6 @@ class $$TracksTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
-
-  GeneratedColumn<String> get artistString => $composableBuilder(
-    column: $table.artistString,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get trackNumber => $composableBuilder(
     column: $table.trackNumber,
     builder: (column) => column,
@@ -6233,6 +6236,14 @@ class $$TracksTableAnnotationComposer
 
   GeneratedColumn<double> get rating =>
       $composableBuilder(column: $table.rating, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get artistString => $composableBuilder(
+    column: $table.artistString,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get imagePath =>
       $composableBuilder(column: $table.imagePath, builder: (column) => column);
@@ -6556,8 +6567,6 @@ class $$TracksTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<DateTime> creationTime = const Value.absent(),
-                Value<String> title = const Value.absent(),
-                Value<String> artistString = const Value.absent(),
                 Value<int?> trackNumber = const Value.absent(),
                 Value<int?> diskNumber = const Value.absent(),
                 Value<int> duration = const Value.absent(),
@@ -6565,6 +6574,8 @@ class $$TracksTableTableManager
                 Value<int?> startTime = const Value.absent(),
                 Value<int?> endTime = const Value.absent(),
                 Value<double?> rating = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> artistString = const Value.absent(),
                 Value<int?> albumId = const Value.absent(),
                 Value<int?> sourceId = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
@@ -6572,8 +6583,6 @@ class $$TracksTableTableManager
               }) => TracksCompanion(
                 id: id,
                 creationTime: creationTime,
-                title: title,
-                artistString: artistString,
                 trackNumber: trackNumber,
                 diskNumber: diskNumber,
                 duration: duration,
@@ -6581,6 +6590,8 @@ class $$TracksTableTableManager
                 startTime: startTime,
                 endTime: endTime,
                 rating: rating,
+                title: title,
+                artistString: artistString,
                 albumId: albumId,
                 sourceId: sourceId,
                 imagePath: imagePath,
@@ -6590,8 +6601,6 @@ class $$TracksTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<DateTime> creationTime = const Value.absent(),
-                required String title,
-                required String artistString,
                 Value<int?> trackNumber = const Value.absent(),
                 Value<int?> diskNumber = const Value.absent(),
                 required int duration,
@@ -6599,6 +6608,8 @@ class $$TracksTableTableManager
                 Value<int?> startTime = const Value.absent(),
                 Value<int?> endTime = const Value.absent(),
                 Value<double?> rating = const Value.absent(),
+                required String title,
+                required String artistString,
                 Value<int?> albumId = const Value.absent(),
                 Value<int?> sourceId = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
@@ -6606,8 +6617,6 @@ class $$TracksTableTableManager
               }) => TracksCompanion.insert(
                 id: id,
                 creationTime: creationTime,
-                title: title,
-                artistString: artistString,
                 trackNumber: trackNumber,
                 diskNumber: diskNumber,
                 duration: duration,
@@ -6615,6 +6624,8 @@ class $$TracksTableTableManager
                 startTime: startTime,
                 endTime: endTime,
                 rating: rating,
+                title: title,
+                artistString: artistString,
                 albumId: albumId,
                 sourceId: sourceId,
                 imagePath: imagePath,
@@ -7463,12 +7474,12 @@ typedef $$TransitionsTableCreateCompanionBuilder =
     TransitionsCompanion Function({
       Value<int> id,
       Value<DateTime> creationTime,
-      required int trackId1,
-      required int trackId2,
       required int fadeoutEnd,
       required int fadeoutduration,
       required int fadeinStart,
       required int fadeinduration,
+      required int trackId1,
+      required int trackId2,
       Value<double> delay,
       Value<String?> comment,
       required TransitionType type,
@@ -7477,12 +7488,12 @@ typedef $$TransitionsTableUpdateCompanionBuilder =
     TransitionsCompanion Function({
       Value<int> id,
       Value<DateTime> creationTime,
-      Value<int> trackId1,
-      Value<int> trackId2,
       Value<int> fadeoutEnd,
       Value<int> fadeoutduration,
       Value<int> fadeinStart,
       Value<int> fadeinduration,
+      Value<int> trackId1,
+      Value<int> trackId2,
       Value<double> delay,
       Value<String?> comment,
       Value<TransitionType> type,
@@ -7855,24 +7866,24 @@ class $$TransitionsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<DateTime> creationTime = const Value.absent(),
-                Value<int> trackId1 = const Value.absent(),
-                Value<int> trackId2 = const Value.absent(),
                 Value<int> fadeoutEnd = const Value.absent(),
                 Value<int> fadeoutduration = const Value.absent(),
                 Value<int> fadeinStart = const Value.absent(),
                 Value<int> fadeinduration = const Value.absent(),
+                Value<int> trackId1 = const Value.absent(),
+                Value<int> trackId2 = const Value.absent(),
                 Value<double> delay = const Value.absent(),
                 Value<String?> comment = const Value.absent(),
                 Value<TransitionType> type = const Value.absent(),
               }) => TransitionsCompanion(
                 id: id,
                 creationTime: creationTime,
-                trackId1: trackId1,
-                trackId2: trackId2,
                 fadeoutEnd: fadeoutEnd,
                 fadeoutduration: fadeoutduration,
                 fadeinStart: fadeinStart,
                 fadeinduration: fadeinduration,
+                trackId1: trackId1,
+                trackId2: trackId2,
                 delay: delay,
                 comment: comment,
                 type: type,
@@ -7881,24 +7892,24 @@ class $$TransitionsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<DateTime> creationTime = const Value.absent(),
-                required int trackId1,
-                required int trackId2,
                 required int fadeoutEnd,
                 required int fadeoutduration,
                 required int fadeinStart,
                 required int fadeinduration,
+                required int trackId1,
+                required int trackId2,
                 Value<double> delay = const Value.absent(),
                 Value<String?> comment = const Value.absent(),
                 required TransitionType type,
               }) => TransitionsCompanion.insert(
                 id: id,
                 creationTime: creationTime,
-                trackId1: trackId1,
-                trackId2: trackId2,
                 fadeoutEnd: fadeoutEnd,
                 fadeoutduration: fadeoutduration,
                 fadeinStart: fadeinStart,
                 fadeinduration: fadeinduration,
+                trackId1: trackId1,
+                trackId2: trackId2,
                 delay: delay,
                 comment: comment,
                 type: type,
