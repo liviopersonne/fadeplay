@@ -66,9 +66,11 @@ class FullMusicPlayer {
       (i0, i1) => (i0, i1),
     );
 
-    _playerIndicesSubscription = newCurrentIndexStream.listen((newIndices) {
+    _playerIndicesSubscription = newCurrentIndexStream.listen((
+      newIndices,
+    ) async {
       final (i0, i1) = newIndices;
-      _onNewIndex(i0, i1);
+      await _onNewIndex(i0, i1);
     });
   }
 
@@ -108,7 +110,10 @@ class FullMusicPlayer {
   }
 
   /// Actions to do when the player's index changes
-  void _onNewIndex(int? i0, int? i1) {
+  Future<void> _onNewIndex(int? i0, int? i1) async {
+    final wasPlaying = playing;
+    logger.log("onNewIndex called with playing=$wasPlaying");
+
     final oldIndex = index;
     index = switch ((i0, i1)) {
       (null, null) => null,
@@ -119,6 +124,11 @@ class FullMusicPlayer {
     };
     logger.debug("New player index $index");
     if (index != null && oldIndex != null) _switchActivePlayer();
+
+    if (wasPlaying) {
+      logger.log("Reactivating the player");
+      await _getActivePlayer().play();
+    }
   }
 
   /// Activates the more precise but ressource intensive stream
@@ -165,12 +175,9 @@ class FullMusicPlayer {
   }
 
   /// Goes to next music without any transition
+  /// This command automatically switches the active and inactive players with the `_onNewIndex` function
   Future<void> next() async {
-    final wasPlaying = playing;
-    logger.debug("Calling next with playing: $wasPlaying or $playing");
-    await _getActivePlayer().pause();
     await _getActivePlayer().next();
-    if (wasPlaying) await _getActivePlayer().play();
   }
 
   /// Seeks a specific point in the current player
