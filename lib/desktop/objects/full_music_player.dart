@@ -7,6 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 /* FIXME:
+  - [ ] Single player reaching the end of the song automatically / manually
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
   - [ ] Changing active player at start of transition (in case of pause)

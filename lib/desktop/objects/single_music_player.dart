@@ -8,16 +8,15 @@ import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:media_kit/media_kit.dart' as media_kit;
 import 'package:just_audio/just_audio.dart';
 
-/* TODO:
-  - [ ] Single player reaching the end of the song automatically
-*/
-
 final logger = Logging("SingleMusicPlayer");
 
-/// A music player with a single AudioPlayer than can fade in and out
+/// A music player with a single AudioPlayer than can fade in and out.
+/// This player auto pauses when the track is changed, either manually or automatically
 class SingleMusicPlayer {
   static var _initialized = false;
   final player = AudioPlayer();
+  StreamSubscription? _pauseOnNewTrackSubscription;
+  int? _currentIndex;
 
   /// Whether the player is playing
   var playing = false;
@@ -51,14 +50,28 @@ class SingleMusicPlayer {
   SingleMusicPlayer() {
     logger.debug("Insianciating a new SingleMusicPlayer");
     if (!_initialized) initialize();
+
     precisePositionStream = player.createPositionStream(
       minPeriod: Settings.bestTransitionPrecision,
       maxPeriod: Settings.worstTransitionPrecision,
     );
+
+    _pauseOnNewTrackSubscription = player.currentIndexStream.listen((
+      newIndex,
+    ) async {
+      if (newIndex != null && newIndex != _currentIndex) {
+        _currentIndex = newIndex;
+        await player.pause();
+        await player.seek(Duration.zero);
+        logger.log("New track just started, auto paused player");
+      }
+    });
   }
 
   /// Dispose the player when you're done using it
   Future<void> dispose() async {
+    _pauseOnNewTrackSubscription?.cancel();
+    _pauseOnNewTrackSubscription = null;
     await player.dispose();
     logger.debug("Disposed a SingleMusicPlayer");
   }

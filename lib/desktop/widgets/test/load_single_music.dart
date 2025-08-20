@@ -8,13 +8,23 @@ import 'package:just_audio/just_audio.dart';
 class TestLoadSingleMusicWidget extends StatelessWidget {
   const TestLoadSingleMusicWidget({super.key});
 
+  final music1 =
+      "/home/livio/Musique/Musique/Songs/Super Mario Odyssey/SUPER MARIO ODYSSEY ORIGINAL SOUND TRACK/Steam Gardens.mp3";
+  // Lasts 3:35
+  final music2 =
+      "/home/livio/Musique/Musique/Songs/Toby Fox/UNDERTALE Soundtrack/Spider Dance.mp3";
+  final music3 =
+      "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/Chocobo Racing Theme.mp3";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
           // future: loadMusic(),
-          future: loadPlaylist(),
+          // future: loadPlaylist(),
+          // future: testAutoReachEnd(),
+          future: testManualReachEnd(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -31,9 +41,6 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
   }
 
   Future<String> loadMusic() async {
-    final music1 =
-        "/home/livio/Musique/Musique/Songs/Super Mario Odyssey/SUPER MARIO ODYSSEY ORIGINAL SOUND TRACK/Steam Gardens.mp3";
-
     var content = "";
 
     final myPlayer = SingleMusicPlayer();
@@ -55,13 +62,6 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
   }
 
   Future<String> loadPlaylist() async {
-    final music1 =
-        "/home/livio/Musique/Musique/Songs/Super Mario Odyssey/SUPER MARIO ODYSSEY ORIGINAL SOUND TRACK/Steam Gardens.mp3";
-    final music2 =
-        "/home/livio/Musique/Musique/Songs/Toby Fox/UNDERTALE Soundtrack/Spider Dance.mp3";
-    final music3 =
-        "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/Chocobo Racing Theme.mp3";
-
     final fileList = [music1, music2, music3];
     final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
 
@@ -90,5 +90,50 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
     }
 
     return content;
+  }
+
+  Future<String> testAutoReachEnd() async {
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    final myPlayer = SingleMusicPlayer();
+
+    final loaded = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (loaded) {
+      await myPlayer.play();
+      await myPlayer.player.seek(Duration(seconds: 210));
+      await Future.delayed(Duration(seconds: 10));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 4));
+      await myPlayer.dispose();
+    }
+
+    return "Loaded song";
+  }
+
+  Future<String> testManualReachEnd() async {
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    final myPlayer = SingleMusicPlayer();
+
+    final loaded = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (loaded) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.next();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 4));
+      await myPlayer.dispose();
+    }
+
+    return "Loaded song";
   }
 }
