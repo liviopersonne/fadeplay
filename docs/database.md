@@ -94,6 +94,10 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 - ? Comment
 - Type (enuma that tells if the transition was created manually or for a mix)
 
+### Mixes
+
+<!-- TODO: Add mixes to database -->
+
 ### Real enums
 
 - TransitionType
@@ -130,3 +134,7 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 ## Other data
 
 Lyrics: Will be stored somewhere in the filepath
+
+<!-- TODO: Correctly delete files associated with objects when they are deleted (mainly images) -->
+
+<!-- TODO: Fix Musicbee bug that happens when you set album covers before putting the tracks in their respective folders, and every track gets the same cover -->

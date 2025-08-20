@@ -8,6 +8,10 @@ import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:media_kit/media_kit.dart' as media_kit;
 import 'package:just_audio/just_audio.dart';
 
+/* TODO:
+  - [ ] Single player reaching the end of the song automatically
+*/
+
 final logger = Logging("SingleMusicPlayer");
 
 /// A music player with a single AudioPlayer than can fade in and out

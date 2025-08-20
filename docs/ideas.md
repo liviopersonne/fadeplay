@@ -8,29 +8,59 @@
 
 - [ ] Show lyrics if there are some available
 
-- [ ] Store muic with: title (og & EN), artists (og & EN), album, cover, note, humeurs, instruments, language, source, date of creation, date of importation
+- [x] Store muic with: title (og & EN), artists (og & EN), album, cover, note, humeurs, instruments, language, source, date of creation, date of importation
+
+- [ ] Track enters a special "error" state when discrepency is found (wrong filepath, wrong metadata)
 
 - [ ] Check out albums with one click (with downloaded and non downloaded music)
 
 - [ ] Check out other music by the same artist
 
+- [ ] Check accepted audio formats
+
 ## TRANSITIONS AND MIXES
 
-- [ ] Create music transitions with: track1, track2, startFadeOut, endFadeOut, startFadeIn, endFadeIn
+- [x] Create music transitions with: track1, track2, startFadeOut, endFadeOut, startFadeIn, endFadeIn
 
-- [ ] The fadeIn values are a timestamp of track2
+- [x] The fadeIn values are a timestamp of track2
 
-- [ ] The fadeOut values are a timestamp of track1, counting in reverse from the end (-10.0 is 10 seconds before the end)
+- [x] The fadeOut values are a timestamp of track1, counting in reverse from the end (-10.0 is 10 seconds before the end)
+
+- [ ] Rate transitions from 1 to 3 ?
 
 - [ ] Have a cool visualizer for the transitions
+
+- [ ] Have a cool visualizer for creating transitions (premiere pro like ??)
 
 - [ ] Create mixes by selecting multiple transitions that flow into eachother, you can also directly select music and that will create a new transitions
 
 - [ ] Have an option to export these mixes
 
+- [ ] Create a video output for the mixes, this can be
+
+  - [ ] One image
+
+  - [ ] One image per track
+
+  - [ ] Short animated videos
+
+- The video can generate generate:
+
+  - [ ] Layer animation effects on top (motivation max)
+
+  - [ ] Track info (title, artist...)
+
+  - [ ] Progressbar of the track
+
+  - [ ] A list of music like a music player
+
+  - [ ] The youtube chapters
+
 ## MUSIC ANALYSIS
 
 - [ ] Automatically trim music with beginning and end of sound, with an option to modify that manually (be careful of existing transitions when doing that)
+
+- [ ] Have a cool interface to trim music with the soundwave form (premiere pro like ?)
 
 - [ ] Normalize volume
 
@@ -46,13 +76,19 @@
 
 - [ ] Export modifications to musicbee db
 
-- [ ] Import music infos from ytb music / musicbrainz / soundcloud / vgmdb
+- [ ] Import track / artist / album infos from ytb / ytb music / musicbrainz / soundcloud / vgmdb / vgm
 
 - [ ] Import lyrics info from genius / others ??
 
 - [ ] Download music directly from ytb / ytb music / soundcloud / vgm site
 
 - [ ] Check out music mixes in ytb, download a section with a chapter or by using custom timestamps
+
+- [ ] Have downloaded and streamed music coexist
+
+- [ ] Erase a downloaded music but keep it streamed
+
+- [ ] Add music to streamed with extra verifications (unique (title, artist) pair)
 
 ## AUTODJ
 

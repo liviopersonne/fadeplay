@@ -4,6 +4,8 @@ import 'enum_tables.dart';
 import 'data_tables.dart';
 import 'enums.dart';
 
+// TODO: Add indexes on each column for faster searching
+
 class TrackMoods extends Table with TrackId {
   IntColumn get moodId => integer().references(
     Moods,
