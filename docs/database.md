@@ -24,6 +24,7 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 ### Tracks
 
 - All metadata except
+  - ? added original title (for translations)
   - ? salbum becomes an id
   - artist becomes
     - artistString (for representation)
@@ -68,8 +69,16 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 
 - Id
 - Name
-- Image path
+- ? Image path
+- ? containingFolderId (id of the folder in which this playlist is contained)
 - Id of corresponding tracks (many to many)
+
+### PlaylistFolder
+
+- Id
+- Name
+- ? Image path
+- ? containingFolderId
 
 ### Transitions
 

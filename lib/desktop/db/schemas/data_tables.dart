@@ -5,6 +5,7 @@ import 'checks.dart';
 
 class Tracks extends Table with DateAndId {
   TextColumn get title => text()();
+  TextColumn get originalTitle => text().nullable()();
   TextColumn get filePath => text().unique()();
   TextColumn get artistString => text()();
   late final IntColumn trackNumber = integer().nullable().check(
@@ -25,8 +26,8 @@ class Tracks extends Table with DateAndId {
   late final IntColumn endTime = integer().nullable().check(
     clipTimeCondition(endTime, duration),
   )();
-  late final RealColumn rating = real().nullable().check(
-    ratingCondition(rating),
+  late final IntColumn rating = integer().nullable().check(
+    rating.isBetweenValues(0, 10),
   )();
   IntColumn get albumId => integer().nullable().references(
     Albums,
@@ -65,6 +66,25 @@ class Sources extends Table with Id {
 class Playlists extends Table with Id {
   TextColumn get name => text()();
   TextColumn get imagePath => text().nullable()();
+  IntColumn get containingFolderId => integer().nullable().references(
+    PlaylistFolder,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction
+        .cascade, // NOTE: If a playlist group is deleted, all its contained playlists are also deleted
+  )();
+}
+
+// TODO: Always check that there isn't a circular dependancy
+class PlaylistFolder extends Table with Id {
+  TextColumn get name => text()();
+  TextColumn get imagePath => text().nullable()();
+  IntColumn get containingFolderId => integer().nullable().references(
+    PlaylistFolder,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
 }
 
 class Transitions extends Table with DateAndId {
