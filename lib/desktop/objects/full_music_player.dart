@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 /* FIXME:
   - [x] Single player reaching the end of the song manually
   - [x] Manual next
-  - [ ] Auto next
+  - [x] Auto next
   - [ ] Manual prev
   - [ ] Auto prev
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
@@ -26,6 +26,7 @@ import 'package:rxdart/rxdart.dart';
   - [ ] Deal with crossFadeNext at the end of the playlist
   - [ ] Deal with prev at the start of the playist
   - [ ] Deal with loading a playlist at it's last index
+  - [ ] Deal with reaching the last index of a playlist
   - [ ] Check if exactly one player has a null index
 */
 
