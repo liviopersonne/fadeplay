@@ -25,8 +25,8 @@ class SingleMusicPlayer {
   late final Stream<Duration> precisePositionStream;
 
   /// A stream that sends the new values of `_currentIndex`
-  late final Stream<int> newCurrentIndexStream;
-  late final StreamController<int> _newIndexController;
+  late final Stream<int?> newCurrentIndexStream;
+  late final StreamController<int?> _newIndexController;
 
   /// Setup platform specific settings
   static void initialize() {
@@ -60,21 +60,22 @@ class SingleMusicPlayer {
       maxPeriod: Settings.worstTransitionPrecision,
     );
 
-    _newIndexController = StreamController<int>.broadcast();
+    _newIndexController = StreamController<int?>.broadcast();
     newCurrentIndexStream = _newIndexController.stream;
 
     _pauseOnNewTrackSubscription = player.currentIndexStream.listen((
       newIndex,
     ) async {
-      if (newIndex != null && newIndex != _currentIndex) {
-        _currentIndex = newIndex;
-
+      if (newIndex != _currentIndex) {
         // Emit new value to newCurrentIndexStream
         _newIndexController.add(newIndex);
+        _currentIndex = newIndex;
 
-        await player.pause();
-        await player.seek(Duration.zero);
-        logger.debug("New track just started, auto paused player");
+        if (newIndex != null) {
+          await player.pause();
+          await player.seek(Duration.zero);
+          logger.debug("New track just started, auto paused player");
+        }
       }
     });
   }

@@ -12,19 +12,19 @@ void desktopMain() {
   WidgetsFlutterBinding.ensureInitialized();
   SingleMusicPlayer.initialize();
   final database = AppDatabase();
-  database
-      .into(database.tracks)
-      .insert(
-        TracksCompanion.insert(
-          duration: 1,
-          filePath: "",
-          title: "Test",
-          artistString: "Test",
-        ),
-      )
-      .then((value) {
-        Logging("main").log("Set up database ! $value");
-      });
+  // database
+  //     .into(database.tracks)
+  //     .insert(
+  //       TracksCompanion.insert(
+  //         duration: 1,
+  //         filePath: "",
+  //         title: "Test",
+  //         artistString: "Test",
+  //       ),
+  //     )
+  //     .then((value) {
+  //       Logging("main").log("Set up database ! $value");
+  //     });
 
   runApp(const DesktopApp());
 }

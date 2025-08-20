@@ -162,27 +162,39 @@ class TestLoadFullMusicWidget extends StatelessWidget {
 
     if (success) {
       await myPlayer.play();
+      logger.log("Start delay 1");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 1");
 
       await myPlayer.next();
       await myPlayer.play();
+      logger.log("Start delay 2");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 2");
 
       await myPlayer.next();
       await myPlayer.play();
+      logger.log("Start delay 3");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 3");
 
       await myPlayer.next();
       await myPlayer.play();
+      logger.log("Start delay 4");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 4");
 
       await myPlayer.next();
       await myPlayer.play();
+      logger.log("Start delay 5");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 5");
 
       await myPlayer.next();
       await myPlayer.play();
+      logger.log("Start delay 6");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 6");
 
       await myPlayer.dispose();
     }

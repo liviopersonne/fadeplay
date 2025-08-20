@@ -22,6 +22,7 @@ import 'package:rxdart/rxdart.dart';
   - [ ] Deal with crossFadeNext at the end of the playlist
   - [ ] Deal with prev at the start of the playist
   - [ ] Deal with loading a playlist at it's last index
+  - [ ] Check if exactly one player has a null index
 */
 
 final logger = Logging("FullMusicPlayer");
@@ -62,12 +63,12 @@ class FullMusicPlayer {
     final newCurrentIndexStream = Rx.combineLatest2(
       _player0.newCurrentIndexStream,
       _player1.newCurrentIndexStream,
-      (i0, i1) => i0 + i1,
+      (i0, i1) => (i0, i1),
     );
 
-    _playerIndicesSubscription = newCurrentIndexStream.listen((newIndex) {
-      index = newIndex;
-      logger.debug("New player index $index");
+    _playerIndicesSubscription = newCurrentIndexStream.listen((newIndices) {
+      final (i0, i1) = newIndices;
+      _onNewIndex(i0, i1);
     });
   }
 
@@ -104,6 +105,20 @@ class FullMusicPlayer {
   void _onNewPlayerStates(PlayerState s0, PlayerState s1) {
     playing = s0.playing | s1.playing;
     state = _activePlayerIndex == 0 ? s0.processingState : s1.processingState;
+  }
+
+  /// Actions to do when the player's index changes
+  void _onNewIndex(int? i0, int? i1) {
+    final oldIndex = index;
+    index = switch ((i0, i1)) {
+      (null, null) => null,
+      (null, _) || (_, null) => throw StateError(
+        "Exactly one of the players has a null index",
+      ),
+      _ => i0! + i1!,
+    };
+    logger.debug("New player index $index");
+    if (index != null && oldIndex != null) _switchActivePlayer();
   }
 
   /// Activates the more precise but ressource intensive stream
@@ -151,10 +166,10 @@ class FullMusicPlayer {
 
   /// Goes to next music without any transition
   Future<void> next() async {
-    final wasPlaying = _getActivePlayer().playing;
+    final wasPlaying = playing;
+    logger.debug("Calling next with playing: $wasPlaying or $playing");
     await _getActivePlayer().pause();
     await _getActivePlayer().next();
-    _switchActivePlayer();
     if (wasPlaying) await _getActivePlayer().play();
   }
 
