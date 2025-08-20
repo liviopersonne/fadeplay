@@ -24,7 +24,8 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
           // future: loadMusic(),
           // future: loadPlaylist(),
           // future: testAutoReachEnd(),
-          future: testManualReachEnd(),
+          // future: testManualReachEnd(),
+          future: loadPlaylistWithStartingPos(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -135,5 +136,43 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
     }
 
     return "Loaded song";
+  }
+
+  Future<String> loadPlaylistWithStartingPos() async {
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    var content = "";
+
+    final myPlayer = SingleMusicPlayer();
+
+    final loaded = await myPlayer.loadPlaylist(
+      audioSources: playlist,
+      initialIndex: 2,
+    );
+
+    if (loaded) {
+      content = "Music load succeeded";
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 5));
+
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 2));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 5));
+
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 2));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 5));
+
+      await myPlayer.fadeout(duration: Duration(seconds: 3));
+      await myPlayer.dispose();
+      content = "Fadeout finished !";
+    } else {
+      content = "Music load failed";
+    }
+
+    return content;
   }
 }

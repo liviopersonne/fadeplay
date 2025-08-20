@@ -67,6 +67,7 @@ class SingleMusicPlayer {
       newIndex,
     ) async {
       if (newIndex != _currentIndex) {
+        logger.log("Got new index: $newIndex");
         // Emit new value to newCurrentIndexStream
         _newIndexController.add(newIndex);
         _currentIndex = newIndex;
@@ -125,6 +126,7 @@ class SingleMusicPlayer {
       return false;
     }
 
+    logger.log("Real initial index: $initialIndex");
     final duration = await player.setAudioSources(
       audioSources,
       preload: preload,

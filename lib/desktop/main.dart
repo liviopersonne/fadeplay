@@ -35,8 +35,8 @@ class DesktopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      // home: TestLoadSingleMusicWidget(),
-      home: TestLoadFullMusicWidget(),
+      home: TestLoadSingleMusicWidget(),
+      // home: TestLoadFullMusicWidget(),
       // home: TestDatabaseWidget(),
       debugShowCheckedModeBanner: false,
     );

@@ -16,9 +16,8 @@ class TestLoadFullMusicWidget extends StatelessWidget {
           // future: loadMusic(),
           // future: spamNextPastEnd(),
           // future: spamNext(),
-
-          // future: spamPrevious(),
-          future: testAutoReachEnd(),
+          future: spamPrevious(),
+          // future: testAutoReachEnd(),
           // future: testManualReachEnd(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
