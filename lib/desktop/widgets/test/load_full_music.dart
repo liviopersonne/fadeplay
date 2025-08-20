@@ -14,9 +14,10 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       body: Center(
         child: FutureBuilder(
           // future: loadMusic(),
-          // future: spamPrevious(),
+          future: spamPrevious(),
           // future: spamNextPastEnd(),
-          future: spamNext(),
+          // future: spamNext(),
+
           // future: testAutoReachEnd(),
           // future: testManualReachEnd(),
           builder: (context, snapshot) {
@@ -82,29 +83,48 @@ class TestLoadFullMusicWidget extends StatelessWidget {
 
   Future<String> spamPrevious() async {
     var content = "";
-
-    final fileList = [music1, music2, music3];
+    final fileList = [music1, music2, music3, music1, music2, music3, music1];
     final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
 
     final myPlayer = FullMusicPlayer();
 
-    final success = await myPlayer.loadPlaylist(audioSources: playlist);
+    final success = await myPlayer.loadPlaylist(
+      audioSources: playlist,
+      initialIndex: 4,
+    );
 
     if (success) {
       await myPlayer.play();
+      logger.log("Start delay 1");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 1");
 
       await myPlayer.prev();
+      logger.log("Start delay 2");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 2");
+
+      await myPlayer.pause();
+      await myPlayer.prev();
+      logger.log("Start delay 3");
+      await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 3");
 
       await myPlayer.prev();
+      logger.log("Start delay 4");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 4");
 
       await myPlayer.prev();
+      await myPlayer.play();
+      logger.log("Start delay 5");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 5");
 
       await myPlayer.prev();
+      logger.log("Start delay 6");
       await Future.delayed(Duration(seconds: 2));
+      logger.log("End delay 6");
 
       await myPlayer.dispose();
     }
@@ -171,6 +191,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await Future.delayed(Duration(seconds: 2));
       logger.log("End delay 2");
 
+      await myPlayer.pause();
       await myPlayer.next();
       logger.log("Start delay 3");
       await Future.delayed(Duration(seconds: 2));
@@ -182,6 +203,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       logger.log("End delay 4");
 
       await myPlayer.next();
+      await myPlayer.play();
       logger.log("Start delay 5");
       await Future.delayed(Duration(seconds: 2));
       logger.log("End delay 5");

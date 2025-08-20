@@ -7,7 +7,11 @@ import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 /* FIXME:
-  - [ ] Single player reaching the end of the song automatically / manually
+  - [x] Single player reaching the end of the song manually
+  - [x] Manual next
+  - [ ] Auto next
+  - [ ] Manual prev
+  - [ ] Auto prev
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
   - [ ] Changing active player at start of transition (in case of pause)
@@ -109,12 +113,16 @@ class FullMusicPlayer {
     state = _activePlayerIndex == 0 ? s0.processingState : s1.processingState;
   }
 
-  /// Actions to do when the player's index changes
+  /// Actions to do when the player's index changes.
+  /// This includes:
+  /// - updating the full player's index
+  /// - switching the active player if a new track was loaded and another one was already loaded
+  /// - resuming the player if it was already playing
   Future<void> _onNewIndex(int? i0, int? i1) async {
     final wasPlaying = playing;
-    logger.log("onNewIndex called with playing=$wasPlaying");
-
     final oldIndex = index;
+
+    // Update the full player's index
     index = switch ((i0, i1)) {
       (null, null) => null,
       (null, _) || (_, null) => throw StateError(
@@ -122,11 +130,13 @@ class FullMusicPlayer {
       ),
       _ => i0! + i1!,
     };
-    logger.debug("New player index $index");
+    logger.debug("New player index $index (playing=$wasPlaying)");
+
+    // Switch the active player if needed
     if (index != null && oldIndex != null) _switchActivePlayer();
 
+    // Resume the player if it was already playing
     if (wasPlaying) {
-      logger.log("Reactivating the player");
       await _getActivePlayer().play();
     }
   }
@@ -187,13 +197,14 @@ class FullMusicPlayer {
 
   /// Goes to the previous music without any transition
   Future<void> prev() async {
-    final wasPlaying = _getActivePlayer().playing;
-    await _getActivePlayer().pause();
-    await _getActivePlayer().seek(Duration.zero);
-    _switchActivePlayer();
     await _getActivePlayer().prev();
-    await _getActivePlayer().seek(Duration.zero);
-    if (wasPlaying) await _getActivePlayer().play();
+    // final wasPlaying = _getActivePlayer().playing;
+    // await _getActivePlayer().pause();
+    // await _getActivePlayer().seek(Duration.zero);
+    // _switchActivePlayer();
+    // await _getActivePlayer().prev();
+    // await _getActivePlayer().seek(Duration.zero);
+    // if (wasPlaying) await _getActivePlayer().play();
   }
 
   Future<void> crossfadeNext({Duration? crossfadeDuration}) async {
