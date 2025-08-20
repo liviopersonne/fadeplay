@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:fadeplay/desktop/data/full_music_player.dart';
+import 'package:fadeplay/desktop/objects/full_music_player.dart';
 import 'package:flutter/material.dart';
 
 class TestLoadFullMusicWidget extends StatelessWidget {

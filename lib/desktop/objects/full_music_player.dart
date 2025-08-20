@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:fadeplay/desktop/data/logger.dart';
-import 'package:fadeplay/desktop/data/single_music_player.dart';
+import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/objects/single_music_player.dart';
 import 'package:fadeplay/desktop/settings/settings.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';

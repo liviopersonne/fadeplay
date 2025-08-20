@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:fadeplay/desktop/data/single_music_player.dart';
+import 'package:fadeplay/desktop/objects/single_music_player.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 

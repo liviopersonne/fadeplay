@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:fadeplay/desktop/data/logger.dart';
+import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
