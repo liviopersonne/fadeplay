@@ -24,6 +24,10 @@ class SingleMusicPlayer {
   /// A precise stream of the current position in the song used for transitionf
   late final Stream<Duration> precisePositionStream;
 
+  /// A stream that sends the new values of `_currentIndex`
+  late final Stream<int> newCurrentIndexStream;
+  late final StreamController<int> _newIndexController;
+
   /// Setup platform specific settings
   static void initialize() {
     logger.debug("Initializing Audio Player settings...");
@@ -56,14 +60,21 @@ class SingleMusicPlayer {
       maxPeriod: Settings.worstTransitionPrecision,
     );
 
+    _newIndexController = StreamController<int>.broadcast();
+    newCurrentIndexStream = _newIndexController.stream;
+
     _pauseOnNewTrackSubscription = player.currentIndexStream.listen((
       newIndex,
     ) async {
       if (newIndex != null && newIndex != _currentIndex) {
         _currentIndex = newIndex;
+
+        // Emit new value to newCurrentIndexStream
+        _newIndexController.add(newIndex);
+
         await player.pause();
         await player.seek(Duration.zero);
-        logger.log("New track just started, auto paused player");
+        logger.debug("New track just started, auto paused player");
       }
     });
   }
@@ -151,9 +162,9 @@ class SingleMusicPlayer {
     await player.seekToPrevious();
   }
 
-  /// Seeks to the start of the music
-  Future<void> restartSong() async {
-    await player.seek(Duration.zero);
+  /// Seeks to a specific point of the music
+  Future<void> seek(Duration position) async {
+    await player.seek(position);
   }
 
   /// Fades volume from startVolume to endVolume in duration time and with step steps

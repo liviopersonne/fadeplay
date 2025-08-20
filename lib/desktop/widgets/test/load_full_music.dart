@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:fadeplay/desktop/objects/full_music_player.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class TestLoadFullMusicWidget extends StatelessWidget {
   const TestLoadFullMusicWidget({super.key});
@@ -14,7 +15,10 @@ class TestLoadFullMusicWidget extends StatelessWidget {
         child: FutureBuilder(
           // future: loadMusic(),
           // future: spamPrevious(),
+          // future: spamNextPastEnd(),
           future: spamNext(),
+          // future: testAutoReachEnd(),
+          // future: testManualReachEnd(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -40,10 +44,13 @@ class TestLoadFullMusicWidget extends StatelessWidget {
   Future<String> loadMusic() async {
     var content = "";
 
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
     final myPlayer = FullMusicPlayer();
 
     final success = await myPlayer.loadPlaylist(
-      filePaths: [music1, music2, music3],
+      audioSources: playlist,
       initialIndex: 1,
     );
 
@@ -76,11 +83,12 @@ class TestLoadFullMusicWidget extends StatelessWidget {
   Future<String> spamPrevious() async {
     var content = "";
 
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
     final myPlayer = FullMusicPlayer();
 
-    final success = await myPlayer.loadPlaylist(
-      filePaths: [music1, music2, music3],
-    );
+    final success = await myPlayer.loadPlaylist(audioSources: playlist);
 
     if (success) {
       await myPlayer.play();
@@ -106,13 +114,15 @@ class TestLoadFullMusicWidget extends StatelessWidget {
     return content;
   }
 
-  Future<String> spamNext() async {
+  Future<String> spamNextPastEnd() async {
     var content = "";
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
 
     final myPlayer = FullMusicPlayer();
 
     final success = await myPlayer.loadPlaylist(
-      filePaths: [music1, music2, music3],
+      audioSources: playlist,
       initialIndex: 1,
     );
 
@@ -139,5 +149,91 @@ class TestLoadFullMusicWidget extends StatelessWidget {
     content = success ? "Loaded playlist" : "Failed to load playlist";
 
     return content;
+  }
+
+  Future<String> spamNext() async {
+    var content = "";
+    final fileList = [music1, music2, music3, music1, music2, music3, music1];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final success = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (success) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.dispose();
+    }
+
+    content = success ? "Loaded playlist" : "Failed to load playlist";
+
+    return content;
+  }
+
+  Future<String> testAutoReachEnd() async {
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final loaded = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (loaded) {
+      await myPlayer.play();
+      await myPlayer.seek(Duration(seconds: 210));
+      await Future.delayed(Duration(seconds: 10));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 4));
+      await myPlayer.dispose();
+    }
+
+    return "Loaded song";
+  }
+
+  Future<String> testManualReachEnd() async {
+    final fileList = [music1, music2, music3];
+    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final loaded = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (loaded) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.next();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 4));
+      await myPlayer.dispose();
+    }
+
+    return "Loaded song";
   }
 }

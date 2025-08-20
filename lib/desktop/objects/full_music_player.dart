@@ -18,6 +18,10 @@ import 'package:rxdart/rxdart.dart';
   - [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
         and update the delay on a discontinuity (if that stream exists) or on status change or on active player switch
   - [ ] Check if I can use the just_audio `clip` function to help with stuff
+  - [ ] Deal with next at the end of the playlist
+  - [ ] Deal with crossFadeNext at the end of the playlist
+  - [ ] Deal with prev at the start of the playist
+  - [ ] Deal with loading a playlist at it's last index
 */
 
 final logger = Logging("FullMusicPlayer");
@@ -28,6 +32,7 @@ class FullMusicPlayer {
   final _player1 = SingleMusicPlayer();
   StreamSubscription? _playerStatesSubscription;
   StreamSubscription? _precisePositionSubscription;
+  StreamSubscription? _playerIndicesSubscription;
   int _activePlayerIndex = 0;
 
   /// Whether the player is playing
@@ -35,6 +40,9 @@ class FullMusicPlayer {
 
   /// The player's current state
   var state = ProcessingState.idle;
+
+  /// The player's current index
+  int? index;
 
   FullMusicPlayer() {
     logger.debug("Insianciating a new FullMusicPlayer");
@@ -50,6 +58,17 @@ class FullMusicPlayer {
       final (s0, s1) = states;
       _onNewPlayerStates(s0, s1);
     });
+
+    final newCurrentIndexStream = Rx.combineLatest2(
+      _player0.newCurrentIndexStream,
+      _player1.newCurrentIndexStream,
+      (i0, i1) => i0 + i1,
+    );
+
+    _playerIndicesSubscription = newCurrentIndexStream.listen((newIndex) {
+      index = newIndex;
+      logger.debug("New player index $index");
+    });
   }
 
   /// Dispose the player when you're done using it
@@ -58,6 +77,8 @@ class FullMusicPlayer {
     _playerStatesSubscription = null;
     _precisePositionSubscription?.cancel();
     _precisePositionSubscription = null;
+    _playerIndicesSubscription?.cancel();
+    _playerIndicesSubscription = null;
     _player0.dispose();
     _player1.dispose();
     logger.debug("Disposed a FullMusicPlayer");
@@ -130,8 +151,6 @@ class FullMusicPlayer {
 
   /// Goes to next music without any transition
   Future<void> next() async {
-    // TODO: Deal with end of playlist
-
     final wasPlaying = _getActivePlayer().playing;
     await _getActivePlayer().pause();
     await _getActivePlayer().next();
@@ -139,16 +158,19 @@ class FullMusicPlayer {
     if (wasPlaying) await _getActivePlayer().play();
   }
 
+  /// Seeks a specific point in the current player
+  Future<void> seek(Duration duration) async {
+    await _getActivePlayer().seek(duration);
+  }
+
   /// Goes to the previous music without any transition
   Future<void> prev() async {
-    // TODO: Deal with start of playlist
-
     final wasPlaying = _getActivePlayer().playing;
     await _getActivePlayer().pause();
-    await _getActivePlayer().restartSong();
+    await _getActivePlayer().seek(Duration.zero);
     _switchActivePlayer();
     await _getActivePlayer().prev();
-    await _getActivePlayer().restartSong();
+    await _getActivePlayer().seek(Duration.zero);
     if (wasPlaying) await _getActivePlayer().play();
   }
 
@@ -159,8 +181,6 @@ class FullMusicPlayer {
       logger.warn("Tried to crossfade while paused");
       return await next();
     }
-
-    // TODO: Warn if there is no music left
 
     await Future.wait([
       _getActivePlayer().fadeout(duration: duration),
@@ -173,19 +193,13 @@ class FullMusicPlayer {
 
   /// Loads a list of music in order
   Future<bool> loadPlaylist({
-    required List<String> filePaths,
+    required List<AudioSource> audioSources,
     bool preload = true,
     int? initialIndex,
     Duration? initialPosition,
   }) async {
-    logger.debug("Loading playlist of ${filePaths.length} song(s)");
+    logger.debug("Loading playlist of ${audioSources.length} song(s)");
 
-    // FIXME: Deal with end of playlist
-
-    // Set audio sources
-    final audioSources = filePaths
-        .map((filePath) => AudioSource.uri(Uri.file(filePath)))
-        .toList();
     List<AudioSource> audioSources1 = [];
     List<AudioSource> audioSources2 = [];
     for (var i = 0; i < audioSources.length; i++) {
