@@ -36,10 +36,13 @@ class TestLoadFullMusicWidget extends StatelessWidget {
 
   final music1 =
       "/home/livio/Musique/Musique/Songs/Super Mario Odyssey/SUPER MARIO ODYSSEY ORIGINAL SOUND TRACK/Steam Gardens.mp3";
+  // Lasts 3:35
   final music2 =
       "/home/livio/Musique/Musique/Songs/Toby Fox/UNDERTALE Soundtrack/Spider Dance.mp3";
   final music3 =
-      "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/No Promises to Keep.mp3";
+      "/home/livio/Musique/Musique/Songs/Cowboy Bepop/COWBOY BEBOP (Original Motion Picture Soundtrack 3 - Blue)/Adieu.mp3";
+  final music4 =
+      "/home/livio/Musique/Musique/Songs/Izar/There Are Stars Inside of Me/There Are Stars Inside of Me.mp3";
 
   Future<String> loadMusic() async {
     var content = "";
@@ -82,7 +85,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
 
   Future<String> spamPrevious() async {
     var content = "";
-    final fileList = [music1, music2, music3, music1, music2, music3, music1];
+    final fileList = [music1, music2, music3, music4, music1, music2];
     final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
 
     final myPlayer = FullMusicPlayer();
@@ -120,7 +123,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await Future.delayed(Duration(seconds: 2));
       logger.log("End delay 5");
 
-      await myPlayer.prev();
+      await myPlayer.next();
       logger.log("Start delay 6");
       await Future.delayed(Duration(seconds: 2));
       logger.log("End delay 6");

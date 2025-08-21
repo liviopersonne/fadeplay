@@ -11,7 +11,7 @@ import 'package:just_audio/just_audio.dart';
 final logger = Logging("SingleMusicPlayer");
 
 /// A music player with a single AudioPlayer than can fade in and out.
-/// This player auto pauses when the track is changed, either manually or automatically
+/// This player auto pauses when the track index advances, either manually or automatically
 class SingleMusicPlayer {
   static var _initialized = false;
   final player = AudioPlayer();
@@ -73,7 +73,8 @@ class SingleMusicPlayer {
         _newIndexController.add(newIndex);
         _currentIndex = newIndex;
 
-        if (newIndex != null && oldIndex != null) {
+        if (newIndex != null && oldIndex != null && newIndex == oldIndex + 1) {
+          // We have advanced by one track automatically or manually
           logger.debug("New track just started, auto pausing player");
           await player.pause();
           await player.seek(Duration.zero);

@@ -11,8 +11,7 @@ import 'package:rxdart/rxdart.dart';
   - [x] Manual next
   - [x] Auto next
   - [x] Playlist initial index
-  - [ ] Manual prev
-  - [ ] Auto prev
+  - [x] Manual prev
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
   - [ ] Changing active player at start of transition (in case of pause)
@@ -135,7 +134,14 @@ class FullMusicPlayer {
     logger.debug("New player index $index (playing=$wasPlaying)");
 
     // Switch the active player if needed
-    if (index != null && oldIndex != null) _switchActivePlayer();
+    if (index != null && oldIndex != null) {
+      if (index == oldIndex - 1) {
+        // Previous track loading, restart current track
+        await _getActivePlayer().pause();
+        await _getActivePlayer().seek(Duration.zero);
+      }
+      _switchActivePlayer();
+    }
 
     // Resume the player if it was already playing
     if (wasPlaying) {
@@ -199,13 +205,7 @@ class FullMusicPlayer {
 
   /// Goes to the previous music without any transition
   Future<void> prev() async {
-    final wasPlaying = _getActivePlayer().playing;
-    await _getActivePlayer().pause();
-    await _getActivePlayer().seek(Duration.zero);
-
-    await _getInactivePlayer()
-        .prev(); // This switches the active player with the `_onNewIndex` function
-    if (wasPlaying) await _getActivePlayer().play();
+    await _getInactivePlayer().prev();
   }
 
   Future<void> crossfadeNext({Duration? crossfadeDuration}) async {
