@@ -14,7 +14,9 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
   final music2 =
       "/home/livio/Musique/Musique/Songs/Toby Fox/UNDERTALE Soundtrack/Spider Dance.mp3";
   final music3 =
-      "/home/livio/Musique/Musique/Songs/Final Fantasy VII Rebirth/Chocobo Racing Theme.mp3";
+      "/home/livio/Musique/Musique/Songs/Cowboy Bepop/COWBOY BEBOP (Original Motion Picture Soundtrack 3 - Blue)/Adieu.mp3";
+  final music4 =
+      "/home/livio/Musique/Musique/Songs/Izar/There Are Stars Inside of Me/There Are Stars Inside of Me.mp3";
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +141,7 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
   }
 
   Future<String> loadPlaylistWithStartingPos() async {
-    final fileList = [music1, music2, music3];
+    final fileList = [music1, music2, music3, music4];
     final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
 
     var content = "";
@@ -148,7 +150,8 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
 
     final loaded = await myPlayer.loadPlaylist(
       audioSources: playlist,
-      initialIndex: 2,
+      initialIndex: 3,
+      initialPosition: Duration(seconds: 30),
     );
 
     if (loaded) {
@@ -157,14 +160,15 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
       await Future.delayed(Duration(seconds: 5));
 
       await myPlayer.prev();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(milliseconds: 10));
       await myPlayer.play();
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(Duration(seconds: 2));
+      // await Future.delayed(Duration(seconds: 5));
 
-      await myPlayer.prev();
-      await Future.delayed(Duration(seconds: 2));
-      await myPlayer.play();
-      await Future.delayed(Duration(seconds: 5));
+      // await myPlayer.prev();
+      // await Future.delayed(Duration(seconds: 2));
+      // await myPlayer.play();
+      // await Future.delayed(Duration(seconds: 5));
 
       await myPlayer.fadeout(duration: Duration(seconds: 3));
       await myPlayer.dispose();

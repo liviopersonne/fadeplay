@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
   - [x] Single player reaching the end of the song manually
   - [x] Manual next
   - [x] Auto next
-  - [ ] Playlist initial index
+  - [x] Playlist initial index
   - [ ] Manual prev
   - [ ] Auto prev
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping

@@ -66,16 +66,17 @@ class SingleMusicPlayer {
     _pauseOnNewTrackSubscription = player.currentIndexStream.listen((
       newIndex,
     ) async {
-      if (newIndex != _currentIndex) {
+      final oldIndex = _currentIndex;
+      if (newIndex != oldIndex) {
         logger.log("Got new index: $newIndex");
-        // Emit new value to newCurrentIndexStream
+        // emit new value to newCurrentIndexStream
         _newIndexController.add(newIndex);
         _currentIndex = newIndex;
 
-        if (newIndex != null) {
+        if (newIndex != null && oldIndex != null) {
+          logger.debug("New track just started, auto pausing player");
           await player.pause();
           await player.seek(Duration.zero);
-          logger.debug("New track just started, auto paused player");
         }
       }
     });
@@ -126,7 +127,6 @@ class SingleMusicPlayer {
       return false;
     }
 
-    logger.log("Real initial index: $initialIndex");
     final duration = await player.setAudioSources(
       audioSources,
       preload: preload,
