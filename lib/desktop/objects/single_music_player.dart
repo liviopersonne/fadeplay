@@ -17,6 +17,7 @@ class SingleMusicPlayer {
   final player = AudioPlayer();
   StreamSubscription? _pauseOnNewTrackSubscription;
   int? _currentIndex;
+  int? _playlistLength;
 
   /// Whether the player is playing
   var playing = false;
@@ -66,14 +67,17 @@ class SingleMusicPlayer {
     _pauseOnNewTrackSubscription = player.currentIndexStream.listen((
       newIndex,
     ) async {
+      final realNewIndex = newIndex == null ? null : newIndex - 1;
       final oldIndex = _currentIndex;
-      if (newIndex != oldIndex) {
-        logger.log("Got new index: $newIndex");
+      if (realNewIndex != oldIndex) {
+        logger.log("Got new index: $realNewIndex");
         // emit new value to newCurrentIndexStream
-        _newIndexController.add(newIndex);
-        _currentIndex = newIndex;
+        _newIndexController.add(realNewIndex);
+        _currentIndex = realNewIndex;
 
-        if (newIndex != null && oldIndex != null && newIndex == oldIndex + 1) {
+        if (realNewIndex != null &&
+            oldIndex != null &&
+            realNewIndex == oldIndex + 1) {
           // We have advanced by one track automatically or manually
           logger.debug("New track just started, auto pausing player");
           await player.pause();
@@ -128,13 +132,17 @@ class SingleMusicPlayer {
       return false;
     }
 
+    // Add silence sentinels at the beginning and end of playlist
+    // This is used so we can properly call `next` to reach the last track of the playlist
+    // or `prev` to reach the first track
     final silence = AudioSource.asset('asset:///2-seconds-of-silence.mp3');
     audioSources.add(silence);
+    audioSources.insert(0, silence);
 
     final duration = await player.setAudioSources(
       audioSources,
       preload: preload,
-      initialIndex: initialIndex,
+      initialIndex: (initialIndex ?? 0) + 1,
       initialPosition: initialPosition,
     );
     return duration != null;
@@ -165,10 +173,12 @@ class SingleMusicPlayer {
 
   /// Goes to the previous music without any transition
   Future<void> prev() async {
-    if (!player.hasPrevious) {
+    if (_currentIndex != null && _currentIndex! >= 0) {
+      await player.seekToPrevious();
+    } else {
       logger.warn("Tried to seek previous track when there weren't any");
+      player.seek(Duration.zero, index: null);
     }
-    await player.seekToPrevious();
   }
 
   /// Seeks to a specific point of the music

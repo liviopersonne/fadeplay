@@ -13,14 +13,14 @@ import 'package:rxdart/rxdart.dart';
   - [x] Playlist initial index
   - [x] Manual prev
   - [x] Deal with next at the end of the playlist
-  - [ ] Deal with prev at the start of the playist
+  - [x] Deal with prev at the start of the playist
   - [x] Deal with loading a playlist at it's last index
   - [x] Deal with reaching the last index of a playlist
   - [ ] Deal with crossFadeNext at the end of the playlist
+  - [ ] Changing active player at start of transition (in case of pause)
   - [ ] Check if exactly one player has a null index
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
-  - [ ] Changing active player at start of transition (in case of pause)
   - [ ] Pausing during a transition (directly set volume at end value ?)
   - [ ] Add values in player status: InTransition
   - [ ] Make t value (transition percent) a public value
@@ -137,10 +137,14 @@ class FullMusicPlayer {
     // Switch the active player if needed
     if (index != null && oldIndex != null) {
       if (index == _currentPlaylistLength) {
-        // Reached the end of the playlist
-        logger.log("Reached the end of the playlist, stopping players");
-        await _player0.player.stop();
-        await _player1.player.stop();
+        logger.warn("Passed the end of the playlist, stopping players");
+        await dispose();
+        return;
+      }
+      if (index != null && index! < 0) {
+        logger.warn("Passed the start of the playlist, stopping players");
+        await dispose();
+        return;
       }
       if (index == oldIndex - 1) {
         // Previous track loading, restart current track

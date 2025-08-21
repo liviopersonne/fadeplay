@@ -17,6 +17,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
           // future: spamNext(),
           // future: spamPrevious(),
           future: spamNextPastEnd(),
+          // future: spamPrevPastStart(),
           // future: testAutoReachEnd(),
           // future: testManualReachEnd(),
           builder: (context, snapshot) {
@@ -170,6 +171,53 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await myPlayer.next();
       await Future.delayed(Duration(seconds: 3));
       await myPlayer.next();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.dispose();
+    }
+
+    content = success ? "Loaded playlist" : "Failed to load playlist";
+
+    return content;
+  }
+
+  Future<String> spamPrevPastStart() async {
+    var content = "";
+    final fileList = [music1, music2, music3];
+
+    final List<AudioSource> playlist = fileList
+        .map((f) => AudioSource.uri(Uri.file(f)))
+        .toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final success = await myPlayer.loadPlaylist(
+      audioSources: playlist,
+      initialIndex: 1,
+    );
+
+    if (success) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 3));
+
+      await myPlayer.next();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 3));
+      await myPlayer.prev();
       await Future.delayed(Duration(seconds: 2));
 
       await myPlayer.dispose();
