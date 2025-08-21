@@ -20,7 +20,8 @@ class TestLoadFullMusicWidget extends StatelessWidget {
           // future: spamPrevPastStart(),
           // future: testAutoReachEnd(),
           // future: testManualReachEnd(),
-          future: testCrossfade(),
+          // future: testCrossfade(),
+          future: testPausingDuringCrossfade(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -353,6 +354,50 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 1));
       await Future.delayed(Duration(seconds: 2));
 
+      await myPlayer.dispose();
+    }
+
+    return "Crossfades worked";
+  }
+
+  Future<String> testPausingDuringCrossfade() async {
+    final fileList = [music1, music2, music3];
+
+    final List<AudioSource> playlist = fileList
+        .map((f) => AudioSource.uri(Uri.file(f)))
+        .toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final success = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (success) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 2));
+
+      myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 2));
+      await Future.delayed(Duration(milliseconds: 100));
+
+      await myPlayer.pause();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 20));
+
+      // await myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 1));
+
+      // await Future.delayed(Duration(seconds: 3));
+      // await myPlayer.play();
+
+      // await Future.delayed(Duration(seconds: 2));
+
+      // await myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 1));
+      // await Future.delayed(Duration(seconds: 2));
+
+      // await myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 1));
+      // await Future.delayed(Duration(seconds: 2));
+
+      await Future.delayed(Duration(seconds: 5));
       await myPlayer.dispose();
     }
 

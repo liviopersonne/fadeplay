@@ -17,8 +17,7 @@ import 'package:rxdart/rxdart.dart';
   - [x] Deal with loading a playlist at it's last index
   - [x] Deal with reaching the last index of a playlist
   - [x] Deal with crossFadeNext at the end of the playlist
-  - [ ] Changing active player at start of transition (in case of pause)
-  - [ ] Pausing during a transition (directly set volume at end value ?)
+  - [x] Pausing during a transition (directly set volume at end value ?)
   - [ ] Check if exactly one player has a null index
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
