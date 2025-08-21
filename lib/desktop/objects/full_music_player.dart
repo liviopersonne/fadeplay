@@ -12,6 +12,12 @@ import 'package:rxdart/rxdart.dart';
   - [x] Auto next
   - [x] Playlist initial index
   - [x] Manual prev
+  - [ ] Deal with prev at the start of the playist
+  - [ ] Deal with next at the end of the playlist
+  - [ ] Deal with loading a playlist at it's last index
+  - [ ] Deal with reaching the last index of a playlist
+  - [ ] Deal with crossFadeNext at the end of the playlist
+  - [ ] Check if exactly one player has a null index
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
   - [ ] Changing active player at start of transition (in case of pause)
@@ -22,12 +28,6 @@ import 'package:rxdart/rxdart.dart';
   - [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
         and update the delay on a discontinuity (if that stream exists) or on status change or on active player switch
   - [ ] Check if I can use the just_audio `clip` function to help with stuff
-  - [ ] Deal with next at the end of the playlist
-  - [ ] Deal with crossFadeNext at the end of the playlist
-  - [ ] Deal with prev at the start of the playist
-  - [ ] Deal with loading a playlist at it's last index
-  - [ ] Deal with reaching the last index of a playlist
-  - [ ] Check if exactly one player has a null index
 */
 
 final logger = Logging("FullMusicPlayer");
@@ -40,6 +40,7 @@ class FullMusicPlayer {
   StreamSubscription? _precisePositionSubscription;
   StreamSubscription? _playerIndicesSubscription;
   int _activePlayerIndex = 0;
+  int? _currentPlaylistLength;
 
   /// Whether the player is playing
   var playing = false;
@@ -135,6 +136,12 @@ class FullMusicPlayer {
 
     // Switch the active player if needed
     if (index != null && oldIndex != null) {
+      if (index == _currentPlaylistLength) {
+        // Reached the end of the playlist
+        logger.log("Reached the end of the playlist, stopping players");
+        await _player0.player.stop();
+        await _player1.player.stop();
+      }
       if (index == oldIndex - 1) {
         // Previous track loading, restart current track
         await _getActivePlayer().pause();
@@ -233,6 +240,7 @@ class FullMusicPlayer {
     Duration? initialPosition,
   }) async {
     logger.debug("Loading playlist of ${audioSources.length} song(s)");
+    _currentPlaylistLength = audioSources.length;
 
     List<AudioSource> audioSources1 = [];
     List<AudioSource> audioSources2 = [];
@@ -248,8 +256,6 @@ class FullMusicPlayer {
     final (initialIndex1, initialIndex2) = initialIndex == null
         ? (null, null)
         : ((initialIndex + 1) ~/ 2, initialIndex ~/ 2);
-
-    logger.log("Initial indices: $initialIndex1 $initialIndex2");
 
     final (
       initialPosition1,

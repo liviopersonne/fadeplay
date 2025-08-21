@@ -14,9 +14,9 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       body: Center(
         child: FutureBuilder(
           // future: loadMusic(),
-          // future: spamNextPastEnd(),
           // future: spamNext(),
-          future: spamPrevious(),
+          // future: spamPrevious(),
+          future: spamNextPastEnd(),
           // future: testAutoReachEnd(),
           // future: testManualReachEnd(),
           builder: (context, snapshot) {
@@ -139,14 +139,14 @@ class TestLoadFullMusicWidget extends StatelessWidget {
   Future<String> spamNextPastEnd() async {
     var content = "";
     final fileList = [music1, music2, music3];
-    final playlist = fileList.map((f) => AudioSource.uri(Uri.file(f))).toList();
+
+    final List<AudioSource> playlist = fileList
+        .map((f) => AudioSource.uri(Uri.file(f)))
+        .toList();
 
     final myPlayer = FullMusicPlayer();
 
-    final success = await myPlayer.loadPlaylist(
-      audioSources: playlist,
-      initialIndex: 1,
-    );
+    final success = await myPlayer.loadPlaylist(audioSources: playlist);
 
     if (success) {
       await myPlayer.next();

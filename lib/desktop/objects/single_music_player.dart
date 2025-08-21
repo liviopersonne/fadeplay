@@ -128,6 +128,9 @@ class SingleMusicPlayer {
       return false;
     }
 
+    final silence = AudioSource.asset('asset:///2-seconds-of-silence.mp3');
+    audioSources.add(silence);
+
     final duration = await player.setAudioSources(
       audioSources,
       preload: preload,
@@ -152,10 +155,12 @@ class SingleMusicPlayer {
 
   /// Goes to next music without any transition
   Future<void> next() async {
-    if (!player.hasNext) {
-      logger.warn("Tried to seek next track when there weren't any");
+    if (player.hasNext) {
+      await player.seekToNext();
+    } else {
+      logger.warn("Reached the end of the playlist");
+      player.seek(Duration.zero, index: null);
     }
-    await player.seekToNext();
   }
 
   /// Goes to the previous music without any transition
