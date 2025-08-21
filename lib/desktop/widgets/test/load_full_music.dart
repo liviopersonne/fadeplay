@@ -153,7 +153,7 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await myPlayer.play();
       await Future.delayed(Duration(seconds: 2));
 
-      await myPlayer.next();
+      await myPlayer.prev();
       await Future.delayed(Duration(seconds: 2));
 
       await myPlayer.next();
@@ -162,6 +162,13 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await myPlayer.next();
       await Future.delayed(Duration(seconds: 2));
 
+      await myPlayer.prev();
+      await Future.delayed(Duration(seconds: 2));
+
+      await myPlayer.next();
+      await Future.delayed(Duration(seconds: 2));
+      await myPlayer.next();
+      await Future.delayed(Duration(seconds: 3));
       await myPlayer.next();
       await Future.delayed(Duration(seconds: 2));
 

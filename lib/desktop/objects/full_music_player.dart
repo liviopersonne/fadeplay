@@ -12,10 +12,10 @@ import 'package:rxdart/rxdart.dart';
   - [x] Auto next
   - [x] Playlist initial index
   - [x] Manual prev
+  - [x] Deal with next at the end of the playlist
   - [ ] Deal with prev at the start of the playist
-  - [ ] Deal with next at the end of the playlist
-  - [ ] Deal with loading a playlist at it's last index
-  - [ ] Deal with reaching the last index of a playlist
+  - [x] Deal with loading a playlist at it's last index
+  - [x] Deal with reaching the last index of a playlist
   - [ ] Deal with crossFadeNext at the end of the playlist
   - [ ] Check if exactly one player has a null index
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
