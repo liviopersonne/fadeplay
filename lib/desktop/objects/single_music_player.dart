@@ -17,7 +17,6 @@ class SingleMusicPlayer {
   final player = AudioPlayer();
   StreamSubscription? _pauseOnNewTrackSubscription;
   int? _currentIndex;
-  int? _playlistLength;
 
   /// Whether the player is playing
   var playing = false;

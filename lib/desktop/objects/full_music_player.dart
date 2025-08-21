@@ -16,12 +16,12 @@ import 'package:rxdart/rxdart.dart';
   - [x] Deal with prev at the start of the playist
   - [x] Deal with loading a playlist at it's last index
   - [x] Deal with reaching the last index of a playlist
-  - [ ] Deal with crossFadeNext at the end of the playlist
+  - [x] Deal with crossFadeNext at the end of the playlist
   - [ ] Changing active player at start of transition (in case of pause)
+  - [ ] Pausing during a transition (directly set volume at end value ?)
   - [ ] Check if exactly one player has a null index
   - [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
   - [ ] Two fadeouts overlapping because transitions are too close
-  - [ ] Pausing during a transition (directly set volume at end value ?)
   - [ ] Add values in player status: InTransition
   - [ ] Make t value (transition percent) a public value
   - [ ] Update player status on active player switch
@@ -48,8 +48,8 @@ class FullMusicPlayer {
   /// The player's current state
   var state = ProcessingState.idle;
 
-  /// The player's current index
-  int? index;
+  /// The player's current index in the playlist
+  int? indexInPlaylist;
 
   FullMusicPlayer() {
     logger.debug("Insianciating a new FullMusicPlayer");
@@ -122,31 +122,31 @@ class FullMusicPlayer {
   /// - resuming the player if it was already playing
   Future<void> _onNewIndex(int? i0, int? i1) async {
     final wasPlaying = playing;
-    final oldIndex = index;
+    final oldIndex = indexInPlaylist;
 
     // Update the full player's index
-    index = switch ((i0, i1)) {
+    indexInPlaylist = switch ((i0, i1)) {
       (null, null) => null,
       (null, _) || (_, null) => throw StateError(
         "Exactly one of the players has a null index",
       ),
       _ => i0! + i1!,
     };
-    logger.debug("New player index $index (playing=$wasPlaying)");
+    logger.debug("New player index $indexInPlaylist (playing=$wasPlaying)");
 
     // Switch the active player if needed
-    if (index != null && oldIndex != null) {
-      if (index == _currentPlaylistLength) {
+    if (indexInPlaylist != null && oldIndex != null) {
+      if (indexInPlaylist == _currentPlaylistLength) {
         logger.warn("Passed the end of the playlist, stopping players");
         await dispose();
         return;
       }
-      if (index != null && index! < 0) {
+      if (indexInPlaylist != null && indexInPlaylist! < 0) {
         logger.warn("Passed the start of the playlist, stopping players");
         await dispose();
         return;
       }
-      if (index == oldIndex - 1) {
+      if (indexInPlaylist == oldIndex - 1) {
         // Previous track loading, restart current track
         await _getActivePlayer().pause();
         await _getActivePlayer().seek(Duration.zero);
@@ -222,18 +222,22 @@ class FullMusicPlayer {
   Future<void> crossfadeNext({Duration? crossfadeDuration}) async {
     final duration = crossfadeDuration ?? Settings.crossfadeDuration;
 
-    if (!_getActivePlayer().playing) {
+    if (!playing || _currentPlaylistLength == null) {
       logger.warn("Tried to crossfade while paused");
       return await next();
     }
 
-    await Future.wait([
-      _getActivePlayer().fadeout(duration: duration),
-      _getInactivePlayer().fadein(duration: duration),
-    ]);
+    if (indexInPlaylist != _currentPlaylistLength! - 1) {
+      await Future.wait([
+        _getActivePlayer().fadeout(duration: duration),
+        _getInactivePlayer().fadein(duration: duration),
+      ]);
 
-    await _getActivePlayer().next();
-    _switchActivePlayer();
+      await _getActivePlayer().next();
+    } else {
+      // Fading out of the playlist
+      await _getActivePlayer().fadeout(duration: duration);
+    }
   }
 
   /// Loads a list of music in order
@@ -283,9 +287,9 @@ class FullMusicPlayer {
       initialPosition: initialPosition2,
     );
 
-    index = initialIndex ?? 0;
+    indexInPlaylist = initialIndex ?? 0;
     // set active player to _player0 if the initial index is pair, and vice versa
-    _activePlayerIndex = index! % 2;
+    _activePlayerIndex = indexInPlaylist! % 2;
 
     return success1 && success2;
   }
