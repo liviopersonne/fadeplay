@@ -29,6 +29,7 @@ class FullMusicPlayer {
   /// The player's current index in the playlist
   int? indexInPlaylist;
 
+  // TODO: Implement this
   /// The player's state during a transition
   TransitionState transitionState = TransitionState();
 
@@ -112,6 +113,13 @@ class FullMusicPlayer {
     final wasPlaying = playing;
     final oldIndex = indexInPlaylist;
 
+    if (state == FullProcessingState.inTransition) {
+      logger.warn(
+        "Index change during a transition. A transition clipped outside of a song",
+      );
+      return;
+    }
+
     // Update the full player's index
     indexInPlaylist = switch ((i0, i1)) {
       (null, null) => null,
@@ -135,7 +143,7 @@ class FullMusicPlayer {
         return;
       }
       if (indexInPlaylist == oldIndex - 1) {
-        // Previous track loading, restart current track
+        // Called prev, restart current track
         await _getActivePlayer().pause();
         await _getActivePlayer().seek(Duration.zero);
       }
@@ -209,6 +217,7 @@ class FullMusicPlayer {
 
   Future<void> crossfadeNext({Duration? crossfadeDuration}) async {
     final duration = crossfadeDuration ?? Settings.crossfadeDuration;
+    final startingIndex = _getActivePlayer().player.currentIndex;
 
     if (!playing || _currentPlaylistLength == null) {
       logger.warn("Tried to crossfade while paused");
@@ -221,7 +230,15 @@ class FullMusicPlayer {
         _getInactivePlayer().fadein(duration: duration),
       ]);
 
-      await _getActivePlayer().next();
+      if (_getActivePlayer().player.currentIndex == startingIndex) {
+        // Check that the player didn't reach the end of the track during the transition
+        // If it didn't, move it to the next
+        await _getActivePlayer().next();
+      } else {
+        logger.warn("The track ended during the transition");
+        // If the song ended during the transition, then the active player didn't change automatically
+        _switchActivePlayer();
+      }
     } else {
       // Fading out of the playlist
       await _getActivePlayer().fadeout(duration: duration);

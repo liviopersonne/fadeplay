@@ -4,8 +4,6 @@
 
 ## FullMusicPlayer
 
-FIXME:
-
 - [x] Single player reaching the end of the song manually
 - [x] Manual next
 - [x] Auto next
@@ -22,8 +20,13 @@ FIXME:
 - [x] Check if exactly one player has a null index
 - [x] Add `inTransition` in the player state
 - [x] Make t value (transition percent) a public value
-- [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
-      and update the delay on a discontinuity (if that stream exists) or on status change or on active player switch
-- [ ] Check if I can use the just_audio `clip` function to help with stuff
-- [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
+- [ ] Fadeout ending after the end of a song
 - [ ] Two fadeouts overlapping because transitions are too close
+- [ ] Fadein starting before the end of song because of clipping
+- [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
+      and update the delay on a discontinuity or on status change or on active player switch
+      Actually this seems complicated because what if the delay doesn't actually wait the right period ?
+
+## AudioSource
+
+- [ ] Une the `clip` function when loading a song

@@ -21,7 +21,8 @@ class TestLoadFullMusicWidget extends StatelessWidget {
           // future: testAutoReachEnd(),
           // future: testManualReachEnd(),
           // future: testCrossfade(),
-          future: testPausingDuringCrossfade(),
+          // future: testPausingDuringCrossfade(),
+          future: testCrossfadePastEnd(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -400,6 +401,44 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       // await Future.delayed(Duration(seconds: 2));
 
       await Future.delayed(Duration(seconds: 5));
+      await myPlayer.dispose();
+    }
+
+    return "Crossfades worked";
+  }
+
+  Future<String> testCrossfadePastEnd() async {
+    final fileList = [music1, music2, music3, music4];
+
+    final List<AudioSource> playlist = fileList
+        .map((f) => AudioSource.uri(Uri.file(f)))
+        .toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final success = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (success) {
+      await myPlayer.seek(Duration(minutes: 3, seconds: 25));
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 1));
+
+      logger.log("Started crossfade");
+      myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 20));
+      await Future.delayed(Duration(seconds: 15));
+      logger.log("Middle");
+      await Future.delayed(Duration(seconds: 5));
+      logger.log("Finished crossfade");
+
+      await Future.delayed(Duration(seconds: 5));
+      logger.log("Calling next");
+      await myPlayer.next();
+
+      await Future.delayed(Duration(seconds: 5));
+      logger.log("Calling next");
+      await myPlayer.next();
+
+      await Future.delayed(Duration(seconds: 20));
       await myPlayer.dispose();
     }
 
