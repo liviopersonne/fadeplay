@@ -20,7 +20,7 @@
 - [x] Check if exactly one player has a null index
 - [x] Add `inTransition` in the player state
 - [x] Make t value (transition percent) a public value
-- [ ] Fadeout ending after the end of a song
+- [x] Fadeout ending after the end of a song
 - [ ] Two fadeouts overlapping because transitions are too close
 - [ ] Fadein starting before the end of song because of clipping
 - [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
