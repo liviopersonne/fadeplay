@@ -18,12 +18,11 @@ FIXME:
 - [x] Deal with crossFadeNext at the end of the playlist
 - [x] Pausing during a transition (directly set volume at end value ?)
 - [x] Pausing and playing during a transition
-- [ ] Check if exactly one player has a null index
-- [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
-- [ ] Two fadeouts overlapping because transitions are too close
-- [ ] Add values in player status: InTransition
+- [x] Update player status on active player switch
+- [x] Check if exactly one player has a null index
 - [ ] Make t value (transition percent) a public value
-- [ ] Update player status on active player switch
 - [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
       and update the delay on a discontinuity (if that stream exists) or on status change or on active player switch
 - [ ] Check if I can use the just_audio `clip` function to help with stuff
+- [ ] Fadeout ending after the end of a song, or starting before the end of song because of clipping
+- [ ] Two fadeouts overlapping because transitions are too close

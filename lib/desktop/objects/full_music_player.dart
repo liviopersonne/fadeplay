@@ -83,6 +83,7 @@ class FullMusicPlayer {
     final newIndex = 1 - _activePlayerIndex;
     logger.debug("Switching active player from $oldIndex to $newIndex");
     _activePlayerIndex = newIndex;
+    state = _getActivePlayer().player.processingState;
   }
 
   /// Actions to do when one of the player states changes

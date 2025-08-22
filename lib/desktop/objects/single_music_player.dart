@@ -18,9 +18,6 @@ class SingleMusicPlayer {
   StreamSubscription? _pauseOnNewTrackSubscription;
   int? _currentIndex;
 
-  /// Whether the player is playing
-  var playing = false;
-
   /// A precise stream of the current position in the song used for transitionf
   late final Stream<Duration> precisePositionStream;
 
@@ -97,7 +94,7 @@ class SingleMusicPlayer {
   /// Loads a music from its filepath
   Future<bool> loadMusicFile(String musicFilepath) async {
     logger.debug("Loading audio file at path $musicFilepath");
-    if (playing) {
+    if (player.playing) {
       logger.error(
         "Tried to load an audio file while the player was already playing",
       );
@@ -118,7 +115,7 @@ class SingleMusicPlayer {
     Duration? initialPosition,
   }) async {
     logger.debug("Loading playlist of ${audioSources.length} song(s)");
-    if (playing) {
+    if (player.playing) {
       logger.error(
         "Tried to load a playlist while the player was already playing",
       );
