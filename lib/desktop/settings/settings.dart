@@ -5,7 +5,8 @@ class Settings {
   static double playerVolume = 1.0;
 
   /// The default duration of crossfades
-  static Duration crossfadeDuration = const Duration(seconds: 1);
+  /// This will be used by the player but also by the custom transition creator
+  static Duration defaultcrossfadeDuration = const Duration(seconds: 1);
 
   /// The best precision of transitions:
   /// the position in the music will be seeked at most at this frequency

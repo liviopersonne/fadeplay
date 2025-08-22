@@ -4,5 +4,5 @@ class Artist {
   String? originalName;
   Uri? imageUri;
 
-  Artist({required this.name});
+  Artist({required this.name, this.originalName, this.imageUri});
 }

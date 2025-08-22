@@ -2,8 +2,7 @@
 class Album {
   String title;
   String? originalTitle;
-  int? numberOfTracks;
   Uri? imageUri;
 
-  Album({required this.title});
+  Album({required this.title, this.originalTitle, this.imageUri});
 }

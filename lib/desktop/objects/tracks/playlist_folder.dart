@@ -3,5 +3,5 @@ class PlaylistFolder {
   Uri? imageUri;
   PlaylistFolder? containingFolder;
 
-  PlaylistFolder({required this.name});
+  PlaylistFolder({required this.name, this.imageUri, this.containingFolder});
 }

@@ -216,7 +216,7 @@ class FullMusicPlayer {
   }
 
   Future<void> crossfadeNext({Duration? crossfadeDuration}) async {
-    final duration = crossfadeDuration ?? Settings.crossfadeDuration;
+    final duration = crossfadeDuration ?? Settings.defaultcrossfadeDuration;
     final startingIndex = _getActivePlayer().player.currentIndex;
 
     if (_currentPlaylistLength == null) {

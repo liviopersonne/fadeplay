@@ -5,5 +5,5 @@ class Source {
   String? originalTitle;
   Uri? imageUri;
 
-  Source({required this.title});
+  Source({required this.title, this.originalTitle, this.imageUri});
 }

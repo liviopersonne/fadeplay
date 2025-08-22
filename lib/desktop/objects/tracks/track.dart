@@ -8,9 +8,10 @@ final logger = Logging("Track");
 
 /// A song and its metadata
 class Track {
+  final DateTime createdAt;
   String title;
   String? originalTitle;
-  Map<Artist, ArtistRole> artists = {};
+  Map<Artist, ArtistRole> artists;
   Album? album;
   PositionAndTotal? trackNumber;
   PositionAndTotal? diskNumber;
@@ -18,17 +19,36 @@ class Track {
   Uri fileUri;
   Uri? imageUri;
   Uri? lyricsUri;
-  DateTime createdAt = DateTime.now();
-  Duration duration;
+  final Duration duration;
   Duration? startTime;
   Duration? endTime;
   int? rating;
-  List<String> moods = [];
-  List<String> instruments = [];
+  List<String> moods;
+  List<String> instruments;
   Source? source;
   Safety? safety;
 
-  Track({required this.title, required this.fileUri, required this.duration});
+  Track({
+    DateTime? createdAt,
+    required this.title,
+    this.originalTitle,
+    this.artists = const {},
+    this.album,
+    this.trackNumber,
+    this.diskNumber,
+    this.releaseYear,
+    required this.fileUri,
+    this.imageUri,
+    this.lyricsUri,
+    required this.duration,
+    this.startTime,
+    this.endTime,
+    this.rating,
+    this.moods = const [],
+    this.instruments = const [],
+    this.source,
+    this.safety,
+  }) : createdAt = createdAt ?? DateTime.now();
 
   bool checkValid() {
     final a = logger.check(
@@ -58,6 +78,19 @@ class Track {
 
     return a && b && c && d && e && f;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is Track) {
+      return fileUri == other.fileUri;
+    } else {
+      return false;
+    }
+  }
+
+  // TODO: Use the database id ??
+  @override
+  int get hashCode => fileUri.hashCode;
 }
 
 /// Helper class that implements position and total number of objects
