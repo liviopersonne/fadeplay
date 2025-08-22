@@ -219,9 +219,26 @@ class FullMusicPlayer {
     final duration = crossfadeDuration ?? Settings.crossfadeDuration;
     final startingIndex = _getActivePlayer().player.currentIndex;
 
-    if (!playing || _currentPlaylistLength == null) {
-      logger.warn("Tried to crossfade while paused");
+    if (_currentPlaylistLength == null) {
+      logger.error("Tried to crossfade while no music was loaded");
+      return;
+    }
+
+    if (!playing) {
+      logger.warn("Tried to crossfade while paused, calling next instead");
       return await next();
+    }
+
+    if (state == FullProcessingState.inTransition) {
+      logger.warn(
+        "Tried to crossfade while in a transition, calling next instead",
+      );
+      await pause(); // Pausing to stop the transition
+      await Future.delayed(
+        Duration(milliseconds: 10),
+      ); // Buffering to avoid errors
+      await next();
+      return await play();
     }
 
     if (indexInPlaylist != _currentPlaylistLength! - 1) {

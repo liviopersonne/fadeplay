@@ -22,8 +22,9 @@ class TestLoadFullMusicWidget extends StatelessWidget {
           // future: testManualReachEnd(),
           // future: testCrossfade(),
           // future: testPausingDuringCrossfade(),
-          future: testCrossfadePastEnd(),
+          // future: testCrossfadePastEnd(),
           // future: testCrossfadePastEndWithPause(),
+          future: testOverlappingFadeouts(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -474,6 +475,46 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await myPlayer.prev();
       await Future.delayed(Duration(milliseconds: 100));
       await myPlayer.play();
+
+      await Future.delayed(Duration(seconds: 5));
+      logger.log("Calling next");
+      await myPlayer.next();
+
+      await Future.delayed(Duration(seconds: 20));
+      await myPlayer.dispose();
+    }
+
+    return "Crossfades worked";
+  }
+
+  Future<String> testOverlappingFadeouts() async {
+    final fileList = [music1, music2, music3, music4];
+
+    final List<AudioSource> playlist = fileList
+        .map((f) => AudioSource.uri(Uri.file(f)))
+        .toList();
+
+    final myPlayer = FullMusicPlayer();
+
+    final success = await myPlayer.loadPlaylist(audioSources: playlist);
+
+    if (success) {
+      await myPlayer.play();
+      await Future.delayed(Duration(seconds: 1));
+
+      logger.log("Started crossfade");
+      myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 20));
+      await Future.delayed(Duration(seconds: 15));
+      logger.log("Middle 1");
+      myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 20));
+      await Future.delayed(Duration(seconds: 5));
+      logger.log("Middle 2");
+      await Future.delayed(Duration(seconds: 15));
+      logger.log("Finished crossfade");
+
+      await Future.delayed(Duration(seconds: 5));
+      logger.log("Calling next");
+      await myPlayer.next();
 
       await Future.delayed(Duration(seconds: 5));
       logger.log("Calling next");

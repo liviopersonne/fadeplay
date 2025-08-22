@@ -21,7 +21,7 @@
 - [x] Add `inTransition` in the player state
 - [x] Make t value (transition percent) a public value
 - [x] Fadeout ending after the end of a song
-- [ ] Two fadeouts overlapping because transitions are too close
+- [x] Two fadeouts overlapping because transitions are too close
 - [ ] Fadein starting before the end of song because of clipping
 - [ ] Remove the precise position subscription and replace it by a future delay to trigger the transition,
       and update the delay on a discontinuity or on status change or on active player switch

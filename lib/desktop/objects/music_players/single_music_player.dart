@@ -66,7 +66,7 @@ class SingleMusicPlayer {
       final realNewIndex = newIndex == null ? null : newIndex - 1;
       final oldIndex = _currentIndex;
       if (realNewIndex != oldIndex) {
-        logger.log("Got new index: $realNewIndex");
+        logger.debug("Got new index: $realNewIndex");
         // emit new value to newCurrentIndexStream
         _newIndexController.add(realNewIndex);
         _currentIndex = realNewIndex;
