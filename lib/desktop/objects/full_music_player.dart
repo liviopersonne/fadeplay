@@ -8,6 +8,39 @@ import 'package:rxdart/rxdart.dart';
 
 final logger = Logging("FullMusicPlayer");
 
+class TransitionState {
+  String? track1; // TODO: Change the type when we're actually tracking tracks
+  String? track2;
+  double? progress;
+}
+
+enum FullProcessingState {
+  buffering,
+  completed,
+  idle,
+  loading,
+  ready,
+  inTransition;
+
+  static FullProcessingState ofProcessingState(ProcessingState state) =>
+      switch (state) {
+        ProcessingState.buffering => FullProcessingState.buffering,
+        ProcessingState.completed => FullProcessingState.completed,
+        ProcessingState.idle => FullProcessingState.idle,
+        ProcessingState.loading => FullProcessingState.loading,
+        ProcessingState.ready => FullProcessingState.ready,
+      };
+
+  ProcessingState toProcessingState() => switch (this) {
+    FullProcessingState.buffering => ProcessingState.buffering,
+    FullProcessingState.completed => ProcessingState.completed,
+    FullProcessingState.idle => ProcessingState.idle,
+    FullProcessingState.loading => ProcessingState.loading,
+    FullProcessingState.ready => ProcessingState.ready,
+    FullProcessingState.inTransition => ProcessingState.ready,
+  };
+}
+
 /// A music player with 2 AudioPlayers than can crossfade between tracks
 class FullMusicPlayer {
   final _player0 = SingleMusicPlayer();
@@ -19,13 +52,16 @@ class FullMusicPlayer {
   int? _currentPlaylistLength;
 
   /// Whether the player is playing
-  var playing = false;
+  bool playing = false;
 
   /// The player's current state
-  var state = ProcessingState.idle;
+  FullProcessingState state = FullProcessingState.idle;
 
   /// The player's current index in the playlist
   int? indexInPlaylist;
+
+  /// The player's state during a transition
+  TransitionState transitionState = TransitionState();
 
   FullMusicPlayer() {
     logger.debug("Insianciating a new FullMusicPlayer");
@@ -83,13 +119,19 @@ class FullMusicPlayer {
     final newIndex = 1 - _activePlayerIndex;
     logger.debug("Switching active player from $oldIndex to $newIndex");
     _activePlayerIndex = newIndex;
-    state = _getActivePlayer().player.processingState;
+    state = FullProcessingState.ofProcessingState(
+      _getActivePlayer().player.processingState,
+    );
   }
 
   /// Actions to do when one of the player states changes
   void _onNewPlayerStates(PlayerState s0, PlayerState s1) {
     playing = s0.playing | s1.playing;
-    state = _activePlayerIndex == 0 ? s0.processingState : s1.processingState;
+    state = (s0.playing && s1.playing)
+        ? FullProcessingState.inTransition
+        : (_activePlayerIndex == 0
+              ? FullProcessingState.ofProcessingState(s0.processingState)
+              : FullProcessingState.ofProcessingState(s1.processingState));
   }
 
   /// Actions to do when the player's index changes.
