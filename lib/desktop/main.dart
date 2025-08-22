@@ -1,5 +1,5 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/single_music_player.dart';
+import 'package:fadeplay/desktop/objects/music_players/single_music_player.dart';
 import 'package:fadeplay/desktop/db/schemas.dart';
 import 'package:fadeplay/desktop/widgets/test/database.dart';
 import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';

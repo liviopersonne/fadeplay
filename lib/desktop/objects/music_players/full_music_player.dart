@@ -1,45 +1,14 @@
 import 'dart:async';
 
+import 'package:fadeplay/desktop/objects/music_players/full_processing_state.dart';
+import 'package:fadeplay/desktop/objects/music_players/transition_state.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/single_music_player.dart';
+import 'package:fadeplay/desktop/objects/music_players/single_music_player.dart';
 import 'package:fadeplay/desktop/settings/settings.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 final logger = Logging("FullMusicPlayer");
-
-class TransitionState {
-  String? track1; // TODO: Change the type when we're actually tracking tracks
-  String? track2;
-  double? progress;
-}
-
-enum FullProcessingState {
-  buffering,
-  completed,
-  idle,
-  loading,
-  ready,
-  inTransition;
-
-  static FullProcessingState ofProcessingState(ProcessingState state) =>
-      switch (state) {
-        ProcessingState.buffering => FullProcessingState.buffering,
-        ProcessingState.completed => FullProcessingState.completed,
-        ProcessingState.idle => FullProcessingState.idle,
-        ProcessingState.loading => FullProcessingState.loading,
-        ProcessingState.ready => FullProcessingState.ready,
-      };
-
-  ProcessingState toProcessingState() => switch (this) {
-    FullProcessingState.buffering => ProcessingState.buffering,
-    FullProcessingState.completed => ProcessingState.completed,
-    FullProcessingState.idle => ProcessingState.idle,
-    FullProcessingState.loading => ProcessingState.loading,
-    FullProcessingState.ready => ProcessingState.ready,
-    FullProcessingState.inTransition => ProcessingState.ready,
-  };
-}
 
 /// A music player with 2 AudioPlayers than can crossfade between tracks
 class FullMusicPlayer {

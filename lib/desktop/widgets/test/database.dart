@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:fadeplay/desktop/objects/full_music_player.dart';
+import 'package:fadeplay/desktop/objects/music_players/full_music_player.dart';
 import 'package:fadeplay/desktop/db/schemas.dart';
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:flutter/material.dart';
