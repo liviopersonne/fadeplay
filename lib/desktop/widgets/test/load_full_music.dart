@@ -375,13 +375,15 @@ class TestLoadFullMusicWidget extends StatelessWidget {
       await myPlayer.play();
       await Future.delayed(Duration(seconds: 2));
 
-      myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 2));
-      await Future.delayed(Duration(milliseconds: 100));
+      myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 5));
+      await Future.delayed(Duration(seconds: 1));
 
       await myPlayer.pause();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 1));
 
       await myPlayer.play();
+      await Future.delayed(Duration(seconds: 3));
+      // await myPlayer.play();
       await Future.delayed(Duration(seconds: 20));
 
       // await myPlayer.crossfadeNext(crossfadeDuration: Duration(seconds: 1));

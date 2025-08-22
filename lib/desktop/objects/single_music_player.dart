@@ -206,6 +206,13 @@ class SingleMusicPlayer {
         completer.complete();
       }
 
+      if (player.playing == false) {
+        // Paused during transition
+        player.setVolume(endVolume);
+        timer.cancel();
+        completer.complete();
+      }
+
       // TODO: Check for other cancel situations
       // TODO: Check if linear interpolation sounds linear to the ear
     });
