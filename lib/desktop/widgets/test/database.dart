@@ -105,7 +105,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t1,
             artistId: a1,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
     await db
@@ -114,7 +114,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t2,
             artistId: a1,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
     await db
@@ -123,7 +123,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t2,
             artistId: a2,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
     await db
@@ -132,7 +132,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t3,
             artistId: a1,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
     await db
@@ -141,7 +141,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t1,
             artistId: a2,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
 
@@ -159,7 +159,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t3,
             artistId: a1,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
 
@@ -169,7 +169,7 @@ class TestDatabaseWidget extends StatelessWidget {
           TrackArtistsCompanion.insert(
             trackId: t3,
             artistId: a1,
-            artistType: ArtistType.artist,
+            artistRole: ArtistRole.artist,
           ),
         );
 

@@ -4712,16 +4712,16 @@ class $TrackArtistsTable extends TrackArtists
     ),
   );
   @override
-  late final GeneratedColumnWithTypeConverter<ArtistType, int> artistType =
+  late final GeneratedColumnWithTypeConverter<ArtistRole, int> artistRole =
       GeneratedColumn<int>(
-        'artist_type',
+        'artist_role',
         aliasedName,
         false,
         type: DriftSqlType.int,
         requiredDuringInsert: true,
-      ).withConverter<ArtistType>($TrackArtistsTable.$converterartistType);
+      ).withConverter<ArtistRole>($TrackArtistsTable.$converterartistRole);
   @override
-  List<GeneratedColumn> get $columns => [trackId, artistId, artistType];
+  List<GeneratedColumn> get $columns => [trackId, artistId, artistRole];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4771,10 +4771,10 @@ class $TrackArtistsTable extends TrackArtists
         DriftSqlType.int,
         data['${effectivePrefix}artist_id'],
       )!,
-      artistType: $TrackArtistsTable.$converterartistType.fromSql(
+      artistRole: $TrackArtistsTable.$converterartistRole.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
-          data['${effectivePrefix}artist_type'],
+          data['${effectivePrefix}artist_role'],
         )!,
       ),
     );
@@ -4785,18 +4785,18 @@ class $TrackArtistsTable extends TrackArtists
     return $TrackArtistsTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<ArtistType, int, int> $converterartistType =
-      const EnumIndexConverter<ArtistType>(ArtistType.values);
+  static JsonTypeConverter2<ArtistRole, int, int> $converterartistRole =
+      const EnumIndexConverter<ArtistRole>(ArtistRole.values);
 }
 
 class TrackArtist extends DataClass implements Insertable<TrackArtist> {
   final int trackId;
   final int artistId;
-  final ArtistType artistType;
+  final ArtistRole artistRole;
   const TrackArtist({
     required this.trackId,
     required this.artistId,
-    required this.artistType,
+    required this.artistRole,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4804,8 +4804,8 @@ class TrackArtist extends DataClass implements Insertable<TrackArtist> {
     map['track_id'] = Variable<int>(trackId);
     map['artist_id'] = Variable<int>(artistId);
     {
-      map['artist_type'] = Variable<int>(
-        $TrackArtistsTable.$converterartistType.toSql(artistType),
+      map['artist_role'] = Variable<int>(
+        $TrackArtistsTable.$converterartistRole.toSql(artistRole),
       );
     }
     return map;
@@ -4815,7 +4815,7 @@ class TrackArtist extends DataClass implements Insertable<TrackArtist> {
     return TrackArtistsCompanion(
       trackId: Value(trackId),
       artistId: Value(artistId),
-      artistType: Value(artistType),
+      artistRole: Value(artistRole),
     );
   }
 
@@ -4827,8 +4827,8 @@ class TrackArtist extends DataClass implements Insertable<TrackArtist> {
     return TrackArtist(
       trackId: serializer.fromJson<int>(json['trackId']),
       artistId: serializer.fromJson<int>(json['artistId']),
-      artistType: $TrackArtistsTable.$converterartistType.fromJson(
-        serializer.fromJson<int>(json['artistType']),
+      artistRole: $TrackArtistsTable.$converterartistRole.fromJson(
+        serializer.fromJson<int>(json['artistRole']),
       ),
     );
   }
@@ -4838,25 +4838,25 @@ class TrackArtist extends DataClass implements Insertable<TrackArtist> {
     return <String, dynamic>{
       'trackId': serializer.toJson<int>(trackId),
       'artistId': serializer.toJson<int>(artistId),
-      'artistType': serializer.toJson<int>(
-        $TrackArtistsTable.$converterartistType.toJson(artistType),
+      'artistRole': serializer.toJson<int>(
+        $TrackArtistsTable.$converterartistRole.toJson(artistRole),
       ),
     };
   }
 
-  TrackArtist copyWith({int? trackId, int? artistId, ArtistType? artistType}) =>
+  TrackArtist copyWith({int? trackId, int? artistId, ArtistRole? artistRole}) =>
       TrackArtist(
         trackId: trackId ?? this.trackId,
         artistId: artistId ?? this.artistId,
-        artistType: artistType ?? this.artistType,
+        artistRole: artistRole ?? this.artistRole,
       );
   TrackArtist copyWithCompanion(TrackArtistsCompanion data) {
     return TrackArtist(
       trackId: data.trackId.present ? data.trackId.value : this.trackId,
       artistId: data.artistId.present ? data.artistId.value : this.artistId,
-      artistType: data.artistType.present
-          ? data.artistType.value
-          : this.artistType,
+      artistRole: data.artistRole.present
+          ? data.artistRole.value
+          : this.artistRole,
     );
   }
 
@@ -4865,51 +4865,51 @@ class TrackArtist extends DataClass implements Insertable<TrackArtist> {
     return (StringBuffer('TrackArtist(')
           ..write('trackId: $trackId, ')
           ..write('artistId: $artistId, ')
-          ..write('artistType: $artistType')
+          ..write('artistRole: $artistRole')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(trackId, artistId, artistType);
+  int get hashCode => Object.hash(trackId, artistId, artistRole);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TrackArtist &&
           other.trackId == this.trackId &&
           other.artistId == this.artistId &&
-          other.artistType == this.artistType);
+          other.artistRole == this.artistRole);
 }
 
 class TrackArtistsCompanion extends UpdateCompanion<TrackArtist> {
   final Value<int> trackId;
   final Value<int> artistId;
-  final Value<ArtistType> artistType;
+  final Value<ArtistRole> artistRole;
   final Value<int> rowid;
   const TrackArtistsCompanion({
     this.trackId = const Value.absent(),
     this.artistId = const Value.absent(),
-    this.artistType = const Value.absent(),
+    this.artistRole = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrackArtistsCompanion.insert({
     required int trackId,
     required int artistId,
-    required ArtistType artistType,
+    required ArtistRole artistRole,
     this.rowid = const Value.absent(),
   }) : trackId = Value(trackId),
        artistId = Value(artistId),
-       artistType = Value(artistType);
+       artistRole = Value(artistRole);
   static Insertable<TrackArtist> custom({
     Expression<int>? trackId,
     Expression<int>? artistId,
-    Expression<int>? artistType,
+    Expression<int>? artistRole,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (trackId != null) 'track_id': trackId,
       if (artistId != null) 'artist_id': artistId,
-      if (artistType != null) 'artist_type': artistType,
+      if (artistRole != null) 'artist_role': artistRole,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4917,13 +4917,13 @@ class TrackArtistsCompanion extends UpdateCompanion<TrackArtist> {
   TrackArtistsCompanion copyWith({
     Value<int>? trackId,
     Value<int>? artistId,
-    Value<ArtistType>? artistType,
+    Value<ArtistRole>? artistRole,
     Value<int>? rowid,
   }) {
     return TrackArtistsCompanion(
       trackId: trackId ?? this.trackId,
       artistId: artistId ?? this.artistId,
-      artistType: artistType ?? this.artistType,
+      artistRole: artistRole ?? this.artistRole,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4937,9 +4937,9 @@ class TrackArtistsCompanion extends UpdateCompanion<TrackArtist> {
     if (artistId.present) {
       map['artist_id'] = Variable<int>(artistId.value);
     }
-    if (artistType.present) {
-      map['artist_type'] = Variable<int>(
-        $TrackArtistsTable.$converterartistType.toSql(artistType.value),
+    if (artistRole.present) {
+      map['artist_role'] = Variable<int>(
+        $TrackArtistsTable.$converterartistRole.toSql(artistRole.value),
       );
     }
     if (rowid.present) {
@@ -4953,7 +4953,7 @@ class TrackArtistsCompanion extends UpdateCompanion<TrackArtist> {
     return (StringBuffer('TrackArtistsCompanion(')
           ..write('trackId: $trackId, ')
           ..write('artistId: $artistId, ')
-          ..write('artistType: $artistType, ')
+          ..write('artistRole: $artistRole, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11544,14 +11544,14 @@ typedef $$TrackArtistsTableCreateCompanionBuilder =
     TrackArtistsCompanion Function({
       required int trackId,
       required int artistId,
-      required ArtistType artistType,
+      required ArtistRole artistRole,
       Value<int> rowid,
     });
 typedef $$TrackArtistsTableUpdateCompanionBuilder =
     TrackArtistsCompanion Function({
       Value<int> trackId,
       Value<int> artistId,
-      Value<ArtistType> artistType,
+      Value<ArtistRole> artistRole,
       Value<int> rowid,
     });
 
@@ -11606,9 +11606,9 @@ class $$TrackArtistsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnWithTypeConverterFilters<ArtistType, ArtistType, int> get artistType =>
+  ColumnWithTypeConverterFilters<ArtistRole, ArtistRole, int> get artistRole =>
       $composableBuilder(
-        column: $table.artistType,
+        column: $table.artistRole,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
 
@@ -11668,8 +11668,8 @@ class $$TrackArtistsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get artistType => $composableBuilder(
-    column: $table.artistType,
+  ColumnOrderings<int> get artistRole => $composableBuilder(
+    column: $table.artistRole,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11729,9 +11729,9 @@ class $$TrackArtistsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumnWithTypeConverter<ArtistType, int> get artistType =>
+  GeneratedColumnWithTypeConverter<ArtistRole, int> get artistRole =>
       $composableBuilder(
-        column: $table.artistType,
+        column: $table.artistRole,
         builder: (column) => column,
       );
 
@@ -11812,24 +11812,24 @@ class $$TrackArtistsTableTableManager
               ({
                 Value<int> trackId = const Value.absent(),
                 Value<int> artistId = const Value.absent(),
-                Value<ArtistType> artistType = const Value.absent(),
+                Value<ArtistRole> artistRole = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrackArtistsCompanion(
                 trackId: trackId,
                 artistId: artistId,
-                artistType: artistType,
+                artistRole: artistRole,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required int trackId,
                 required int artistId,
-                required ArtistType artistType,
+                required ArtistRole artistRole,
                 Value<int> rowid = const Value.absent(),
               }) => TrackArtistsCompanion.insert(
                 trackId: trackId,
                 artistId: artistId,
-                artistType: artistType,
+                artistRole: artistRole,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

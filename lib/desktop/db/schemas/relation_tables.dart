@@ -69,7 +69,7 @@ class TrackArtists extends Table with TrackId {
     onUpdate: KeyAction.cascade,
     onDelete: KeyAction.cascade,
   )();
-  IntColumn get artistType => intEnum<ArtistType>()();
+  IntColumn get artistRole => intEnum<ArtistRole>()();
 
   @override
   List<Set<Column>>? get uniqueKeys => [

@@ -25,7 +25,7 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 
 - All metadata except
   - ? added original title (for translations)
-  - ? salbum becomes an id
+  - ? album becomes an id
   - artist becomes
     - artistString (for representation)
     - the many to many link between track and artist is stored in a separate table TrackArtists
@@ -63,7 +63,7 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 
 - Track id
 - Artist id
-- ArtistType
+- ArtistRole
 
 ### Playlists
 
@@ -102,7 +102,7 @@ But sometimes the data we want to show (metadata) isn't exactly the same as the 
 
 - TransitionType
   - manual automatic mix
-- ArtistType
+- ArtistRole
   - artist featured composer remixer cover
 - Safety
   - safe lyrics language weirdVoice screaming ost other
