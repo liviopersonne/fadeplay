@@ -1,6 +1,7 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/music_players/single_music_player.dart';
 import 'package:fadeplay/desktop/db/schemas.dart';
+import 'package:fadeplay/desktop/widgets/test/audio_metadata.dart';
 import 'package:fadeplay/desktop/widgets/test/database.dart';
 import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';
 import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
@@ -36,8 +37,9 @@ class DesktopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       // home: TestLoadSingleMusicWidget(),
-      home: TestLoadFullMusicWidget(),
+      // home: TestLoadFullMusicWidget(),
       // home: TestDatabaseWidget(),
+      home: TestAudioMetadata(),
       debugShowCheckedModeBanner: false,
     );
   }

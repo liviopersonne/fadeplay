@@ -26,6 +26,9 @@ dependencies:
   drift_flutter: ^0.2.5
   path_provider: ^2.1.5
 
+  # Track metadata
+  audio_metadata_reader: ^1.4.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
