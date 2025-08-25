@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/album.dart';
 import 'package:fadeplay/desktop/objects/tracks/artist.dart';
+import 'package:fadeplay/desktop/objects/tracks/audio_metadata.dart';
 import 'package:fadeplay/desktop/objects/tracks/source.dart';
+import 'package:path/path.dart' as path;
 
 final logger = Logging("Track");
 
@@ -17,9 +21,10 @@ class Track {
   PositionAndTotal? diskNumber;
   int? releaseYear;
   Uri fileUri;
+  File file;
   Uri? imageUri;
   Uri? lyricsUri;
-  final Duration duration;
+  late Duration duration;
   Duration? startTime;
   Duration? endTime;
   int? rating;
@@ -40,7 +45,6 @@ class Track {
     required this.fileUri,
     this.imageUri,
     this.lyricsUri,
-    required this.duration,
     this.startTime,
     this.endTime,
     this.rating,
@@ -48,7 +52,17 @@ class Track {
     this.instruments = const [],
     this.source,
     this.safety,
-  }) : createdAt = createdAt ?? DateTime.now();
+  }) : createdAt = createdAt ?? DateTime.now(),
+       file = File.fromUri(fileUri) {
+    if (MetadataReader.checkExtension(file)) {
+      duration = MetadataReader.readFileLength(file)!;
+    } else {
+      logger.error(
+        "Invalid extension used to initialize a track '${path.extension(fileUri.path)}'",
+      );
+      throw ArgumentError("Invalid file extension: ${fileUri.path}");
+    }
+  }
 
   bool checkValid() {
     final a = logger.check(

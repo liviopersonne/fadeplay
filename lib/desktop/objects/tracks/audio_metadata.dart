@@ -51,7 +51,7 @@ class TrackMetadata {
 class MetadataReader {
   MetadataReader._();
 
-  static bool _checkExtension(File audioFile) {
+  static bool checkExtension(File audioFile) {
     if (audioFile.path.endsWith('.mp3')) {
       return true;
     } else if (audioFile.path.endsWith(".mp4") ||
@@ -67,7 +67,7 @@ class MetadataReader {
   }
 
   static TrackMetadata? readFileMetadata(File audioFile) {
-    if (_checkExtension(audioFile)) {
+    if (checkExtension(audioFile)) {
       final audioMetadata = readMetadata(audioFile, getImage: false);
       return TrackMetadata(
         title: audioMetadata.title,
@@ -84,7 +84,7 @@ class MetadataReader {
   }
 
   static void writeFileMetadata(TrackMetadata metadata, File audioFile) {
-    if (_checkExtension(audioFile)) {
+    if (checkExtension(audioFile)) {
       updateMetadata(audioFile, (meta) {
         meta.setTitle(metadata.title);
         meta.setArtist(metadata.artist);
@@ -98,7 +98,7 @@ class MetadataReader {
   }
 
   static Duration? readFileLength(File audioFile) {
-    if (_checkExtension(audioFile)) {
+    if (checkExtension(audioFile)) {
       final audioMetadata = readMetadata(audioFile, getImage: false);
       return audioMetadata.duration;
     }
