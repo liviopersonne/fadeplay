@@ -48,56 +48,60 @@ class TrackMetadata {
   }
 }
 
-bool checkExtension(File audioFile) {
-  if (audioFile.path.endsWith('.mp3')) {
-    return true;
-  } else if (audioFile.path.endsWith(".mp4") ||
-      audioFile.path.endsWith(".m4a") ||
-      audioFile.path.endsWith(".flac") ||
-      audioFile.path.endsWith(".wav")) {
-    logger.warn("Unrecommended extension for file '${audioFile.path}");
-    return true;
-  } else {
-    logger.error("Unsupported extension for file '${audioFile.path}");
-    return false;
-  }
-}
+class MetadataReader {
+  MetadataReader._();
 
-TrackMetadata? readFileMetadata(File audioFile) {
-  if (checkExtension(audioFile)) {
-    final audioMetadata = readMetadata(audioFile, getImage: false);
-    return TrackMetadata(
-      title: audioMetadata.title,
-      artist: audioMetadata.artist,
-      album: audioMetadata.album,
-      trackNumber: audioMetadata.trackNumber,
-      trackTotal: audioMetadata.trackTotal,
-      cdNumber: audioMetadata.discNumber,
-      cdTotal: audioMetadata.totalDisc,
-      year: audioMetadata.year?.year,
-    );
+  static bool _checkExtension(File audioFile) {
+    if (audioFile.path.endsWith('.mp3')) {
+      return true;
+    } else if (audioFile.path.endsWith(".mp4") ||
+        audioFile.path.endsWith(".m4a") ||
+        audioFile.path.endsWith(".flac") ||
+        audioFile.path.endsWith(".wav")) {
+      logger.warn("Unrecommended extension for file '${audioFile.path}");
+      return true;
+    } else {
+      logger.error("Unsupported extension for file '${audioFile.path}");
+      return false;
+    }
   }
-  return null;
-}
 
-void writeFileMetadata(TrackMetadata metadata, File audioFile) {
-  if (checkExtension(audioFile)) {
-    updateMetadata(audioFile, (meta) {
-      meta.setTitle(metadata.title);
-      meta.setArtist(metadata.artist);
-      meta.setAlbum(metadata.album);
-      meta.setTrackNumber(metadata.trackNumber);
-      meta.setTrackTotal(metadata.trackTotal);
-      meta.setCD(metadata.cdNumber, metadata.cdTotal);
-      meta.setYear(metadata.year == null ? null : DateTime(metadata.year!));
-    });
+  static TrackMetadata? readFileMetadata(File audioFile) {
+    if (_checkExtension(audioFile)) {
+      final audioMetadata = readMetadata(audioFile, getImage: false);
+      return TrackMetadata(
+        title: audioMetadata.title,
+        artist: audioMetadata.artist,
+        album: audioMetadata.album,
+        trackNumber: audioMetadata.trackNumber,
+        trackTotal: audioMetadata.trackTotal,
+        cdNumber: audioMetadata.discNumber,
+        cdTotal: audioMetadata.totalDisc,
+        year: audioMetadata.year?.year,
+      );
+    }
+    return null;
   }
-}
 
-Duration? readFileLength(File audioFile) {
-  if (checkExtension(audioFile)) {
-    final audioMetadata = readMetadata(audioFile, getImage: false);
-    return audioMetadata.duration;
+  static void writeFileMetadata(TrackMetadata metadata, File audioFile) {
+    if (_checkExtension(audioFile)) {
+      updateMetadata(audioFile, (meta) {
+        meta.setTitle(metadata.title);
+        meta.setArtist(metadata.artist);
+        meta.setAlbum(metadata.album);
+        meta.setTrackNumber(metadata.trackNumber);
+        meta.setTrackTotal(metadata.trackTotal);
+        meta.setCD(metadata.cdNumber, metadata.cdTotal);
+        meta.setYear(metadata.year == null ? null : DateTime(metadata.year!));
+      });
+    }
   }
-  return null;
+
+  static Duration? readFileLength(File audioFile) {
+    if (_checkExtension(audioFile)) {
+      final audioMetadata = readMetadata(audioFile, getImage: false);
+      return audioMetadata.duration;
+    }
+    return null;
+  }
 }

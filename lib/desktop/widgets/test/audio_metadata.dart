@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:audio_metadata_reader/audio_metadata_reader.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/audio_metadata.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +34,7 @@ class TestAudioMetadata extends StatelessWidget {
   }
 
   Future<String> loadMetadata() async {
-    final meta = readFileMetadata(File(music1));
+    final meta = MetadataReader.readFileMetadata(File(music1));
 
     final short = meta?.toString() ?? "No metadata found";
     final long = meta?.fullString() ?? "No metadata found";
@@ -65,7 +64,7 @@ class TestAudioMetadata extends StatelessWidget {
       trackTotal: 28,
     );
 
-    writeFileMetadata(meta, File(music1));
+    MetadataReader.writeFileMetadata(meta, File(music1));
 
     return "Success";
   }
@@ -75,5 +74,4 @@ class TestAudioMetadata extends StatelessWidget {
   [x] Artiste de l'album au lieu de artiste
   [x] Genre dupliqué
   [x] Année pas lue
-
 */
