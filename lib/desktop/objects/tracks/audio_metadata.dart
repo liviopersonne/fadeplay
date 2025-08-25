@@ -5,6 +5,11 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 
 final logger = Logging("AudioMetadata");
 
+// NOTE: The functions here work only with the modifications I personnaly made to the audio_metadata_reader library
+// To see these changes check:
+//  - https://github.com/ClementBeal/audio_metadata_reader/pull/90 (fix genre duplication)
+//  - https://github.com/ClementBeal/audio_metadata_reader/pull/91 (fix setArtist)
+
 class TrackMetadata {
   final String? title;
   final String? artist;
@@ -28,7 +33,7 @@ class TrackMetadata {
 
   @override
   String toString() {
-    return """TrackMetadata<${title ?? "No Title"} - ${artist ?? "No Artist"} - ${album ?? "No Album"}>""";
+    return "TrackMetadata<${title ?? "No Title"} - ${artist ?? "No Artist"} - ${album ?? "No Album"}>";
   }
 
   String fullString() {
@@ -69,6 +74,7 @@ TrackMetadata? readFileMetadata(File audioFile) {
       trackTotal: audioMetadata.trackTotal,
       cdNumber: audioMetadata.discNumber,
       cdTotal: audioMetadata.totalDisc,
+      year: audioMetadata.year?.year,
     );
   }
   return null;
@@ -86,4 +92,12 @@ void writeFileMetadata(TrackMetadata metadata, File audioFile) {
       meta.setYear(metadata.year == null ? null : DateTime(metadata.year!));
     });
   }
+}
+
+Duration? readFileLength(File audioFile) {
+  if (checkExtension(audioFile)) {
+    final audioMetadata = readMetadata(audioFile, getImage: false);
+    return audioMetadata.duration;
+  }
+  return null;
 }

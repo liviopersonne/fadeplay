@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_metadata_reader/audio_metadata_reader.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/audio_metadata.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class TestAudioMetadata extends StatelessWidget {
       body: Center(
         child: FutureBuilder(
           future: loadMetadata(),
+          // future: writeMetadata(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text("Loading...");
@@ -42,4 +44,36 @@ class TestAudioMetadata extends StatelessWidget {
 
     return long;
   }
+
+  Future<String> writeMetadata() async {
+    final meta = TrackMetadata(
+      title: "New Title",
+      artist: "New Artist",
+      album: "New Album",
+      cdNumber: 1,
+      cdTotal: 5,
+      trackNumber: 12,
+      trackTotal: 20,
+      year: 2010,
+    );
+
+    final og = TrackMetadata(
+      title: "Timber Hearth",
+      artist: "Andrew Prahlow",
+      album: "Outer Wilds (Original Soundtrack)",
+      trackNumber: 1,
+      trackTotal: 28,
+    );
+
+    writeFileMetadata(meta, File(music1));
+
+    return "Success";
+  }
 }
+
+/* FIXME: 
+  [x] Artiste de l'album au lieu de artiste
+  [x] Genre dupliqué
+  [x] Année pas lue
+
+*/
