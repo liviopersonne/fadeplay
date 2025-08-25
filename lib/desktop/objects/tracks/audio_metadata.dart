@@ -69,6 +69,7 @@ TrackMetadata? readFileMetadata(File audioFile) {
       trackTotal: audioMetadata.trackTotal,
       cdNumber: audioMetadata.discNumber,
       cdTotal: audioMetadata.totalDisc,
+      year: audioMetadata.year?.year,
     );
   }
   return null;
@@ -86,4 +87,12 @@ void writeFileMetadata(TrackMetadata metadata, File audioFile) {
       meta.setYear(metadata.year == null ? null : DateTime(metadata.year!));
     });
   }
+}
+
+Duration? readFileLength(File audioFile) {
+  if (checkExtension(audioFile)) {
+    final audioMetadata = readMetadata(audioFile, getImage: false);
+    return audioMetadata.duration;
+  }
+  return null;
 }
