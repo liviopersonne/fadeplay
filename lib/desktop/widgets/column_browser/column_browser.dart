@@ -46,25 +46,25 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
               .toList(),
         ),
 
-        Column(
-          children: widget.controller.tracks
-              .map(
-                (track) => Row(
-                  children: widget.controller.columns
-                      .map(
-                        (column) => Container(
-                          color: Colors.blue,
-                          width: column.width,
-                          child: Text(
-                            column.getValue(track),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              )
-              .toList(),
+        Expanded(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: widget.controller.tracks.length,
+            itemBuilder: (context, index) => Row(
+              children: widget.controller.columns
+                  .map(
+                    (column) => Container(
+                      color: Colors.blue,
+                      width: column.width,
+                      child: Text(
+                        column.getValue(widget.controller.tracks[index]),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
         ),
 
         // SingleChildScrollView(

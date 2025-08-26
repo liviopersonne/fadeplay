@@ -26,10 +26,12 @@ class TestColumnBrowserWidget extends StatelessWidget {
       fileUri: Uri.file(music4),
     );
     final tracks = [track1, track2, track3, track4];
+    final longPlaylist = List.filled(100, track1);
     final columns = [TitleColumn()];
     final controller = ColumnBrowserController();
-    controller.updateTracks(tracks);
     controller.updateColumns(columns);
+    // controller.updateTracks(tracks);
+    controller.updateTracks(longPlaylist);
     return Scaffold(
       body: Center(
         child: Container(
