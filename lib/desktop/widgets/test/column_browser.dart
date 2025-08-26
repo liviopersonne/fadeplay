@@ -1,8 +1,10 @@
+import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/column_browser/columns/title_column.dart';
 import 'package:flutter/material.dart';
 
-class TestLoadSingleMusicWidget extends StatelessWidget {
-  const TestLoadSingleMusicWidget({super.key});
+class TestColumnBrowserWidget extends StatelessWidget {
+  const TestColumnBrowserWidget({super.key});
 
   final music1 =
       "/home/livio/Musique/Musique/Songs/Super Mario Odyssey/SUPER MARIO ODYSSEY ORIGINAL SOUND TRACK/Steam Gardens.mp3";
@@ -16,6 +18,27 @@ class TestLoadSingleMusicWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: ColumnBrowser()));
+    final track1 = Track(title: "Steam Gardens", fileUri: Uri.file(music1));
+    final track2 = Track(title: "Spider Dance", fileUri: Uri.file(music2));
+    final track3 = Track(title: "Adieu", fileUri: Uri.file(music3));
+    final track4 = Track(
+      title: "There Are Stars Inside of Me",
+      fileUri: Uri.file(music4),
+    );
+    final tracks = [track1, track2, track3, track4];
+    final columns = [TitleColumn()];
+    final controller = ColumnBrowserController();
+    controller.updateTracks(tracks);
+    controller.updateColumns(columns);
+    return Scaffold(
+      body: Center(
+        child: Container(
+          color: Colors.grey[200],
+          height: 500,
+          width: 500,
+          child: ColumnBrowser(controller: controller),
+        ),
+      ),
+    );
   }
 }
