@@ -16,6 +16,7 @@ class Track {
   String title;
   String? originalTitle;
   Map<Artist, ArtistRole> artists;
+  String? artistString;
   Album? album;
   PositionAndTotal? trackNumber;
   PositionAndTotal? diskNumber;
@@ -38,6 +39,7 @@ class Track {
     required this.title,
     this.originalTitle,
     this.artists = const {},
+    this.artistString,
     this.album,
     this.trackNumber,
     this.diskNumber,

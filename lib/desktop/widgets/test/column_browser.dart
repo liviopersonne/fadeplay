@@ -1,6 +1,8 @@
+import 'package:fadeplay/desktop/objects/columns/track_columns.dart/artist_column.dart';
+import 'package:fadeplay/desktop/objects/columns/track_columns.dart/duration_column.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
-import 'package:fadeplay/desktop/widgets/column_browser/columns/title_column.dart';
+import 'package:fadeplay/desktop/objects/columns/track_columns.dart/title_column.dart';
 import 'package:flutter/material.dart';
 
 class TestColumnBrowserWidget extends StatelessWidget {
@@ -18,16 +20,30 @@ class TestColumnBrowserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final track1 = Track(title: "Steam Gardens", fileUri: Uri.file(music1));
-    final track2 = Track(title: "Spider Dance", fileUri: Uri.file(music2));
-    final track3 = Track(title: "Adieu", fileUri: Uri.file(music3));
+    final track1 = Track(
+      title: "Steam Gardens",
+      artistString: "Koji Kondo",
+      fileUri: Uri.file(music1),
+    );
+    final track2 = Track(
+      title: "Spider Dance",
+      artistString: "Toby Fox",
+      fileUri: Uri.file(music2),
+    );
+    final track3 = Track(
+      title: "Adieu",
+      artistString: "Emily Bindiger",
+      fileUri: Uri.file(music3),
+    );
     final track4 = Track(
       title: "There Are Stars Inside of Me",
+      artistString: "Izar",
       fileUri: Uri.file(music4),
     );
+
     final tracks = [track1, track2, track3, track4];
     final longPlaylist = List.filled(100, track1);
-    final columns = [TitleColumn()];
+    final columns = [TitleColumn(), ArtistColumn(), DurationColumn()];
     final controller = ColumnBrowserController();
     controller.updateColumns(columns);
     // controller.updateTracks(tracks);

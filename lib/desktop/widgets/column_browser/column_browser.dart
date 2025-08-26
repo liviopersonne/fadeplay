@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
-import 'item_column.dart';
+import '../../objects/columns/item_column.dart';
 
 class ColumnBrowserController extends ChangeNotifier {
   List<Track> tracks = [];
@@ -29,7 +29,9 @@ class ColumnBrowser extends StatefulWidget {
 class _ColumnBrowserState extends State<ColumnBrowser> {
   @override
   Widget build(BuildContext context) {
-    logger.log("Columns: ${widget.controller.columns}");
+    logger.debug(
+      "Building ColumnBrowser with columns '${widget.controller.columns}'",
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -38,8 +40,8 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
           children: widget.controller.columns
               .map(
                 (column) => Container(
-                  color: Colors.amber,
-                  width: column.width,
+                  color: Colors.amber, // TODO: Get color from theme
+                  width: 100, // TODO: Get width from layout
                   child: Text(column.label, overflow: TextOverflow.ellipsis),
                 ),
               )
@@ -54,8 +56,8 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
               children: widget.controller.columns
                   .map(
                     (column) => Container(
-                      color: Colors.blue,
-                      width: column.width,
+                      color: Colors.blue, // TODO: Get color from theme
+                      width: 100, // TODO: Get width from layout
                       child: Text(
                         column.getValue(widget.controller.tracks[index]),
                         overflow: TextOverflow.ellipsis,
@@ -66,13 +68,6 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
             ),
           ),
         ),
-
-        // SingleChildScrollView(
-        //   scrollDirection: Axis.vertical,
-        //   child: ListView.builder(
-        //     itemBuilder: (context, index) =>
-        //   ),
-        // ),
       ],
     );
   }

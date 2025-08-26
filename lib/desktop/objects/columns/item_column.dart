@@ -9,10 +9,7 @@ abstract class ItemColumn<T> {
   /// Column header
   String get label;
 
-  /// Width if the column
-  double? get width;
-
-  /// Returns the value to be shown in the column for a specific item
+  /// Tthe value to be shown in the column for a specific item
   String getValue(T item);
 
   /// Checks if a value is less or equal than another.
@@ -23,7 +20,7 @@ abstract class ItemColumn<T> {
 
   @override
   bool operator ==(Object other) {
-    if (other is ItemColumn) {
+    if (other is ItemColumn<T>) {
       return id == other.id;
     }
     return false;
