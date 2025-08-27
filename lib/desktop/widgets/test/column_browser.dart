@@ -1,9 +1,9 @@
-import 'package:fadeplay/desktop/objects/columns/item_column.dart';
-import 'package:fadeplay/desktop/objects/columns/track_columns/artist_column.dart';
-import 'package:fadeplay/desktop/objects/columns/track_columns/duration_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/track_columns/artist_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/track_columns/duration_column.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
-import 'package:fadeplay/desktop/objects/columns/track_columns/title_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/track_columns/title_column.dart';
 import 'package:flutter/material.dart';
 
 class TestColumnBrowserWidget extends StatelessWidget {
@@ -44,18 +44,11 @@ class TestColumnBrowserWidget extends StatelessWidget {
 
     final tracks = [track1, track2, track3, track4];
     final longPlaylist = List.filled(100, track1);
-    final columns = [
-      'title',
-      'artist',
-      'duration',
-      'aze',
-      'duration',
-      'artist',
-    ];
+    final columns = ['title', 'artist', 'duration'];
     final controller = ColumnBrowserController();
     controller.updateColumns(columns);
-    // controller.updateTracks(tracks);
-    controller.updateTracks(longPlaylist);
+    controller.updateTracks(tracks);
+    // controller.updateTracks(longPlaylist);
     return Scaffold(
       body: Center(
         child: Container(

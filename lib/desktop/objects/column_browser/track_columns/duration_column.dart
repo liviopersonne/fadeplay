@@ -1,6 +1,6 @@
 import 'package:fadeplay/desktop/objects/duration_formatter.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
-import 'package:fadeplay/desktop/objects/columns/item_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 
 class DurationColumn extends ItemColumn {
   // Singleton definition

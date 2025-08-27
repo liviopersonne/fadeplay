@@ -1,7 +1,9 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/widgets/column_browser/column_browser_headers.dart';
+import 'package:fadeplay/desktop/widgets/column_browser/column_browser_track.dart';
 import 'package:flutter/material.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
-import '../../objects/columns/item_column.dart';
+import '../../objects/column_browser/item_column.dart';
 
 final logger = Logging("ColumnBrowser");
 
@@ -47,38 +49,18 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
       "Building ColumnBrowser with columns '${widget.controller.columns}'",
     );
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: widget.controller.columns
-              .map(
-                (column) => Container(
-                  color: Colors.amber, // TODO: Get color from theme
-                  width: 100, // TODO: Get width from layout
-                  child: Text(column.label, overflow: TextOverflow.ellipsis),
-                ),
-              )
-              .toList(),
-        ),
+        ColumnBrowserHeaders(columns: widget.controller.columns),
 
         Expanded(
           child: ListView.builder(
             scrollDirection: Axis.vertical,
             itemCount: widget.controller.tracks.length,
-            itemBuilder: (context, index) => Row(
-              children: widget.controller.columns
-                  .map(
-                    (column) => Container(
-                      color: Colors.blue, // TODO: Get color from theme
-                      width: 100, // TODO: Get width from layout
-                      child: Text(
-                        column.getValue(widget.controller.tracks[index]),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  )
-                  .toList(),
+            itemBuilder: (context, index) => BrowserTrack(
+              track: widget.controller.tracks[index],
+              columns: widget.controller.columns,
             ),
           ),
         ),

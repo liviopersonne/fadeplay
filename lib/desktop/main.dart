@@ -1,4 +1,4 @@
-import 'package:fadeplay/desktop/objects/columns/item_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/music_players/single_music_player.dart';
 import 'package:fadeplay/desktop/db/schemas.dart';
