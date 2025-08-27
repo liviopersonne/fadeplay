@@ -31,10 +31,9 @@ class ColumnBrowserController {
   }
 
   void incrementColumnSize({required int colIndex, required double delta}) {
-    columnsLayout.value = columnsLayout.value.incrementedColumnSize(
-      colIndex: colIndex,
-      delta: delta,
-    );
+    columnsLayout.value = ColumnBrowserLayout.copy(columnsLayout.value)
+      ..incrementColumnSize(colIndex: colIndex, delta: delta);
+    // block mutation with a .copy()
   }
 }
 

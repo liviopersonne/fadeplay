@@ -57,46 +57,43 @@ class ColumnBrowserLayout {
     );
   }
 
-  ColumnBrowserLayout copy() {
-    return ColumnBrowserLayout(elems: List.from(elems));
+  /// Create a copy of an existing layout
+  static ColumnBrowserLayout copy(ColumnBrowserLayout layout) {
+    final List<ColumnWithWidths> newElems = List.from(layout.elems);
+
+    for (int i = 0; i < newElems.length; i++) {
+      final oldCol = layout.elems[i];
+      newElems[i] = ColumnWithWidths(
+        column: oldCol.column,
+        columnWidth: oldCol.columnWidth,
+        minColumnWidth: oldCol.minColumnWidth,
+      );
+    }
+
+    return ColumnBrowserLayout(elems: newElems);
   }
 
   /// Adds or substracts an amount `delta` to the column at index `colIndex`
-  ColumnBrowserLayout incrementedColumnSize({
-    required int colIndex,
-    required double delta,
-  }) {
-    // TODO: Check if it's possible to do this without having to instanciate a new object
+  void incrementColumnSize({required int colIndex, required double delta}) {
     if (!logger.check(
       colIndex > 0 && colIndex < elems.length,
       message: "Incrementing a column size of invalid index '$colIndex'",
       // note that we can't modify column 0 because there isn't supposed to be a separator
     )) {
-      this;
+      return;
     }
 
-    final List<ColumnWithWidths> newElems = List.from(elems);
-    final oldCol1 = elems[colIndex];
-    final oldCol2 = elems[colIndex - 1];
+    final col1 = elems[colIndex];
+    final col2 = elems[colIndex - 1];
+    final newValue1 = col1.columnWidth - delta;
+    final newValue2 = col2.columnWidth + delta;
 
-    if (oldCol1.columnWidth - delta < oldCol1.minColumnWidth ||
-        oldCol2.columnWidth + delta < oldCol2.minColumnWidth) {
-      // we don't want to go under a column's minimum size
-      return this;
+    // check that I don't go under the minimum width
+    if (newValue1 < col1.minColumnWidth || newValue2 < col2.minColumnWidth) {
+      return;
     }
 
-    newElems[colIndex] = ColumnWithWidths(
-      column: oldCol1.column,
-      columnWidth: oldCol1.columnWidth - delta,
-      minColumnWidth: oldCol1.minColumnWidth,
-    );
-
-    newElems[colIndex - 1] = ColumnWithWidths(
-      column: oldCol2.column,
-      columnWidth: oldCol2.columnWidth + delta,
-      minColumnWidth: oldCol2.minColumnWidth,
-    );
-
-    return ColumnBrowserLayout(elems: newElems);
+    col1.columnWidth = newValue1;
+    col2.columnWidth = newValue2;
   }
 }
