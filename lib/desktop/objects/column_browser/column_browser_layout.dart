@@ -13,10 +13,12 @@ class ColumnWithWidths {
   double minColumnWidth;
 
   ColumnWithWidths({
-    required this.column,
+    ItemColumn? column,
+    String? columnId, // as a replacement for the column
     double? columnWidth,
     double? minColumnWidth,
-  }) : minColumnWidth = ((minColumnWidth ?? 0) > 0)
+  }) : column = column ?? ItemColumn.allColumns[columnId]!,
+       minColumnWidth = ((minColumnWidth ?? 0) > 0)
            ? minColumnWidth!
            : Settings.minColumnWidth,
        columnWidth = columnWidth ?? 2 * Settings.minColumnWidth {
@@ -27,7 +29,10 @@ class ColumnWithWidths {
 /// Layout for a column browser which dictates the columns and their respective sizes
 class ColumnBrowserLayout {
   final List<ColumnWithWidths> elems;
+  // the total width of each column
   final double _totalWidth;
+  // the scale at which the layout is shown (see adaptedToWidth)
+  double scale = 1;
 
   ColumnBrowserLayout({required this.elems})
     : _totalWidth = elems.fold(
@@ -118,9 +123,11 @@ class ColumnBrowserLayout {
       for (var elem in adaptedLayout.elems) {
         elem.columnWidth *= ratio;
       }
+      adaptedLayout.scale = ratio;
     } else {
       // we need to delete or shrink some columns to make it fit
-      double remainder = _totalWidth - maxWidth;
+
+      double remainder = _totalWidth - maxWidth; // what remains to be deleted
 
       while (remainder > 0) {
         final lastElem = adaptedLayout.elems.last;
@@ -128,17 +135,17 @@ class ColumnBrowserLayout {
             lastElem.columnWidth - lastElem.minColumnWidth;
 
         if (lastElemRemainder > remainder) {
+          // we can just shrink the last column
           lastElem.columnWidth -= remainder;
           remainder = 0;
         } else {
+          // we have to delete the last column
           remainder -= lastElem.columnWidth;
           adaptedLayout.elems.removeLast();
         }
       }
 
       adaptedLayout.elems.last.columnWidth -= remainder;
-
-      // TODO: iterate
     }
     return adaptedLayout;
   }

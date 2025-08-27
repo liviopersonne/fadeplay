@@ -43,7 +43,25 @@ class TestColumnBrowserWidget extends StatelessWidget {
     final longPlaylist = List.filled(100, track1);
     final columnIds = ['title', 'artist', 'duration'];
     final controller = ColumnBrowserController();
-    final layout = ColumnBrowserLayout.fromIds(columnIds);
+    final layout = ColumnBrowserLayout(
+      elems: [
+        ColumnWithWidths(
+          columnId: 'title',
+          columnWidth: 300,
+          minColumnWidth: 50,
+        ),
+        ColumnWithWidths(
+          columnId: 'artist',
+          columnWidth: 200,
+          minColumnWidth: 50,
+        ),
+        ColumnWithWidths(
+          columnId: 'duration',
+          columnWidth: 70,
+          minColumnWidth: 50,
+        ),
+      ],
+    );
     controller.updateLayout(layout);
     controller.updateTracks(tracks);
     // controller.updateTracks(longPlaylist);

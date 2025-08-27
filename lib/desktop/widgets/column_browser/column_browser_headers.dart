@@ -37,6 +37,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
                       controller: controller,
                       separatorWidth: separatorWidth,
                       index: i,
+                      layoutScale: columnLayout.scale,
                     ),
                   ],
                 ),
@@ -77,11 +78,13 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
     required this.controller,
     required this.separatorWidth,
     required this.index,
+    required this.layoutScale,
   });
 
   final ColumnBrowserController controller;
   final double separatorWidth;
   final int index;
+  final double layoutScale;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +110,10 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
             // - -1 if moved to the left
             // - +1 if moved to the right
             if (delta != null) {
-              controller.incrementColumnSize(colIndex: index, delta: delta);
+              controller.incrementColumnSize(
+                colIndex: index,
+                delta: delta / layoutScale, // division to counteract scaling
+              );
             }
           },
         ),
