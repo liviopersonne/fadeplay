@@ -1,26 +1,26 @@
-import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
+import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:flutter/material.dart';
 
 class ColumnBrowserHeaders extends StatelessWidget {
   const ColumnBrowserHeaders({
     super.key,
-    required this.columns,
+    required this.columnLayout,
     required this.separatorWidth,
   });
 
-  final List<ItemColumn> columns;
+  final ColumnBrowserLayout columnLayout;
   final double separatorWidth;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (int i = 0; i < columns.length; i++) ...[
+        for (int i = 0; i < columnLayout.elems.length; i++) ...[
           i == 0
               // 1st column with no separator
               ? Expanded(
                   child: ColumnBrowserHeaderLabel(
-                    label: columns[i].label,
+                    label: columnLayout.elems[i].column.label,
                     separatorWidth: separatorWidth,
                   ),
                 )
@@ -30,7 +30,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
                     fit: StackFit.passthrough,
                     children: [
                       ColumnBrowserHeaderLabel(
-                        label: columns[i].label,
+                        label: columnLayout.elems[i].column.label,
                         separatorWidth: separatorWidth,
                       ),
                       ColumnBrowserHeaderSeparator(
@@ -86,6 +86,14 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
           color: Colors.red, // TODO: Get color from theme
           width: separatorWidth, // TODO: Get separator width from layout
         ),
+        onHorizontalDragUpdate: (details) {
+          // logger.log(details.toString());
+          final delta = details.primaryDelta;
+          // delta is:
+          // - 0 if no change
+          // - -1 if moved to the left
+          // - +1 if moved to the right
+        },
       ),
     );
   }

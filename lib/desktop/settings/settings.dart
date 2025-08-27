@@ -16,6 +16,9 @@ class Settings {
   /// transitions won't be offset by more than this value
   static Duration worstTransitionPrecision = const Duration(milliseconds: 50);
 
+  /// The default minimum width allowed for columns in the column browser
+  static double minColumnWidth = 50;
+
   /// Save settings
   static void saveSettings() {
     throw UnimplementedError("Haven't implemented saving settings yet");
