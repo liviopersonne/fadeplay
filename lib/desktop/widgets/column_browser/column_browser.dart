@@ -42,10 +42,12 @@ class ColumnBrowser extends StatefulWidget {
     super.key,
     required this.controller,
     this.separatorWidth = 5, // TODO: Get separator width from layout
+    this.dragTargetWidth = 30,
   });
 
   final ColumnBrowserController controller;
   final double separatorWidth;
+  final double dragTargetWidth;
 
   @override
   State<ColumnBrowser> createState() => _ColumnBrowserState();
@@ -73,6 +75,7 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
                     controller: widget.controller,
                     columnLayout: adaptedLayout,
                     separatorWidth: widget.separatorWidth,
+                    dragTargetWidth: widget.dragTargetWidth,
                   ),
 
                   Expanded(
