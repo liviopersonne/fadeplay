@@ -89,22 +89,28 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
       left: 0,
       top: 0,
       bottom: 0,
-      child: GestureDetector(
-        child: Container(
-          color: Colors.red, // TODO: Get color from theme
-          width: separatorWidth, // TODO: Get separator width from layout
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeLeftRight,
+        child: GestureDetector(
+          child: Container(
+            color: Colors.red, // TODO: Get color from theme
+            width: separatorWidth, // TODO: Get separator width from layout
+          ),
+          onTap: () {
+            SystemMouseCursors.resizeLeftRight;
+          },
+          onHorizontalDragUpdate: (details) {
+            // logger.log(details.toString());
+            final delta = details.primaryDelta;
+            // delta is:
+            // - 0 if no change
+            // - -1 if moved to the left
+            // - +1 if moved to the right
+            if (delta != null) {
+              controller.incrementColumnSize(colIndex: index, delta: delta);
+            }
+          },
         ),
-        onHorizontalDragUpdate: (details) {
-          // logger.log(details.toString());
-          final delta = details.primaryDelta;
-          // delta is:
-          // - 0 if no change
-          // - -1 if moved to the left
-          // - +1 if moved to the right
-          if (delta != null) {
-            controller.incrementColumnSize(colIndex: index, delta: delta);
-          }
-        },
       ),
     );
   }
