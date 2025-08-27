@@ -51,11 +51,26 @@ class TestColumnBrowserWidget extends StatelessWidget {
     // controller.updateTracks(longPlaylist);
     return Scaffold(
       body: Center(
-        child: Container(
-          color: Colors.grey[200],
-          height: 500,
-          width: 500,
-          child: ColumnBrowser(controller: controller),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 50,
+          children: [
+            Container(
+              color: Colors.grey[200],
+              height: 500,
+              width: 500,
+              child: ColumnBrowser(controller: controller),
+            ),
+            GestureDetector(
+              onTap: () => controller.addTrack(track1),
+              child: Container(
+                height: 30,
+                width: 100,
+                color: Colors.blue,
+                child: Text("Add track"),
+              ),
+            ),
+          ],
         ),
       ),
     );

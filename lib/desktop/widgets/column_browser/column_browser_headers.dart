@@ -81,9 +81,11 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
       left: 0,
       top: 0,
       bottom: 0,
-      child: Container(
-        color: Colors.red, // TODO: Get color from theme
-        width: separatorWidth, // TODO: Get separator width from layout
+      child: GestureDetector(
+        child: Container(
+          color: Colors.red, // TODO: Get color from theme
+          width: separatorWidth, // TODO: Get separator width from layout
+        ),
       ),
     );
   }

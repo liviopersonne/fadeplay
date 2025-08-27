@@ -7,16 +7,26 @@ import '../../objects/column_browser/item_column.dart';
 
 final logger = Logging("ColumnBrowser");
 
-class ColumnBrowserController extends ChangeNotifier {
-  List<Track> tracks = [];
-  List<ItemColumn> columns = []; // TODO: Load from settings
+class ColumnBrowserController {
+  final ValueNotifier<List<Track>> tracks = ValueNotifier([]);
+  final ValueNotifier<List<ItemColumn>> columns = ValueNotifier(
+    [],
+  ); // TODO: Load from settings
 
   void updateTracks(List<Track> newTracks) {
-    tracks = newTracks;
-    notifyListeners();
+    logger.debug("Updating tracks (${tracks.value.length} new tracks)");
+    tracks.value = newTracks;
+  }
+
+  void addTrack(Track newTrack) {
+    logger.debug("Adding track ${newTrack.title}");
+    tracks.value = List.from(tracks.value)..add(newTrack);
+    // the List.from is used so that the list doesn't mutate:
+    // the value changes => the notification is sent
   }
 
   void updateColumns(List<String> newColumns) {
+    logger.debug("Updating columns");
     final trackCols = ItemColumn.allColumns;
     final List<ItemColumn> newTrackColumns = [];
     for (var label in newColumns) {
@@ -28,8 +38,7 @@ class ColumnBrowserController extends ChangeNotifier {
       }
     }
 
-    columns = newTrackColumns;
-    notifyListeners();
+    columns.value = newTrackColumns;
   }
 }
 
@@ -53,27 +62,37 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
     logger.debug(
       "Building ColumnBrowser with columns '${widget.controller.columns}'",
     );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        ColumnBrowserHeaders(
-          columns: widget.controller.columns,
-          separatorWidth: widget.separatorWidth,
-        ),
-
-        Expanded(
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: widget.controller.tracks.length,
-            itemBuilder: (context, index) => BrowserTrack(
-              track: widget.controller.tracks[index],
-              columns: widget.controller.columns,
+    return ValueListenableBuilder<List<ItemColumn>>(
+      valueListenable: widget.controller.columns,
+      builder: (context, columns, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            ColumnBrowserHeaders(
+              columns: columns,
               separatorWidth: widget.separatorWidth,
             ),
-          ),
-        ),
-      ],
+
+            Expanded(
+              child: ValueListenableBuilder<List<Track>>(
+                valueListenable: widget.controller.tracks,
+                builder: (context, trackList, child) {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: trackList.length,
+                    itemBuilder: (context, index) => BrowserTrack(
+                      track: trackList[index],
+                      columns: columns,
+                      separatorWidth: widget.separatorWidth,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
