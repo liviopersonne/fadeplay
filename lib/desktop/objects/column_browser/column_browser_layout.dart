@@ -19,14 +19,8 @@ class ColumnWithWidths {
   }) : minColumnWidth = ((minColumnWidth ?? 0) > 0)
            ? minColumnWidth!
            : Settings.minColumnWidth,
-       columnWidth =
-           columnWidth ??
-           100 // TODO: Hard coded value
-           {
-    columnWidth = max(
-      this.columnWidth,
-      this.minColumnWidth,
-    ); // FIXME: This isn't working
+       columnWidth = columnWidth ?? 2 * Settings.minColumnWidth {
+    this.columnWidth = max(this.columnWidth, this.minColumnWidth);
   }
 }
 
