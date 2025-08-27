@@ -19,7 +19,8 @@ class ColumnWithWidths {
   }) : minColumnWidth = ((minColumnWidth ?? 0) > 0)
            ? minColumnWidth!
            : Settings.minColumnWidth,
-       columnWidth = columnWidth ?? 50; // TODO: Put late definition
+       columnWidth =
+           columnWidth ?? Settings.minColumnWidth; // TODO: Put late definition
   // {
   //   columnWidth = max(columnWidth ?? 0, this.minColumnWidth);
   // }
@@ -61,6 +62,7 @@ class ColumnBrowserLayout {
     required int colIndex,
     required double delta,
   }) {
+    // TODO: Check if it's possible to do this without having to instanciate a new object
     if (!logger.check(
       colIndex > 0 && colIndex < elems.length,
       message: "Incrementing a column size of invalid index '$colIndex'",
@@ -70,18 +72,19 @@ class ColumnBrowserLayout {
     }
 
     final List<ColumnWithWidths> newElems = List.from(elems);
-    final oldCol = elems[colIndex];
+    final oldCol1 = elems[colIndex];
+    final oldCol2 = elems[colIndex - 1];
 
     newElems[colIndex] = ColumnWithWidths(
-      column: oldCol.column,
-      columnWidth: oldCol.columnWidth + delta,
-      minColumnWidth: oldCol.minColumnWidth,
+      column: oldCol1.column,
+      columnWidth: oldCol1.columnWidth - delta,
+      minColumnWidth: oldCol1.minColumnWidth,
     );
 
     newElems[colIndex - 1] = ColumnWithWidths(
-      column: oldCol.column,
-      columnWidth: oldCol.columnWidth - delta,
-      minColumnWidth: oldCol.minColumnWidth,
+      column: oldCol2.column,
+      columnWidth: oldCol2.columnWidth + delta,
+      minColumnWidth: oldCol2.minColumnWidth,
     );
 
     return ColumnBrowserLayout(elems: newElems);

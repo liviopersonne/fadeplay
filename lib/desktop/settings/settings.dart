@@ -17,7 +17,7 @@ class Settings {
   static Duration worstTransitionPrecision = const Duration(milliseconds: 50);
 
   /// The default minimum width allowed for columns in the column browser
-  static double minColumnWidth = 50;
+  static double minColumnWidth = 100;
 
   /// Save settings
   static void saveSettings() {
