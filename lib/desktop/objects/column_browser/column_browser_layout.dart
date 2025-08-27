@@ -6,11 +6,11 @@ import 'package:fadeplay/desktop/settings/settings.dart';
 
 final logger = Logging("ColumnBrowserLayout");
 
-/// Layout that maps the column to its corresponding width
+/// Element of a layout that maps a column to its corresponding width and minimum width
 class ColumnWithWidths {
   final ItemColumn column;
-  late final double columnWidth;
-  final double minColumnWidth;
+  late double columnWidth;
+  double minColumnWidth;
 
   ColumnWithWidths({
     required this.column,
@@ -18,16 +18,22 @@ class ColumnWithWidths {
     double? minColumnWidth,
   }) : minColumnWidth = ((minColumnWidth ?? 0) > 0)
            ? minColumnWidth!
-           : Settings.minColumnWidth {
-    columnWidth = max(columnWidth ?? 0, this.minColumnWidth);
-  }
+           : Settings.minColumnWidth,
+       columnWidth = columnWidth ?? 50; // TODO: Put late definition
+  // {
+  //   columnWidth = max(columnWidth ?? 0, this.minColumnWidth);
+  // }
 }
 
+/// Layout for a column browser which dictates the columns and their respective sizes
 class ColumnBrowserLayout {
   List<ColumnWithWidths> elems;
 
   ColumnBrowserLayout({required this.elems});
 
+  /// Returns a basic layout where the columns are chosen by the ids passed
+  ///
+  /// All columns will have a default width equal to `Settings.minColumnWidth`
   static ColumnBrowserLayout fromIds(List<String> columnIds) {
     final allCols = ItemColumn.allColumns;
     final List<ItemColumn> newTrackColumns = [];
@@ -44,5 +50,44 @@ class ColumnBrowserLayout {
           .map((col) => ColumnWithWidths(column: col))
           .toList(),
     );
+  }
+
+  ColumnBrowserLayout copy() {
+    return ColumnBrowserLayout(elems: List.from(elems));
+  }
+
+  /// Adds or substracts an amount `delta` to the column at index `colIndex`
+  ColumnBrowserLayout incrementedColumnSize({
+    required int colIndex,
+    required double delta,
+  }) {
+    if (!logger.check(
+      colIndex > 0 && colIndex < elems.length,
+      message: "Incrementing a column size of invalid index '$colIndex'",
+      // note that we can't modify column 0 because there isn't supposed to be a separator
+    )) {
+      this;
+    }
+
+    final List<ColumnWithWidths> newElems = List.from(elems);
+    final oldCol = elems[colIndex];
+
+    newElems[colIndex] = ColumnWithWidths(
+      column: oldCol.column,
+      columnWidth: oldCol.columnWidth + delta,
+      minColumnWidth: oldCol.minColumnWidth,
+    );
+
+    newElems[colIndex - 1] = ColumnWithWidths(
+      column: oldCol.column,
+      columnWidth: oldCol.columnWidth - delta,
+      minColumnWidth: oldCol.minColumnWidth,
+    );
+
+    return ColumnBrowserLayout(elems: newElems);
+
+    // TODO: Check that it doesn't go under the minimum
+    // elems[colIndex].columnWidth += delta;
+    // elems[colIndex - 1].columnWidth -= delta;
   }
 }

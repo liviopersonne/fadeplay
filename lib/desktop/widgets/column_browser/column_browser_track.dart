@@ -17,27 +17,23 @@ class BrowserTrack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: columnLayout.elems
-          .map(
-            (elems) => Expanded(
-              child: Container(
-                color: Colors.blue, // TODO: Get color from theme
-                // width: 100, // TODO: Get width from layout
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left:
-                        separatorWidth +
-                        3, // TODO: Get extra padding from layout
-                  ),
-                  child: Text(
-                    elems.column.getValue(track),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+      children: [
+        for (int i = 0; i < columnLayout.elems.length; i++) ...[
+          Container(
+            color: Colors.blue, // TODO: Get color from theme
+            width: columnLayout.elems[i].columnWidth,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: separatorWidth + 3, // TODO: Get extra padding from layout
+              ),
+              child: Text(
+                columnLayout.elems[i].column.getValue(track),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-          )
-          .toList(),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -29,6 +29,14 @@ class ColumnBrowserController {
     logger.debug("Updating layout");
     columnsLayout.value = newLayout;
   }
+
+  void incrementColumnSize({required int colIndex, required double delta}) {
+    logger.log("Incrementing");
+    columnsLayout.value = columnsLayout.value.incrementedColumnSize(
+      colIndex: colIndex,
+      delta: delta,
+    );
+  }
 }
 
 class ColumnBrowser extends StatefulWidget {
@@ -59,6 +67,7 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
           mainAxisSize: MainAxisSize.max,
           children: [
             ColumnBrowserHeaders(
+              controller: widget.controller,
               columnLayout: columnsLayout,
               separatorWidth: widget.separatorWidth,
             ),

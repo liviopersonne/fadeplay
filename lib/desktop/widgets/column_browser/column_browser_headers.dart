@@ -1,13 +1,16 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
+import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:flutter/material.dart';
 
 class ColumnBrowserHeaders extends StatelessWidget {
   const ColumnBrowserHeaders({
     super.key,
+    required this.controller,
     required this.columnLayout,
     required this.separatorWidth,
   });
 
+  final ColumnBrowserController controller;
   final ColumnBrowserLayout columnLayout;
   final double separatorWidth;
 
@@ -18,26 +21,24 @@ class ColumnBrowserHeaders extends StatelessWidget {
         for (int i = 0; i < columnLayout.elems.length; i++) ...[
           i == 0
               // 1st column with no separator
-              ? Expanded(
-                  child: ColumnBrowserHeaderLabel(
-                    label: columnLayout.elems[i].column.label,
-                    separatorWidth: separatorWidth,
-                  ),
+              ? ColumnBrowserHeaderLabel(
+                  colWithWidth: columnLayout.elems[i],
+                  separatorWidth: separatorWidth,
                 )
               // Other columns
-              : Expanded(
-                  child: Stack(
-                    fit: StackFit.passthrough,
-                    children: [
-                      ColumnBrowserHeaderLabel(
-                        label: columnLayout.elems[i].column.label,
-                        separatorWidth: separatorWidth,
-                      ),
-                      ColumnBrowserHeaderSeparator(
-                        separatorWidth: separatorWidth,
-                      ),
-                    ],
-                  ),
+              : Stack(
+                  fit: StackFit.passthrough,
+                  children: [
+                    ColumnBrowserHeaderLabel(
+                      colWithWidth: columnLayout.elems[i],
+                      separatorWidth: separatorWidth,
+                    ),
+                    ColumnBrowserHeaderSeparator(
+                      controller: controller,
+                      separatorWidth: separatorWidth,
+                      index: i,
+                    ),
+                  ],
                 ),
         ],
       ],
@@ -48,32 +49,39 @@ class ColumnBrowserHeaders extends StatelessWidget {
 class ColumnBrowserHeaderLabel extends StatelessWidget {
   const ColumnBrowserHeaderLabel({
     super.key,
-    required this.label,
+    required this.colWithWidth,
     required this.separatorWidth,
   });
 
-  final String label;
+  final ColumnWithWidths colWithWidth;
   final double separatorWidth;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.amber, // TODO: Get color from theme
-      //width: 100, // TODO: Get width from layout
+      width: colWithWidth.columnWidth,
       child: Padding(
         padding: EdgeInsets.only(
           left: separatorWidth + 3, // TODO: Get extra padding from layout
         ),
-        child: Text(label, overflow: TextOverflow.ellipsis),
+        child: Text(colWithWidth.column.label, overflow: TextOverflow.ellipsis),
       ),
     );
   }
 }
 
 class ColumnBrowserHeaderSeparator extends StatelessWidget {
-  const ColumnBrowserHeaderSeparator({super.key, required this.separatorWidth});
+  const ColumnBrowserHeaderSeparator({
+    super.key,
+    required this.controller,
+    required this.separatorWidth,
+    required this.index,
+  });
 
+  final ColumnBrowserController controller;
   final double separatorWidth;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +101,9 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
           // - 0 if no change
           // - -1 if moved to the left
           // - +1 if moved to the right
+          if (delta != null) {
+            controller.incrementColumnSize(colIndex: index, delta: delta);
+          }
         },
       ),
     );
