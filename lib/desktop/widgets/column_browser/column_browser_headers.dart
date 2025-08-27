@@ -27,6 +27,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
               // Other columns
               : Expanded(
                   child: Stack(
+                    fit: StackFit.passthrough,
                     children: [
                       ColumnBrowserHeaderLabel(
                         label: columns[i].label,
