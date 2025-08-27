@@ -42,7 +42,7 @@ class ColumnBrowser extends StatefulWidget {
     super.key,
     required this.controller,
     this.separatorWidth = 5, // TODO: Get separator width from layout
-    this.dragTargetWidth = 30,
+    this.dragTargetWidth = 30, // TODO: Get drag target width from layout
   });
 
   final ColumnBrowserController controller;
