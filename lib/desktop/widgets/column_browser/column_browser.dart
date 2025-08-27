@@ -1,18 +1,32 @@
+import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import '../../objects/columns/item_column.dart';
 
+final logger = Logging("ColumnBrowser");
+
 class ColumnBrowserController extends ChangeNotifier {
   List<Track> tracks = [];
-  List<ItemColumn<Track>> columns = []; // TODO: Load from settings
+  List<ItemColumn> columns = []; // TODO: Load from settings
 
   void updateTracks(List<Track> newTracks) {
     tracks = newTracks;
     notifyListeners();
   }
 
-  void updateColumns(List<ItemColumn<Track>> newColumns) {
-    columns = newColumns;
+  void updateColumns(List<String> newColumns) {
+    final trackCols = ItemColumn.allColumns;
+    final List<ItemColumn> newTrackColumns = [];
+    for (var label in newColumns) {
+      final col = trackCols[label];
+      if (col == null) {
+        logger.error("Invalid TrackItemColumn label '$label'");
+      } else {
+        newTrackColumns.add(col);
+      }
+    }
+
+    columns = newTrackColumns;
     notifyListeners();
   }
 }

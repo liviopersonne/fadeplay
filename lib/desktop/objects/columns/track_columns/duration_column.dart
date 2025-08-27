@@ -2,7 +2,11 @@ import 'package:fadeplay/desktop/objects/duration_formatter.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/objects/columns/item_column.dart';
 
-class DurationColumn extends ItemColumn<Track> {
+class DurationColumn extends ItemColumn {
+  // Singleton definition
+  DurationColumn._() : super();
+  static final DurationColumn instance = DurationColumn._();
+
   @override
   String get id => "duration";
 
