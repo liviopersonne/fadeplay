@@ -34,9 +34,14 @@ class ColumnBrowserController extends ChangeNotifier {
 }
 
 class ColumnBrowser extends StatefulWidget {
-  const ColumnBrowser({super.key, required this.controller});
+  const ColumnBrowser({
+    super.key,
+    required this.controller,
+    this.separatorWidth = 2, // TODO: Get separator width from layout
+  });
 
   final ColumnBrowserController controller;
+  final double separatorWidth;
 
   @override
   State<ColumnBrowser> createState() => _ColumnBrowserState();
@@ -52,7 +57,10 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.max,
       children: [
-        ColumnBrowserHeaders(columns: widget.controller.columns),
+        ColumnBrowserHeaders(
+          columns: widget.controller.columns,
+          separatorWidth: widget.separatorWidth,
+        ),
 
         Expanded(
           child: ListView.builder(
@@ -61,6 +69,7 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
             itemBuilder: (context, index) => BrowserTrack(
               track: widget.controller.tracks[index],
               columns: widget.controller.columns,
+              separatorWidth: widget.separatorWidth,
             ),
           ),
         ),

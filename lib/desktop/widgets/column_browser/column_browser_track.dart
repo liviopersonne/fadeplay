@@ -3,10 +3,16 @@ import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:flutter/material.dart';
 
 class BrowserTrack extends StatelessWidget {
-  const BrowserTrack({super.key, required this.track, required this.columns});
+  const BrowserTrack({
+    super.key,
+    required this.track,
+    required this.columns,
+    required this.separatorWidth,
+  });
 
   final List<ItemColumn> columns;
   final Track track;
+  final double separatorWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +23,16 @@ class BrowserTrack extends StatelessWidget {
               child: Container(
                 color: Colors.blue, // TODO: Get color from theme
                 // width: 100, // TODO: Get width from layout
-                child: Text(
-                  column.getValue(track),
-                  overflow: TextOverflow.ellipsis,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left:
+                        separatorWidth +
+                        3, // TODO: Get extra padding from layout
+                  ),
+                  child: Text(
+                    column.getValue(track),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),
