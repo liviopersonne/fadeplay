@@ -31,7 +31,6 @@ class ColumnBrowserController {
   }
 
   void incrementColumnSize({required int colIndex, required double delta}) {
-    logger.log("Incrementing");
     columnsLayout.value = columnsLayout.value.incrementedColumnSize(
       colIndex: colIndex,
       delta: delta,

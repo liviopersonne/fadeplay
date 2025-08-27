@@ -20,10 +20,14 @@ class ColumnWithWidths {
            ? minColumnWidth!
            : Settings.minColumnWidth,
        columnWidth =
-           columnWidth ?? Settings.minColumnWidth; // TODO: Put late definition
-  // {
-  //   columnWidth = max(columnWidth ?? 0, this.minColumnWidth);
-  // }
+           columnWidth ??
+           100 // TODO: Hard coded value
+           {
+    columnWidth = max(
+      this.columnWidth,
+      this.minColumnWidth,
+    ); // FIXME: This isn't working
+  }
 }
 
 /// Layout for a column browser which dictates the columns and their respective sizes
@@ -75,6 +79,12 @@ class ColumnBrowserLayout {
     final oldCol1 = elems[colIndex];
     final oldCol2 = elems[colIndex - 1];
 
+    if (oldCol1.columnWidth - delta < oldCol1.minColumnWidth ||
+        oldCol2.columnWidth + delta < oldCol2.minColumnWidth) {
+      // we don't want to go under a column's minimum size
+      return this;
+    }
+
     newElems[colIndex] = ColumnWithWidths(
       column: oldCol1.column,
       columnWidth: oldCol1.columnWidth - delta,
@@ -88,9 +98,5 @@ class ColumnBrowserLayout {
     );
 
     return ColumnBrowserLayout(elems: newElems);
-
-    // TODO: Check that it doesn't go under the minimum
-    // elems[colIndex].columnWidth += delta;
-    // elems[colIndex - 1].columnWidth -= delta;
   }
 }
