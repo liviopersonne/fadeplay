@@ -56,7 +56,7 @@ class TestColumnBrowserWidget extends StatelessWidget {
             Container(
               color: Colors.grey[200],
               height: 500,
-              width: 500,
+              width: 700,
               child: ColumnBrowser(controller: controller),
             ),
             GestureDetector(

@@ -57,38 +57,44 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
     logger.debug(
       "Building ColumnBrowser with columns '${widget.controller.columnsLayout}'",
     );
-    return ValueListenableBuilder<ColumnBrowserLayout>(
-      valueListenable: widget.controller.columnsLayout,
-      builder: (context, columnsLayout, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            ColumnBrowserHeaders(
-              controller: widget.controller,
-              columnLayout: columnsLayout,
-              separatorWidth: widget.separatorWidth,
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) =>
+          ValueListenableBuilder<ColumnBrowserLayout>(
+            valueListenable: widget.controller.columnsLayout,
+            builder: (context, columnsLayout, child) {
+              final adaptedLayout = columnsLayout.adaptedToWidth(
+                constraints.maxWidth,
+              );
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  ColumnBrowserHeaders(
+                    controller: widget.controller,
+                    columnLayout: adaptedLayout,
+                    separatorWidth: widget.separatorWidth,
+                  ),
 
-            Expanded(
-              child: ValueListenableBuilder<List<Track>>(
-                valueListenable: widget.controller.tracks,
-                builder: (context, trackList, child) {
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: trackList.length,
-                    itemBuilder: (context, index) => BrowserTrack(
-                      track: trackList[index],
-                      columnLayout: columnsLayout,
-                      separatorWidth: widget.separatorWidth,
+                  Expanded(
+                    child: ValueListenableBuilder<List<Track>>(
+                      valueListenable: widget.controller.tracks,
+                      builder: (context, trackList, child) {
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: trackList.length,
+                          itemBuilder: (context, index) => BrowserTrack(
+                            track: trackList[index],
+                            columnLayout: adaptedLayout,
+                            separatorWidth: widget.separatorWidth,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      },
+                  ),
+                ],
+              );
+            },
+          ),
     );
   }
 }

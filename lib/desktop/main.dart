@@ -8,14 +8,19 @@ import 'package:fadeplay/desktop/widgets/test/database.dart';
 import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';
 import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
 import 'package:flutter/material.dart';
+import 'package:window_size/window_size.dart';
 
 late final AppDatabase database;
 
 void desktopMain() {
   WidgetsFlutterBinding.ensureInitialized();
-  SingleMusicPlayer.initialize();
+  SingleMusicPlayer.initialize(); // for audio playing
   final database = AppDatabase();
-  registerAllColumns();
+  registerAllColumns(); // for the columnBrowser
+
+  setWindowTitle("Fadeplay");
+  // setWindowMinSize(Size(300, 300)); // TODO: Set this
+
   // database
   //     .into(database.tracks)
   //     .insert(
