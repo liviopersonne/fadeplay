@@ -8,7 +8,7 @@ class TestColumnSelectorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final columnIds = ['title', 'artist', 'duration'];
+    final columnIds = ['title', 'duration'];
     final controller = ColumnBrowserController();
     controller.updateLayout(ColumnBrowserLayout.fromIds(columnIds));
     return Scaffold(
@@ -17,7 +17,7 @@ class TestColumnSelectorWidget extends StatelessWidget {
           color: Colors.grey[200],
           height: 500,
           width: 700,
-          child: ColumnSelector(),
+          child: ColumnSelector(controller: controller),
         ),
       ),
     );
