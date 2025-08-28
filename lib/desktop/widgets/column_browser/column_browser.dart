@@ -60,13 +60,9 @@ class ColumnBrowserController {
   }
 
   /// Inserts the column that has been dragged in the column modifying screen
-  void insertColumn({required String colName, required int index}) {
-    if (!logger.check(
-      index >= 0 && index <= columnsLayout.value.elems.length,
-      message: "Invalid index reached when adding column",
-    )) {
-      return;
-    }
+  void insertColumn({required String columnId, required int index}) {
+    columnsLayout.value = ColumnBrowserLayout.copy(columnsLayout.value)
+      ..insertColumn(columnId: columnId, index: index);
   }
 }
 

@@ -17,36 +17,39 @@ class ColumnSelector extends StatefulWidget {
 class _ColumnSelectorState extends State<ColumnSelector> {
   @override
   Widget build(BuildContext context) {
-    // TODO: Bring that back
-    // final List<ColumnWithWidths> selectedColumns =
-    //     widget.controller.columnsLayout.value.elems;
-    // final List<String> selectedColumnNames = selectedColumns
-    //     .map((elem) => elem.column.id)
-    //     .toList();
-    // final List<String> otherColumnNames = ItemColumn.allColumns.keys
-    //     .where((id) => !selectedColumnNames.contains(id))
-    //     .toList();
+    // final List<String> selectedColumnNames = List.generate(
+    //   10,
+    //   (index) => "Column $index",
+    // );
+    // final List<String> otherColumnNames = List.generate(
+    //   10,
+    //   (index) => "Column ${index + 10}",
+    // );
 
-    final List<String> selectedColumnNames = List.generate(
-      10,
-      (index) => "Column $index",
-    );
-    final List<String> otherColumnNames = List.generate(
-      10,
-      (index) => "Column ${index + 10}",
-    );
+    return ValueListenableBuilder<ColumnBrowserLayout>(
+      valueListenable: widget.controller.columnsLayout,
+      builder: (context, value, child) {
+        final List<ColumnWithWidth> selectedColumns = value.elems;
+        final List<String> selectedColumnNames = selectedColumns
+            .map((elem) => elem.column.id)
+            .toList();
+        final List<String> otherColumnNames = ItemColumn.allColumns.keys
+            .where((id) => !selectedColumnNames.contains(id))
+            .toList();
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        SelectableColumnList(selectedColumnNames, otherColumnNames),
-        ActiveColumnList(
-          selectedColumnNames,
-          otherColumnNames,
-          controller: widget.controller,
-        ),
-      ],
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SelectableColumnList(selectedColumnNames, otherColumnNames),
+            ActiveColumnList(
+              selectedColumnNames,
+              otherColumnNames,
+              controller: widget.controller,
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -128,6 +131,10 @@ class _ActiveColumnListState extends State<ActiveColumnList> {
           onLeave: (_) => setState(() => hoveringIndex = null),
           onAcceptWithDetails: (details) => {
             setState(() => hoveringIndex = null),
+            widget.controller.insertColumn(
+              columnId: details.data,
+              index: index,
+            ),
           },
           builder: (context, candidateData, rejectedData) => Container(
             color: hoveringIndex == index ? Colors.white : null,
