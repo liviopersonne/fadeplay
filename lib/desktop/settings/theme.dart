@@ -13,7 +13,7 @@ class MyTheme {
   static Color headerSecondaryColor = Colors.grey;
 
   /// The color of a header when it's being dragged
-  static Color headerDraggingColor = Colors.deepPurple;
+  static Color headerDraggingColor = Colors.deepPurple.withAlpha(100);
 
   /// The style of the text of the header when it's being dragged
   static TextStyle headerDraggingTextStyle = TextStyle(

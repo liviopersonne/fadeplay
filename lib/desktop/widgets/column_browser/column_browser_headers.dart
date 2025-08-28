@@ -80,7 +80,7 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
   final double separatorWidth;
   final int index;
 
-  Widget titleContainer({required Color color}) => Container(
+  Widget titleContainer({Color? color}) => Container(
     color: color,
     width: colWithWidth.columnWidth,
     child: Padding(
@@ -91,22 +91,29 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
     ),
   );
 
+  Widget draggedTitleContainer({Color? color}) => Material(
+    color: color,
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: MyTheme.headerLabelPadding),
+      child: Text(colWithWidth.column.label, overflow: TextOverflow.ellipsis),
+    ),
+  );
+
   @override
-  Widget build(BuildContext context) {
-    return Draggable<int>(
-      data: index,
-      feedback: Container(
-        color: MyTheme.headerDraggingColor,
-        child: Text(
-          colWithWidth.column.label,
-          style: MyTheme
-              .headerDraggingTextStyle, // TODO: Make the column just move on the x axis
-        ),
-      ),
-      childWhenDragging: titleContainer(color: MyTheme.headerSecondaryColor),
-      child: titleContainer(color: MyTheme.headerBaseColor),
-    );
-  }
+  Widget build(BuildContext context) => Draggable<int>(
+    hitTestBehavior: HitTestBehavior.translucent,
+    dragAnchorStrategy: (draggable, context, position) {
+      // centers the draggable on the mouse when dragging starts
+      final child = childDragAnchorStrategy(draggable, context, position);
+      return Offset(10, child.dy);
+    },
+
+    axis: Axis.horizontal,
+    data: index,
+    feedback: draggedTitleContainer(color: MyTheme.headerDraggingColor),
+    childWhenDragging: titleContainer(color: MyTheme.headerSecondaryColor),
+    child: titleContainer(color: MyTheme.headerBaseColor),
+  );
 }
 
 /// The part between the column headers where you can drop a column to move it
