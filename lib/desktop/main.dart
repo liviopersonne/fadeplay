@@ -4,6 +4,7 @@ import 'package:fadeplay/desktop/objects/music_players/single_music_player.dart'
 import 'package:fadeplay/desktop/db/schemas.dart';
 import 'package:fadeplay/desktop/widgets/test/audio_metadata.dart';
 import 'package:fadeplay/desktop/widgets/test/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/test/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/test/database.dart';
 import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';
 import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
@@ -48,7 +49,8 @@ class DesktopApp extends StatelessWidget {
       // home: TestLoadFullMusicWidget(),
       // home: TestDatabaseWidget(),
       // home: TestAudioMetadata(),
-      home: TestColumnBrowserWidget(),
+      // home: TestColumnBrowserWidget(),
+      home: TestColumnSelectorWidget(),
       debugShowCheckedModeBanner: false,
     );
   }
