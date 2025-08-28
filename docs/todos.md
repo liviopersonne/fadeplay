@@ -1,3 +1,7 @@
+# All
+
+- [ ] Make sure I dispose all controllers
+
 ## Assets
 
 - [ ] Asset is never loading on the first try

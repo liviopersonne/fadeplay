@@ -31,7 +31,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
 
     for (int i = 0; i <= columnLayout.elems.length; i++) {
       // add dragTargets
-      stackContent.addAll([
+      stackContent.add(
         ColumnBrowserHeaderDragTarget(
           dragTargetWidth: dragTargetWidth,
           offset: currentOffset,
@@ -42,7 +42,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
           // first and last columns has no separator
           withSeparator: i > 0 && i < columnLayout.elems.length,
         ),
-      ]);
+      );
 
       // add column labels
       if (i < columnLayout.elems.length) {

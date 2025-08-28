@@ -8,6 +8,7 @@ import 'package:fadeplay/desktop/widgets/test/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/test/database.dart';
 import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';
 import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
+import 'package:fadeplay/desktop/widgets/test/overlayed_list.dart';
 import 'package:flutter/material.dart';
 import 'package:window_size/window_size.dart';
 
@@ -50,7 +51,8 @@ class DesktopApp extends StatelessWidget {
       // home: TestDatabaseWidget(),
       // home: TestAudioMetadata(),
       // home: TestColumnBrowserWidget(),
-      home: TestColumnSelectorWidget(),
+      // home: TestColumnSelectorWidget(),
+      home: TestOverlayedList(),
       debugShowCheckedModeBanner: false,
     );
   }
