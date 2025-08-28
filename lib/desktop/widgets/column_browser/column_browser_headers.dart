@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
         ColumnBrowserHeaderLabel(
           colWithWidth: columnLayout.elems[i],
           separatorWidth: separatorWidth,
+          index: i,
         ),
       );
 
@@ -69,17 +71,19 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
     super.key,
     required this.colWithWidth,
     required this.separatorWidth,
+    required this.index,
   });
 
   final ColumnWithWidths colWithWidth;
   final double separatorWidth;
+  final int index;
 
   Widget titleContainer({required Color color}) => Container(
     color: color,
     width: colWithWidth.columnWidth,
     child: Padding(
       padding: EdgeInsets.only(
-        left: separatorWidth + 3, // TODO: Get extra padding from layout
+        left: separatorWidth + MyTheme.headerLabelPadding,
       ),
       child: Text(colWithWidth.column.label, overflow: TextOverflow.ellipsis),
     ),
@@ -88,22 +92,17 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Draggable<int>(
-      // TODO: Normalize all this UI with themes
-      data: 42,
+      data: index,
       feedback: Container(
-        color: Colors.deepPurple,
+        color: MyTheme.headerDraggingColor,
         child: Text(
           colWithWidth.column.label,
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.normal,
-            decoration: TextDecoration.none,
-            fontSize: 24,
-          ), // TODO: Make the column just move on the x axis
+          style: MyTheme
+              .headerDraggingTextStyle, // TODO: Make the column just move on the x axis
         ),
       ),
-      childWhenDragging: titleContainer(color: Colors.grey),
-      child: titleContainer(color: Colors.amber),
+      childWhenDragging: titleContainer(color: MyTheme.headerSecondaryColor),
+      child: titleContainer(color: MyTheme.headerBaseColor),
     );
   }
 }

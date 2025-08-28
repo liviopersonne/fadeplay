@@ -30,3 +30,11 @@
 ## AudioSource
 
 - [ ] Une the `clip` function when loading a song
+
+## ColumnBrowser
+
+- [ ] Colors in a layout
+- [ ] Highlight drag targets when hovering
+- [ ] Make drag targets invisible overwise
+- [ ] Actually insert the columns
+- [ ] Make draggable only horizontally
