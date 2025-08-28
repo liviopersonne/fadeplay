@@ -17,15 +17,6 @@ class ColumnSelector extends StatefulWidget {
 class _ColumnSelectorState extends State<ColumnSelector> {
   @override
   Widget build(BuildContext context) {
-    // final List<String> selectedColumnNames = List.generate(
-    //   10,
-    //   (index) => "Column $index",
-    // );
-    // final List<String> otherColumnNames = List.generate(
-    //   10,
-    //   (index) => "Column ${index + 10}",
-    // );
-
     return ValueListenableBuilder<ColumnBrowserLayout>(
       valueListenable: widget.controller.columnsLayout,
       builder: (context, value, child) {
@@ -122,7 +113,19 @@ class _ActiveColumnListState extends State<ActiveColumnList> {
         scrollDirection: Axis.vertical,
         itemCount: widget.selected.length + 1,
         // exchanged separator and item to have separators at the edges
-        separatorBuilder: (context, index) => Text(widget.selected[index]),
+        separatorBuilder: (context, index) => GestureDetector(
+          child: Hoverable(
+            hoveringCursor: SystemMouseCursors.click,
+            unhoveredWidget: Text(widget.selected[index]),
+            hoveredWidget: Container(
+              color: Colors.blue,
+              child: Text(widget.selected[index]),
+            ),
+          ),
+          onTap: () {
+            widget.controller.removeColumn(index: index);
+          },
+        ),
         itemBuilder: (context, index) => DragTarget<String>(
           onWillAcceptWithDetails: (_) {
             setState(() => hoveringIndex = index);

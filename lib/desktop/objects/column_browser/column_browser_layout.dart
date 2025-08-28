@@ -160,6 +160,7 @@ class ColumnBrowserLayout {
     return adaptedLayout;
   }
 
+  /// Inserts the `columnId` column at `index`
   void insertColumn({required String columnId, required int index}) {
     if (!logger.check(
       index >= 0 && index <= elems.length,
@@ -169,5 +170,17 @@ class ColumnBrowserLayout {
     }
 
     elems.insert(index, ColumnWithWidth.fromId(columnId: columnId));
+  }
+
+  /// Removes the `columnId` column
+  void removeColumn({required int index}) {
+    if (!logger.check(
+      index >= 0 && index <= elems.length,
+      message: "Invalid index reached when adding column",
+    )) {
+      return;
+    }
+
+    elems.removeAt(index);
   }
 }

@@ -64,6 +64,12 @@ class ColumnBrowserController {
     columnsLayout.value = ColumnBrowserLayout.copy(columnsLayout.value)
       ..insertColumn(columnId: columnId, index: index);
   }
+
+  /// Removes the column that has been clicked in the column modifying screen
+  void removeColumn({required int index}) {
+    columnsLayout.value = ColumnBrowserLayout.copy(columnsLayout.value)
+      ..removeColumn(index: index);
+  }
 }
 
 class ColumnBrowser extends StatefulWidget {
