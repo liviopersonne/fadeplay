@@ -62,7 +62,22 @@ class ColumnBrowserHeaders extends StatelessWidget {
       children: [
         Row(children: rowContent),
         ...stackContent,
+        if (columnLayout.isCropped) CroppedColumnsIndicator(),
       ],
+    );
+  }
+}
+
+class CroppedColumnsIndicator extends StatelessWidget {
+  const CroppedColumnsIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: MyTheme.headerLabelPadding,
+      top: 0,
+      bottom: 0,
+      child: Text("->"),
     );
   }
 }
@@ -107,7 +122,6 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
       final child = childDragAnchorStrategy(draggable, context, position);
       return Offset(10, child.dy);
     },
-
     axis: Axis.horizontal,
     data: index,
     feedback: draggedTitleContainer(color: MyTheme.headerDraggingColor),

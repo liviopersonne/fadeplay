@@ -38,4 +38,5 @@
 - [x] Make drag targets invisible overwise
 - [x] Actually insert the columns
 - [x] Make draggable only horizontally
-- [ ] Add indicator if some columns have been cut
+- [x] Add indicator if some columns have been cut
+- [ ] Clip the dragging in the row

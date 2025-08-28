@@ -29,10 +29,15 @@ class ColumnWithWidths {
 /// Layout for a column browser which dictates the columns and their respective sizes
 class ColumnBrowserLayout {
   final List<ColumnWithWidths> elems;
-  // the total width of each column
+
+  /// The sum of the widths of each column
   final double _totalWidth;
-  // the scale at which the layout is shown (see adaptedToWidth)
+
+  /// The scale at which the layout is shown (see adaptedToWidth)
   double scale = 1;
+
+  /// Wether or not some columns have been cropped
+  bool isCropped = false;
 
   ColumnBrowserLayout({required this.elems})
     : _totalWidth = elems.fold(
@@ -142,6 +147,7 @@ class ColumnBrowserLayout {
           // we have to delete the last column
           remainder -= lastElem.columnWidth;
           adaptedLayout.elems.removeLast();
+          adaptedLayout.isCropped = true;
         }
       }
 
