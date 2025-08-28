@@ -1,7 +1,7 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
-import 'package:fadeplay/desktop/widgets/general/hoverable_text.dart';
+import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:flutter/material.dart';
 
 class ColumnSelector extends StatefulWidget {
@@ -41,7 +41,11 @@ class _ColumnSelectorState extends State<ColumnSelector> {
       mainAxisSize: MainAxisSize.max,
       children: [
         SelectableColumnList(selectedColumnNames, otherColumnNames),
-        ActiveColumnList(selectedColumnNames, otherColumnNames),
+        ActiveColumnList(
+          selectedColumnNames,
+          otherColumnNames,
+          controller: widget.controller,
+        ),
       ],
     );
   }
@@ -66,25 +70,21 @@ class _SelectableColumnListState extends State<SelectableColumnList> {
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: widget.other.length,
-        itemBuilder: (context, index) => Draggable(
-          onDragStarted: () {
-            setState(() {
-              dragging = true;
-            });
-          },
-          onDragEnd: (_) {
-            setState(() {
-              dragging = false;
-            });
-          },
+        itemBuilder: (context, index) => Draggable<String>(
+          data: widget.other[index],
+          onDragStarted: () => setState(() => dragging = true),
+          onDragEnd: (_) => setState(() => dragging = false),
           feedback: Material(child: Text(widget.other[index])),
           childWhenDragging: Text(widget.other[index]),
           child: dragging
               ? Text(widget.other[index])
-              : HoverableText(
-                  text: widget.other[index],
-                  backgroundActive: Colors.lightBlue,
-                  hoveringCursor: SystemMouseCursors.click,
+              : Hoverable(
+                  hoveredWidget: Container(
+                    color: Colors.lightBlue,
+                    child: Text(widget.other[index]),
+                  ),
+                  unhoveredWidget: Text(widget.other[index]),
+                  hoveringCursor: SystemMouseCursors.grab,
                 ),
         ),
       ),
@@ -92,19 +92,48 @@ class _SelectableColumnListState extends State<SelectableColumnList> {
   }
 }
 
-class ActiveColumnList extends StatelessWidget {
-  const ActiveColumnList(this.selected, this.other, {super.key});
+class ActiveColumnList extends StatefulWidget {
+  const ActiveColumnList(
+    this.selected,
+    this.other, {
+    super.key,
+    required this.controller,
+  });
 
   final List<String> selected;
   final List<String> other;
+  final ColumnBrowserController controller;
+
+  @override
+  State<ActiveColumnList> createState() => _ActiveColumnListState();
+}
+
+class _ActiveColumnListState extends State<ActiveColumnList> {
+  /// Index of the item that's being hovered
+  int? hoveringIndex;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
         scrollDirection: Axis.vertical,
-        itemCount: selected.length,
-        itemBuilder: (context, index) => Text(selected[index]),
+        itemCount: widget.selected.length + 1,
+        // exchanged separator and item to have separators at the edges
+        separatorBuilder: (context, index) => Text(widget.selected[index]),
+        itemBuilder: (context, index) => DragTarget<String>(
+          onWillAcceptWithDetails: (_) {
+            setState(() => hoveringIndex = index);
+            return true;
+          },
+          onLeave: (_) => setState(() => hoveringIndex = null),
+          onAcceptWithDetails: (details) => {
+            setState(() => hoveringIndex = null),
+          },
+          builder: (context, candidateData, rejectedData) => Container(
+            color: hoveringIndex == index ? Colors.white : null,
+            height: 5,
+          ),
+        ),
       ),
     );
   }

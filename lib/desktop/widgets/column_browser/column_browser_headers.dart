@@ -91,7 +91,7 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
     required this.index,
   });
 
-  final ColumnWithWidths colWithWidth;
+  final ColumnWithWidth colWithWidth;
   final double separatorWidth;
   final int index;
 
@@ -170,27 +170,17 @@ class _ColumnBrowserHeaderDragTargetState
         onWillAcceptWithDetails: (details) {
           final indexDifference = widget.index - details.data;
           final rep = indexDifference != 0 && indexDifference != 1;
-          logger.debug(
-            "Hover index difference: $indexDifference, ${rep ? 'Accepted' : 'Not Accepted'}",
-          );
           if (rep) {
-            setState(() {
-              dragHovering = true;
-            });
+            setState(() => dragHovering = true);
           }
           return rep;
         },
         onLeave: (data) {
-          logger.debug("Hover left zone");
-          setState(() {
-            dragHovering = false;
-          });
+          setState(() => dragHovering = false);
         },
         onAcceptWithDetails: (details) {
           logger.debug("Accepted hover with ${details.data}");
-          setState(() {
-            dragHovering = false;
-          });
+          setState(() => dragHovering = false);
           widget.controller.insertDraggedColumn(
             colIndex: details.data,
             separatorIndex: widget.index,
@@ -237,15 +227,12 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: SystemMouseCursors.resizeLeftRight,
+      cursor: SystemMouseCursors.resizeColumn,
       child: GestureDetector(
         child: Container(
           color: Colors.red, // TODO: Get color from theme
           width: separatorWidth, // TODO: Get separator width from layout
         ),
-        onTap: () {
-          SystemMouseCursors.resizeLeftRight;
-        },
         onHorizontalDragUpdate: (details) {
           final delta = details.primaryDelta;
           // delta is:

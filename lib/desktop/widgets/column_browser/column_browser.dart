@@ -36,7 +36,7 @@ class ColumnBrowserController {
     // block mutation with a .copy()
   }
 
-  /// Inserts the column that was dragged in the separator's space
+  /// Inserts the header column that was dragged between 2 headers
   void insertDraggedColumn({
     required int colIndex,
     required int separatorIndex,
@@ -57,6 +57,16 @@ class ColumnBrowserController {
         : separatorIndex;
     newLayout.elems.insert(insertIndex, movedColumn);
     columnsLayout.value = newLayout;
+  }
+
+  /// Inserts the column that has been dragged in the column modifying screen
+  void insertColumn({required String colName, required int index}) {
+    if (!logger.check(
+      index >= 0 && index <= columnsLayout.value.elems.length,
+      message: "Invalid index reached when adding column",
+    )) {
+      return;
+    }
   }
 }
 

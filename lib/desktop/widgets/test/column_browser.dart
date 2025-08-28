@@ -45,21 +45,9 @@ class TestColumnBrowserWidget extends StatelessWidget {
     final controller = ColumnBrowserController();
     final layout = ColumnBrowserLayout(
       elems: [
-        ColumnWithWidths(
-          columnId: 'title',
-          columnWidth: 300,
-          minColumnWidth: 50,
-        ),
-        ColumnWithWidths(
-          columnId: 'artist',
-          columnWidth: 200,
-          minColumnWidth: 50,
-        ),
-        ColumnWithWidths(
-          columnId: 'duration',
-          columnWidth: 70,
-          minColumnWidth: 50,
-        ),
+        ColumnWithWidth.fromId(columnId: 'title', columnWidth: 300),
+        ColumnWithWidth.fromId(columnId: 'artist', columnWidth: 200),
+        ColumnWithWidth.fromId(columnId: 'duration', columnWidth: 70),
       ],
     );
     controller.updateLayout(layout);

@@ -35,12 +35,20 @@ class Logging {
     _fullLogger.e(scopedMessage(message), error: errorName);
   }
 
-  bool check(bool check, {String? message, String? errorName}) {
+  bool check(
+    bool check, {
+    String? message,
+    String? errorName,
+    bool raiseError = false,
+  }) {
     if (!check) {
       final fullMessage = message == null
           ? "Check failed"
           : "Check failed: $message";
       error(fullMessage, errorName: errorName);
+      if (raiseError) {
+        throw Error();
+      }
       return false;
     }
     return true;

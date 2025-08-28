@@ -1,7 +1,7 @@
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 
-class TitleColumn extends ItemColumn {
+class TitleColumn extends ItemColumn with BigColumn {
   // Singleton definition
   TitleColumn._() : super();
   static final TitleColumn instance = TitleColumn._();

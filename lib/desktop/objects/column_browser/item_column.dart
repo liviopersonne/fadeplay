@@ -8,6 +8,21 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 
 final logger = Logging("ItemColumn");
 
+mixin BigColumn {
+  double get defaultWidth => 100;
+  double get minWidth => 50;
+}
+
+mixin MediumColumn {
+  double get defaultWidth => 50;
+  double get minWidth => 30;
+}
+
+mixin SmallColumn {
+  double get defaultWidth => 10;
+  double get minWidth => 10;
+}
+
 abstract class ItemColumn {
   /// An internal registry of all columns
   static final Map<String, ItemColumn> _columnsRegistry = {};
@@ -30,6 +45,12 @@ abstract class ItemColumn {
 
   /// Column header
   String get label;
+
+  /// Default width
+  double get defaultWidth;
+
+  /// Minimum width
+  double get minWidth;
 
   /// Tthe value to be shown in the column for a specific item
   String getValue(Track item);

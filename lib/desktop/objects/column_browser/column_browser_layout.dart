@@ -1,34 +1,39 @@
-import 'dart:math';
-
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/settings/settings.dart';
 
 final logger = Logging("ColumnBrowserLayout");
 
 /// Element of a layout that maps a column to its corresponding width and minimum width
-class ColumnWithWidths {
+class ColumnWithWidth {
   final ItemColumn column;
-  late double columnWidth;
-  double minColumnWidth;
+  double columnWidth;
 
-  ColumnWithWidths({
-    ItemColumn? column,
-    String? columnId, // as a replacement for the column
-    double? columnWidth,
-    double? minColumnWidth,
-  }) : column = column ?? ItemColumn.allColumns[columnId]!,
-       minColumnWidth = ((minColumnWidth ?? 0) > 0)
-           ? minColumnWidth!
-           : Settings.minColumnWidth,
-       columnWidth = columnWidth ?? 2 * Settings.minColumnWidth {
-    this.columnWidth = max(this.columnWidth, this.minColumnWidth);
+  ColumnWithWidth({required this.column, double? columnWidth})
+    : columnWidth = columnWidth ?? column.defaultWidth {
+    checkWidth();
+  }
+
+  ColumnWithWidth.fromId({required String columnId, double? columnWidth})
+    : column = ItemColumn.allColumns[columnId]!,
+      columnWidth =
+          columnWidth ?? ItemColumn.allColumns[columnId]!.defaultWidth {
+    checkWidth();
+  }
+
+  /// Checks that the column is bigger than the minimum width, and grows it if not
+  void checkWidth() {
+    if (columnWidth < column.minWidth) {
+      logger.warn(
+        "Column $column was loaded with a smaller width than minimal: $columnWidth -> ${column.minWidth}. Growing it to minimum size.",
+      );
+      columnWidth = column.minWidth;
+    }
   }
 }
 
 /// Layout for a column browser which dictates the columns and their respective sizes
 class ColumnBrowserLayout {
-  final List<ColumnWithWidths> elems;
+  final List<ColumnWithWidth> elems;
 
   /// The sum of the widths of each column
   final double _totalWidth;
@@ -67,21 +72,20 @@ class ColumnBrowserLayout {
     }
     return ColumnBrowserLayout(
       elems: newTrackColumns
-          .map((col) => ColumnWithWidths(column: col))
+          .map((col) => ColumnWithWidth(column: col))
           .toList(),
     );
   }
 
   /// Create a copy of an existing layout
   static ColumnBrowserLayout copy(ColumnBrowserLayout layout) {
-    final List<ColumnWithWidths> newElems = List.from(layout.elems);
+    final List<ColumnWithWidth> newElems = List.from(layout.elems);
 
     for (int i = 0; i < newElems.length; i++) {
       final oldCol = layout.elems[i];
-      newElems[i] = ColumnWithWidths(
+      newElems[i] = ColumnWithWidth(
         column: oldCol.column,
         columnWidth: oldCol.columnWidth,
-        minColumnWidth: oldCol.minColumnWidth,
       );
     }
 
@@ -107,7 +111,7 @@ class ColumnBrowserLayout {
     final newValue2 = col2.columnWidth + delta;
 
     // check that I don't go under the minimum width
-    if (newValue1 < col1.minColumnWidth || newValue2 < col2.minColumnWidth) {
+    if (newValue1 < col1.column.minWidth || newValue2 < col2.column.minWidth) {
       return;
     }
 
@@ -137,7 +141,7 @@ class ColumnBrowserLayout {
       while (remainder > 0) {
         final lastElem = adaptedLayout.elems.last;
         final lastElemRemainder =
-            lastElem.columnWidth - lastElem.minColumnWidth;
+            lastElem.columnWidth - lastElem.column.minWidth;
 
         if (lastElemRemainder > remainder) {
           // we can just shrink the last column
@@ -154,5 +158,16 @@ class ColumnBrowserLayout {
       adaptedLayout.elems.last.columnWidth -= remainder;
     }
     return adaptedLayout;
+  }
+
+  void insertColumn({required String columnId, required int index}) {
+    if (!logger.check(
+      index >= 0 && index <= elems.length,
+      message: "Invalid index reached when adding column",
+    )) {
+      return;
+    }
+
+    elems.insert(index, ColumnWithWidth.fromId(columnId: columnId));
   }
 }

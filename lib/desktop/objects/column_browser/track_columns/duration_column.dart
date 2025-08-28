@@ -2,7 +2,7 @@ import 'package:fadeplay/desktop/objects/duration_formatter.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 
-class DurationColumn extends ItemColumn {
+class DurationColumn extends ItemColumn with MediumColumn {
   // Singleton definition
   DurationColumn._() : super();
   static final DurationColumn instance = DurationColumn._();
