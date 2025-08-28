@@ -15,6 +15,10 @@ class ColumnSelector extends StatefulWidget {
 }
 
 class _ColumnSelectorState extends State<ColumnSelector> {
+  bool dragging = false;
+
+  void setDragging(bool value) => setState(() => dragging = value);
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ColumnBrowserLayout>(
@@ -32,11 +36,17 @@ class _ColumnSelectorState extends State<ColumnSelector> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.max,
           children: [
-            SelectableColumnList(selectedColumnNames, otherColumnNames),
+            SelectableColumnList(
+              selectedColumnNames,
+              otherColumnNames,
+              setDragging: setDragging,
+              dragging: dragging,
+            ),
             ActiveColumnList(
               selectedColumnNames,
               otherColumnNames,
               controller: widget.controller,
+              dragging: dragging,
             ),
           ],
         );
@@ -46,18 +56,24 @@ class _ColumnSelectorState extends State<ColumnSelector> {
 }
 
 class SelectableColumnList extends StatefulWidget {
-  const SelectableColumnList(this.selected, this.other, {super.key});
+  const SelectableColumnList(
+    this.selected,
+    this.other, {
+    super.key,
+    required this.setDragging,
+    required this.dragging,
+  });
 
   final List<String> selected;
   final List<String> other;
+  final void Function(bool) setDragging;
+  final bool dragging;
 
   @override
   State<SelectableColumnList> createState() => _SelectableColumnListState();
 }
 
 class _SelectableColumnListState extends State<SelectableColumnList> {
-  bool dragging = false;
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -66,11 +82,11 @@ class _SelectableColumnListState extends State<SelectableColumnList> {
         itemCount: widget.other.length,
         itemBuilder: (context, index) => Draggable<String>(
           data: widget.other[index],
-          onDragStarted: () => setState(() => dragging = true),
-          onDragEnd: (_) => setState(() => dragging = false),
+          onDragStarted: () => widget.setDragging(true),
+          onDragEnd: (_) => widget.setDragging(false),
           feedback: Material(child: Text(widget.other[index])),
           childWhenDragging: Text(widget.other[index]),
-          child: dragging
+          child: widget.dragging
               ? Text(widget.other[index])
               : Hoverable(
                   hoveredWidget: Container(
@@ -92,11 +108,13 @@ class ActiveColumnList extends StatefulWidget {
     this.other, {
     super.key,
     required this.controller,
+    required this.dragging,
   });
 
   final List<String> selected;
   final List<String> other;
   final ColumnBrowserController controller;
+  final bool dragging;
 
   @override
   State<ActiveColumnList> createState() => _ActiveColumnListState();
@@ -106,26 +124,31 @@ class _ActiveColumnListState extends State<ActiveColumnList> {
   /// Index of the item that's being hovered
   int? hoveringIndex;
 
+  Widget baseWidget({required String content}) => Text(content);
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.separated(
         scrollDirection: Axis.vertical,
         itemCount: widget.selected.length + 1,
+
         // exchanged separator and item to have separators at the edges
-        separatorBuilder: (context, index) => GestureDetector(
-          child: Hoverable(
-            hoveringCursor: SystemMouseCursors.click,
-            unhoveredWidget: Text(widget.selected[index]),
-            hoveredWidget: Container(
-              color: Colors.blue,
-              child: Text(widget.selected[index]),
-            ),
-          ),
-          onTap: () {
-            widget.controller.removeColumn(index: index);
-          },
-        ),
+        separatorBuilder: (context, index) => widget.dragging
+            ? baseWidget(content: widget.selected[index])
+            : GestureDetector(
+                child: Hoverable(
+                  hoveringCursor: SystemMouseCursors.click,
+                  unhoveredWidget: baseWidget(content: widget.selected[index]),
+                  hoveredWidget: Container(
+                    color: Colors.blue,
+                    child: baseWidget(content: widget.selected[index]),
+                  ),
+                ),
+                onTap: () {
+                  widget.controller.removeColumn(index: index);
+                },
+              ),
         itemBuilder: (context, index) => DragTarget<String>(
           onWillAcceptWithDetails: (_) {
             setState(() => hoveringIndex = index);
@@ -140,7 +163,7 @@ class _ActiveColumnListState extends State<ActiveColumnList> {
             ),
           },
           builder: (context, candidateData, rejectedData) => Container(
-            color: hoveringIndex == index ? Colors.white : null,
+            color: hoveringIndex == index ? Colors.white : Colors.red,
             height: 5,
           ),
         ),

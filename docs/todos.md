@@ -40,3 +40,8 @@
 - [x] Make draggable only horizontally
 - [x] Add indicator if some columns have been cut
 - [ ] Clip the dragging in the row
+
+## ColumnSelector
+
+- [ ] Deactivate hovering on present columns when dragging
+- [ ] Remove the space between the present columns
