@@ -108,7 +108,7 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
 }
 
 /// The part between the column headers where you can drop a column to move it
-class ColumnBrowserHeaderDragTarget extends StatelessWidget {
+class ColumnBrowserHeaderDragTarget extends StatefulWidget {
   const ColumnBrowserHeaderDragTarget({
     super.key,
     required this.offset,
@@ -127,30 +127,67 @@ class ColumnBrowserHeaderDragTarget extends StatelessWidget {
   final double layoutScale;
 
   @override
+  State<ColumnBrowserHeaderDragTarget> createState() =>
+      _ColumnBrowserHeaderDragTargetState();
+}
+
+class _ColumnBrowserHeaderDragTargetState
+    extends State<ColumnBrowserHeaderDragTarget> {
+  bool dragHovering = false;
+
+  @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: offset - dragTargetWidth / 2,
+      left: widget.offset - widget.dragTargetWidth / 2,
       top: 0,
       bottom: 0,
       child: DragTarget<int>(
+        onWillAcceptWithDetails: (details) {
+          final indexDifference = widget.index - details.data;
+          final rep = indexDifference != 0 && indexDifference != 1;
+          logger.debug(
+            "Hover index difference: $indexDifference, ${rep ? 'Accepted' : 'Not Accepted'}",
+          );
+          if (rep) {
+            setState(() {
+              dragHovering = true;
+            });
+          }
+          return rep;
+        },
+        onLeave: (data) {
+          logger.debug("Hover left zone");
+          setState(() {
+            dragHovering = false;
+          });
+        },
         onAcceptWithDetails: (details) {
-          logger.log(
-            "Accepted with ${details.data}",
-          ); // TODO: Actually implement column swapping
+          logger.debug("Accepted hover with ${details.data}");
+          setState(() {
+            dragHovering = false;
+          });
+          widget.controller.insertDraggedColumn(
+            colIndex: details.data,
+            separatorIndex: widget.index,
+          );
         },
         builder: (context, candidateData, rejectedData) => Container(
-          color: Colors.green, // TODO: Make this appear only when I'm dragging
-          width: dragTargetWidth,
-          child: Center(
-            // The separator is inside the drag target so you can
-            // correctly drop columns inside the separator
-            child: ColumnBrowserHeaderSeparator(
-              controller: controller,
-              separatorWidth: separatorWidth,
-              index: index,
-              layoutScale: layoutScale,
-            ),
-          ),
+          color: dragHovering
+              ? Colors.white
+              : null, // make the target appear only when I'm dragging over it
+          width: widget.dragTargetWidth,
+          child: dragHovering
+              ? null // hide the separator if I'm dragging a column here
+              : Center(
+                  // The separator is inside the drag target so you can
+                  // correctly drop columns inside the separator
+                  child: ColumnBrowserHeaderSeparator(
+                    controller: widget.controller,
+                    separatorWidth: widget.separatorWidth,
+                    index: widget.index,
+                    layoutScale: widget.layoutScale,
+                  ),
+                ),
         ),
       ),
     );

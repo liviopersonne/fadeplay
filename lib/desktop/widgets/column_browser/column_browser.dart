@@ -35,6 +35,29 @@ class ColumnBrowserController {
       ..incrementColumnSize(colIndex: colIndex, delta: delta);
     // block mutation with a .copy()
   }
+
+  /// Inserts the column that was dragged in the separator's space
+  void insertDraggedColumn({
+    required int colIndex,
+    required int separatorIndex,
+  }) {
+    final indexDifference = separatorIndex - colIndex;
+    if (!logger.check(
+      indexDifference != 0 && indexDifference != 1,
+      message: "Invalid index reached when dragged column header",
+    )) {
+      return;
+    }
+
+    final newLayout = ColumnBrowserLayout.copy(columnsLayout.value);
+    final movedColumn = newLayout.elems[colIndex];
+    newLayout.elems.removeAt(colIndex);
+    final insertIndex = indexDifference > 0
+        ? separatorIndex - 1
+        : separatorIndex;
+    newLayout.elems.insert(insertIndex, movedColumn);
+    columnsLayout.value = newLayout;
+  }
 }
 
 class ColumnBrowser extends StatefulWidget {
