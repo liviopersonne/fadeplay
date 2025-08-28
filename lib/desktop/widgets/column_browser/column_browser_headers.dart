@@ -29,30 +29,32 @@ class ColumnBrowserHeaders extends StatelessWidget {
     final List<Widget> stackContent = [];
     double currentOffset = 0;
 
-    for (int i = 0; i < columnLayout.elems.length; i++) {
-      rowContent.add(
-        ColumnBrowserHeaderLabel(
-          colWithWidth: columnLayout.elems[i],
+    for (int i = 0; i <= columnLayout.elems.length; i++) {
+      // add dragTargets
+      stackContent.addAll([
+        ColumnBrowserHeaderDragTarget(
+          dragTargetWidth: dragTargetWidth,
+          offset: currentOffset,
+          controller: controller,
           separatorWidth: separatorWidth,
           index: i,
+          layoutScale: columnLayout.scale,
+          // first and last columns has no separator
+          withSeparator: i > 0 && i < columnLayout.elems.length,
         ),
-      );
+      ]);
 
-      if (i != 0) {
-        // 1st column has no separator
-        stackContent.addAll([
-          ColumnBrowserHeaderDragTarget(
-            dragTargetWidth: dragTargetWidth,
-            offset: currentOffset,
-            controller: controller,
+      // add column labels
+      if (i < columnLayout.elems.length) {
+        rowContent.add(
+          ColumnBrowserHeaderLabel(
+            colWithWidth: columnLayout.elems[i],
             separatorWidth: separatorWidth,
             index: i,
-            layoutScale: columnLayout.scale,
           ),
-        ]);
+        );
+        currentOffset += columnLayout.elems[i].columnWidth;
       }
-
-      currentOffset += columnLayout.elems[i].columnWidth;
     }
 
     return Stack(
@@ -117,6 +119,7 @@ class ColumnBrowserHeaderDragTarget extends StatefulWidget {
     required this.separatorWidth,
     required this.index,
     required this.layoutScale,
+    required this.withSeparator,
   });
 
   final double offset;
@@ -125,6 +128,7 @@ class ColumnBrowserHeaderDragTarget extends StatefulWidget {
   final double separatorWidth;
   final int index;
   final double layoutScale;
+  final bool withSeparator;
 
   @override
   State<ColumnBrowserHeaderDragTarget> createState() =>
@@ -176,9 +180,8 @@ class _ColumnBrowserHeaderDragTargetState
               ? Colors.white
               : null, // make the target appear only when I'm dragging over it
           width: widget.dragTargetWidth,
-          child: dragHovering
-              ? null // hide the separator if I'm dragging a column here
-              : Center(
+          child: widget.withSeparator && !dragHovering
+              ? Center(
                   // The separator is inside the drag target so you can
                   // correctly drop columns inside the separator
                   child: ColumnBrowserHeaderSeparator(
@@ -187,7 +190,8 @@ class _ColumnBrowserHeaderDragTargetState
                     index: widget.index,
                     layoutScale: widget.layoutScale,
                   ),
-                ),
+                )
+              : null, // hide the separator if I'm dragging a column here
         ),
       ),
     );

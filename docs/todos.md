@@ -33,8 +33,9 @@
 
 ## ColumnBrowser
 
-- [ ] Colors in a layout
-- [ ] Highlight drag targets when hovering
-- [ ] Make drag targets invisible overwise
-- [ ] Actually insert the columns
+- [x] Colors in a layout
+- [x] Highlight drag targets when hovering
+- [x] Make drag targets invisible overwise
+- [x] Actually insert the columns
 - [ ] Make draggable only horizontally
+- [ ] Add indicator if some columns have been cut
