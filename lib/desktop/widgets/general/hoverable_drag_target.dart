@@ -1,4 +1,5 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
 /// The size of a `HoverableDragTarget` containing its hitbox and its visible part
@@ -78,12 +79,10 @@ class _HoverableDragTargetState<T extends Object>
           height: widget.size.fullHeight,
           width: widget.size.fullWidth,
           child: Center(
-            child: SizedBox(
+            child: ColorSizeBox(
               height: widget.size.visibleHeight,
               width: widget.size.visibleWidth,
-              child: hovering
-                  ? ColoredBox(color: MyTheme.dragTargetColor)
-                  : ColoredBox(color: Colors.red),
+              color: hovering ? MyTheme.dragTargetColor : null,
             ),
           ),
         ),
