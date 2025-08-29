@@ -1,6 +1,7 @@
-# All
+## All
 
 - [ ] Make sure I dispose all controllers
+- [ ] Check for containers using only `color` and `height` / `width` and replace with `ColorSizeBox`
 
 ## Assets
 

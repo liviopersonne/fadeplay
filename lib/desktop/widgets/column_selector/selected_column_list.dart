@@ -26,7 +26,7 @@ class SelectedColumnList extends StatelessWidget {
       edgeSeparators: true,
       scrollingEnabled: false,
       itemSizes: (_) => RowElem.getHeight(MyTheme.textStyleNormal),
-      separatorSizes: (_) => 5,
+      separatorSizes: (_) => 20,
       itemBuilder: (_, i) => RowElem(
         inactiveTextStyle: MyTheme.textStyleNormal,
         activeColor: Colors.pink,
@@ -39,7 +39,11 @@ class SelectedColumnList extends StatelessWidget {
         child: Text(columns[i].label),
       ),
       separatorBuilder: (_, i) => HoverableDragTarget<ItemColumn>(
-        height: 5,
+        size: HoverableDragTargetSize.listSeparator(
+          listDirection: Axis.vertical,
+          fullSize: 20,
+          visibleSize: 3,
+        ),
         onAcceptWithDetails: (details) =>
             controller.insertColumn(columnId: details.data.id, index: i + 1),
       ),

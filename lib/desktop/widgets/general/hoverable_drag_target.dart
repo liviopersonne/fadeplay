@@ -1,21 +1,54 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO: Extend zone of target
+/// The size of a `HoverableDragTarget` containing its hitbox and its visible part
+///
+/// `direction` represents the direction of the list that this `DragTarget` separates
+///
+/// The hitbox is measured by `fullHeight` and `fullWidth`
+///
+/// The visible part is measured by `visibleHeight` and `visibleWidth`
+class HoverableDragTargetSize {
+  HoverableDragTargetSize.listSeparator({
+    required Axis listDirection,
+    required double fullSize,
+    double? visibleSize,
+  }) {
+    final realVisibleSize = visibleSize ?? fullSize;
+    switch (listDirection) {
+      case Axis.horizontal:
+        visibleHeight = double.infinity;
+        fullHeight = double.infinity;
+        visibleWidth = realVisibleSize;
+        fullWidth = fullSize;
+        break;
+      case Axis.vertical:
+        visibleHeight = realVisibleSize;
+        fullHeight = fullSize;
+        visibleWidth = double.infinity;
+        fullWidth = double.infinity;
+        break;
+    }
+  }
 
+  late final double? visibleHeight;
+  late final double? fullHeight;
+  late final double? visibleWidth;
+  late final double? fullWidth;
+}
+
+/// A `DragTarget` that appears when it is hovered by a `Draggable` that it can accept
 class HoverableDragTarget<T extends Object> extends StatefulWidget {
   const HoverableDragTarget({
     super.key,
     this.onWillAcceptWithDetails,
     this.onAcceptWithDetails,
-    this.height,
-    this.width,
+    required this.size,
   });
 
   final bool Function(DragTargetDetails<T> details)? onWillAcceptWithDetails;
   final void Function(DragTargetDetails<T> details)? onAcceptWithDetails;
-  final double? height;
-  final double? width;
+  final HoverableDragTargetSize size;
 
   @override
   State<HoverableDragTarget<T>> createState() => _HoverableDragTargetState<T>();
@@ -38,10 +71,22 @@ class _HoverableDragTargetState<T extends Object>
         setState(() => hovering = false);
         return widget.onAcceptWithDetails?.call(details);
       },
-      builder: (_, _, _) => Container(
-        color: hovering ? MyTheme.dragTargetColor : null,
-        height: widget.height,
-        width: widget.width,
+
+      hitTestBehavior: HitTestBehavior.translucent,
+      builder: (_, _, _) => IgnorePointer(
+        child: SizedBox(
+          height: widget.size.fullHeight,
+          width: widget.size.fullWidth,
+          child: Center(
+            child: SizedBox(
+              height: widget.size.visibleHeight,
+              width: widget.size.visibleWidth,
+              child: hovering
+                  ? ColoredBox(color: MyTheme.dragTargetColor)
+                  : ColoredBox(color: Colors.red),
+            ),
+          ),
+        ),
       ),
     );
   }
