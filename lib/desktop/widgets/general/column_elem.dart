@@ -35,8 +35,17 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   final String? draggableText;
   final T? draggableData;
 
+  static double getHeight(TextStyle textStyle) {
+    logger.check(
+      textStyle.fontSize != null,
+      message: "The text style passed needs to have a defined fontSize",
+      raiseError: true,
+    );
+    return textStyle.fontSize! * 1.5;
+  }
+
   /// The height of the element
-  double getHeight() => inactiveTextStyle.fontSize! * 1.5;
+  double _getHeight() => inactiveTextStyle.fontSize! * 1.5;
 
   /// The that the values passed are acceptable
   void _checks() {
@@ -61,7 +70,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   Widget _baseWidget({required bool active}) {
     return Container(
       color: active ? activeColor : inactiveColor,
-      height: getHeight(),
+      height: _getHeight(),
       width: double.infinity,
       child: DefaultTextStyle(
         style: active ? activeTextStyle : inactiveTextStyle,
@@ -76,7 +85,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     return Draggable<T>(
       data: draggableData,
       dragAnchorStrategy: (draggable, context, position) =>
-          Offset(20, getHeight() / 2),
+          Offset(20, _getHeight() / 2),
       feedback: Material(
         child: Container(
           color: activeColor,
