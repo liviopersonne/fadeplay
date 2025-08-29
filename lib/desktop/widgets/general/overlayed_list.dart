@@ -7,6 +7,7 @@ final logger = Logging("OverlayedList");
 /// or under the elements instead of being placed between them.
 ///
 /// You can also choose to have leading and trailing separators
+/// that will be indexed at `-1` and `itemCount`
 class OverlayedList extends StatelessWidget {
   const OverlayedList({
     super.key,
@@ -67,7 +68,8 @@ class OverlayedList extends StatelessWidget {
                 scrollOffset: scrollController!.hasClients
                     ? scrollController!.offset
                     : 0,
-                child: separatorBuilder(context, index),
+                // IgnorePointer is used so we can still scroll on the separator
+                child: IgnorePointer(child: separatorBuilder(context, index)),
               ),
             )
           : _positioned(

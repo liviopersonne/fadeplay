@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 class TestOverlayedList extends StatelessWidget {
   const TestOverlayedList({super.key});
 
-  Color randomColor() =>
-      Color((Random().nextDouble() * 0xFFFFFF).toInt()).withAlpha(255);
+  List<Color> randomColors(int length) => List.generate(
+    length,
+    (_) => Color((Random().nextDouble() * 0xFFFFFF).toInt()).withAlpha(255),
+  );
 
   List<double> randomSizes(int length, double min, double max) =>
       List.generate(length, (_) => Random().nextDouble() * (max - min) + min);
@@ -17,6 +19,8 @@ class TestOverlayedList extends StatelessWidget {
     final itemCount = 10;
     final sizes = randomSizes(itemCount, 50, 100);
     final separatorSizes = randomSizes(itemCount + 2, 5, 20);
+    final itemColors = randomColors(itemCount);
+    final separatorColors = randomColors(itemCount + 2);
     return Scaffold(
       body: Center(
         child: Container(
@@ -26,13 +30,13 @@ class TestOverlayedList extends StatelessWidget {
           child: OverlayedList(
             itemCount: itemCount,
             itemBuilder: (_, i) => Container(
-              color: randomColor(),
+              color: itemColors[i],
               width: sizes[i],
               height: sizes[i],
               child: Text("Elem $i"),
             ),
             separatorBuilder: (_, i) => Container(
-              color: randomColor().withAlpha(150),
+              color: separatorColors[i + 1].withAlpha(150),
               width: separatorSizes[i + 1],
               height: separatorSizes[i + 1],
             ),
