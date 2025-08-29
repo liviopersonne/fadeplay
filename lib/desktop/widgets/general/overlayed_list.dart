@@ -7,7 +7,7 @@ final logger = Logging("OverlayedList");
 /// or under the elements instead of being placed between them.
 ///
 /// You can also choose to have leading and trailing separators
-/// that will be indexed at `-1` and `itemCount`
+/// that will be indexed at `-1` and `itemCount-1`
 class OverlayedList extends StatelessWidget {
   const OverlayedList({
     super.key,
@@ -55,7 +55,7 @@ class OverlayedList extends StatelessWidget {
     );
 
     final List<Widget> overlayedContent = [];
-    double offset = 0;
+    double offset = itemSizes(0);
 
     /// One of the overlayed objects
     Widget overlayedElem(double currOffset, int index) {
@@ -80,16 +80,17 @@ class OverlayedList extends StatelessWidget {
             );
     }
 
-    for (int i = 0; i < itemCount; i++) {
-      offset += itemSizes(i);
+    for (int i = 0; i < itemCount - 1; i++) {
       // we need to create a local variable so it doesn't get updated a offset changes
       final currentOffset = offset;
       overlayedContent.add(overlayedElem(currentOffset, i));
+      offset += itemSizes(i + 1);
     }
+
     if (edgeSeparators) {
       overlayedContent.addAll([
         overlayedElem(0, -1),
-        overlayedElem(offset, itemCount),
+        overlayedElem(offset, itemCount - 1),
       ]);
     }
 
