@@ -17,7 +17,7 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
     this.clickable = false,
     this.onTap,
     this.draggable = false,
-    this.draggableFeedback,
+    this.draggableText,
     this.draggableData,
   });
 
@@ -31,7 +31,7 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
   final bool clickable;
   final void Function()? onTap;
   final bool draggable;
-  final Widget? draggableFeedback;
+  final String? draggableText;
   final T? draggableData;
 
   /// The height of the element
@@ -66,7 +66,12 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
 
     return Draggable<T>(
       data: draggableData,
-      feedback: Material(child: draggableFeedback!),
+      feedback: Material(
+        child: Container(
+          color: activeColor,
+          child: Text(draggableText!, style: activeTextStyle),
+        ),
+      ),
       child: child,
     );
   }

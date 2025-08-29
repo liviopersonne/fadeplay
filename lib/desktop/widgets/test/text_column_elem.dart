@@ -32,7 +32,7 @@ class TestTextColumnElem extends StatelessWidget {
                 hoveringCursor: SystemMouseCursors.click,
                 draggable: true,
                 draggableData: 1,
-                draggableFeedback: Text("Burger !!"),
+                draggableText: "Burger !!",
               ),
             ),
           ),
