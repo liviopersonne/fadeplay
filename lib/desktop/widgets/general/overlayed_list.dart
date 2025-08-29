@@ -8,7 +8,7 @@ final logger = Logging("OverlayedList");
 ///
 /// You can also choose to have leading and trailing separators
 /// that will be indexed at `-1` and `itemCount-1`
-class OverlayedList extends StatelessWidget {
+class OverlayedList extends StatefulWidget {
   const OverlayedList({
     super.key,
     required this.itemCount,
@@ -19,7 +19,6 @@ class OverlayedList extends StatelessWidget {
     required this.itemSizes,
     required this.separatorSizes,
     this.scrollingEnabled = true,
-    this.scrollController,
   });
 
   final int itemCount;
@@ -30,7 +29,20 @@ class OverlayedList extends StatelessWidget {
   final double Function(int index) itemSizes;
   final double Function(int index) separatorSizes;
   final bool scrollingEnabled;
-  final ScrollController? scrollController;
+
+  @override
+  State<OverlayedList> createState() => _OverlayedListState();
+}
+
+/// NOTE: This is a stateful widget because we need to dispose the scrollController at the end
+class _OverlayedListState extends State<OverlayedList> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   /// The position to put an overlayed object at
   Positioned _positioned({
@@ -40,57 +52,52 @@ class OverlayedList extends StatelessWidget {
     required Widget child,
   }) {
     final realOffset = currOffset - separatorSize / 2 - scrollOffset;
-    return direction == Axis.horizontal
+    return widget.direction == Axis.horizontal
         ? Positioned(left: realOffset, top: 0, bottom: 0, child: child)
         : Positioned(top: realOffset, left: 0, right: 0, child: child);
   }
 
   @override
   Widget build(BuildContext context) {
-    logger.check(
-      (scrollController == null) == (scrollingEnabled == false),
-      message:
-          "scrollController can be null if and only if scrolling is disabled",
-      raiseError: true,
-    );
-
     final List<Widget> overlayedContent = [];
-    double offset = itemSizes(0);
+    double offset = widget.itemSizes(0);
 
     /// One of the overlayed objects
     Widget overlayedElem(double currOffset, int index) {
-      return scrollingEnabled
+      return widget.scrollingEnabled
           ? AnimatedBuilder(
-              animation: scrollController!,
+              animation: _scrollController,
               builder: (_, _) => _positioned(
                 currOffset: currOffset,
-                separatorSize: separatorSizes(index),
-                scrollOffset: scrollController!.hasClients
-                    ? scrollController!.offset
+                separatorSize: widget.separatorSizes(index),
+                scrollOffset: _scrollController.hasClients
+                    ? _scrollController.offset
                     : 0,
                 // IgnorePointer is used so we can still scroll on the separator
-                child: IgnorePointer(child: separatorBuilder(context, index)),
+                child: IgnorePointer(
+                  child: widget.separatorBuilder(context, index),
+                ),
               ),
             )
           : _positioned(
               currOffset: currOffset,
-              separatorSize: separatorSizes(index),
+              separatorSize: widget.separatorSizes(index),
               scrollOffset: 0.0,
-              child: separatorBuilder(context, index),
+              child: widget.separatorBuilder(context, index),
             );
     }
 
-    for (int i = 0; i < itemCount - 1; i++) {
+    for (int i = 0; i < widget.itemCount - 1; i++) {
       // we need to create a local variable so it doesn't get updated a offset changes
       final currentOffset = offset;
       overlayedContent.add(overlayedElem(currentOffset, i));
-      offset += itemSizes(i + 1);
+      offset += widget.itemSizes(i + 1);
     }
 
-    if (edgeSeparators) {
+    if (widget.edgeSeparators) {
       overlayedContent.addAll([
         overlayedElem(0, -1),
-        overlayedElem(offset, itemCount - 1),
+        overlayedElem(offset, widget.itemCount - 1),
       ]);
     }
 
@@ -98,13 +105,13 @@ class OverlayedList extends StatelessWidget {
       fit: StackFit.passthrough,
       children: [
         ListView.builder(
-          controller: scrollController,
-          physics: scrollingEnabled
+          controller: _scrollController,
+          physics: widget.scrollingEnabled
               ? ScrollPhysics()
               : NeverScrollableScrollPhysics(),
-          itemBuilder: itemBuilder,
-          itemCount: itemCount,
-          scrollDirection: direction,
+          itemBuilder: widget.itemBuilder,
+          itemCount: widget.itemCount,
+          scrollDirection: widget.direction,
         ),
         ...overlayedContent,
       ],

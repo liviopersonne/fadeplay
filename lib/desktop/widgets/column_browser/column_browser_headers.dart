@@ -2,6 +2,7 @@ import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.da
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/general/overlayed_list.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("ColumnBrowserHeaders");
@@ -25,6 +26,17 @@ class ColumnBrowserHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // OverlayedList(
+    //   itemCount: columnLayout.elems.length,
+    //   direction: Axis.horizontal,
+    //   edgeSeparators: false,
+
+    //   itemBuilder: itemBuilder,
+    //   separatorBuilder: separatorBuilder,
+    //   itemSizes: itemSizes,
+    //   separatorSizes: separatorSizes,
+    // );
+
     final List<Widget> rowContent = [];
     final List<Widget> stackContent = [];
     double currentOffset = 0;

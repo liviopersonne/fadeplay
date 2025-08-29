@@ -45,7 +45,6 @@ class TestOverlayedList extends StatelessWidget {
             direction: Axis.horizontal,
             edgeSeparators: true,
             scrollingEnabled: true,
-            scrollController: ScrollController(),
           ),
         ),
       ),
