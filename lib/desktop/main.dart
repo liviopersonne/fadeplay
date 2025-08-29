@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/music_players/single_music_player.dart';
 import 'package:fadeplay/desktop/db/schemas.dart';
+import 'package:fadeplay/desktop/subwindow_app.dart';
 import 'package:fadeplay/desktop/widgets/test/audio_metadata.dart';
 import 'package:fadeplay/desktop/widgets/test/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/test/column_selector.dart';
@@ -16,8 +19,16 @@ import 'package:window_size/window_size.dart';
 
 late final AppDatabase database;
 
-void desktopMain() {
+void desktopMain(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // if this is a subwindow, create it
+  if (args.isNotEmpty && args.first == 'multi_window') {
+    final windowId = int.parse(args[1]);
+    final arguments = jsonDecode(args[2]) as Map<String, dynamic>;
+    return runApp(SubWindowApp(windowId: windowId, args: arguments));
+  }
+
   SingleMusicPlayer.initialize(); // for audio playing
   final database = AppDatabase();
   registerAllColumns(); // for the columnBrowser
@@ -48,15 +59,15 @@ class DesktopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Sizer(
-      builder: (context, orientation, screenType) => const MaterialApp(
+      builder: (_, _, _) => const MaterialApp(
         // home: TestLoadSingleMusicWidget(),
         // home: TestLoadFullMusicWidget(),
         // home: TestDatabaseWidget(),
         // home: TestAudioMetadata(),
-        home: TestColumnBrowserWidget(),
+        // home: TestColumnBrowserWidget(),
         // home: TestOverlayedList(),
         // home: TestRowElem(),
-        // home: TestColumnSelectorWidget(),
+        home: TestColumnSelectorWidget(),
         debugShowCheckedModeBanner: false,
       ),
     );

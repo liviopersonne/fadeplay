@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  desktop_multi_window
   media_kit_libs_windows_audio
   sqlite3_flutter_libs
   window_size

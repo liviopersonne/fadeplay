@@ -16,6 +16,7 @@ dependencies:
   media_kit: ^1.2.0
   media_kit_libs_audio: ^1.0.5
 
+  # For logging
   logger: ^2.6.1
 
   # For composite streams
@@ -35,8 +36,11 @@ dependencies:
   # Clipping window size
   window_size: ^0.1.0
 
-  # Widget sizes
+  # To have sp and dp
   sizer: ^3.1.3
+
+  # Create new windows on desktop
+  desktop_multi_window: ^0.2.1
 
 dev_dependencies:
   flutter_test:
