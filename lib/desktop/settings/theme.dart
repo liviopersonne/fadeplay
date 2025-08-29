@@ -19,10 +19,6 @@ class MyTheme {
   /// The color of a `DragTarget` when it's ready to accept
   static Color dragTargetColor = Colors.white;
 
-  /// The default padding size
-  static double paddingSmall = 3.dp;
-  static double paddingBig = 8.dp;
-
   /// The text styles
   static TextStyle textStyleNormal = TextStyle(
     color: Colors.white,
@@ -34,9 +30,18 @@ class MyTheme {
   );
   static TextStyle textStyleTitle = TextStyle(
     color: Colors.white,
-    fontSize: 14.sp,
+    fontSize: 14,
     fontWeight: FontWeight.bold,
   );
+
+  /// Background colors
+  static Color backgroundDark = Colors.grey[800]!;
+  static Color backgroundLight = Colors.grey[600]!;
+
+  /// Padding values
+  static double paddingSmall = 9;
+  static double paddingMedium = 14;
+  static double paddingBig = 20;
 
   /// Save theme
   static void saveTheme() {

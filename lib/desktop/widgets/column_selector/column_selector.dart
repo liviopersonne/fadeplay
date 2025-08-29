@@ -1,9 +1,11 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/column_selector/selectable_column_list.dart';
 import 'package:fadeplay/desktop/widgets/column_selector/selected_column_list.dart';
+import 'package:fadeplay/desktop/widgets/general/rectangle_dialog.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("ColumnSelector");
@@ -11,18 +13,33 @@ final logger = Logging("ColumnSelector");
 class ColumnSelector extends StatelessWidget {
   ColumnSelector({super.key, required this.controller});
 
-  final List<String> allColumns = ItemColumn.allColumns.keys.toList();
+  final List<String> _allColumns = ItemColumn.allColumns.keys.toList();
   final ColumnBrowserController controller;
-  final dragNotifier = ValueNotifier<bool>(false);
+  final _dragNotifier = ValueNotifier<bool>(false);
 
-  List<ItemColumn> getSelectedColumns(ColumnBrowserLayout layout) {
+  List<ItemColumn> _getSelectedColumns(ColumnBrowserLayout layout) {
     return layout.elems.map((elem) => elem.column).toList();
   }
 
-  List<ItemColumn> getUnselectedColumns(ColumnBrowserLayout layout) {
+  List<ItemColumn> _getUnselectedColumns(ColumnBrowserLayout layout) {
     final selectedIds = layout.elems.map((elem) => elem.column.id).toList();
-    final unselectedIds = allColumns.where((id) => !selectedIds.contains(id));
+    final unselectedIds = _allColumns.where((id) => !selectedIds.contains(id));
     return unselectedIds.map((id) => ItemColumn.allColumns[id]!).toList();
+  }
+
+  /// Shows the dialog containing this widget
+  void showAsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return RectangleDialog(
+          title: "Set Displayed Fields",
+          height: 400,
+          width: 600,
+          content: this,
+        );
+      },
+    );
   }
 
   @override
@@ -34,15 +51,16 @@ class ColumnSelector extends StatelessWidget {
           children: [
             Expanded(
               child: SelectableColumnList(
-                columns: getUnselectedColumns(layout),
-                dragNotifier: dragNotifier,
+                columns: _getUnselectedColumns(layout),
+                dragNotifier: _dragNotifier,
               ),
             ),
+            VerticalDivider(width: 1),
             Expanded(
               child: SelectedColumnList(
                 controller: controller,
-                columns: getSelectedColumns(layout),
-                dragNotifier: dragNotifier,
+                columns: _getSelectedColumns(layout),
+                dragNotifier: _dragNotifier,
               ),
             ),
           ],

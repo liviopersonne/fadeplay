@@ -20,7 +20,7 @@ class TestColumnSelectorWidget extends StatelessWidget {
     return Scaffold(
       body: Center(
         // child: BaseColumnSelector(controller: controller),
-        child: WindowColumnSelector(controller: controller),
+        child: DialogColumnSelector(controller: controller),
       ),
     );
   }
@@ -42,8 +42,8 @@ class BaseColumnSelector extends StatelessWidget {
   }
 }
 
-class WindowColumnSelector extends StatelessWidget {
-  const WindowColumnSelector({super.key, required this.controller});
+class DialogColumnSelector extends StatelessWidget {
+  const DialogColumnSelector({super.key, required this.controller});
 
   final ColumnBrowserController controller;
 
@@ -58,14 +58,8 @@ class WindowColumnSelector extends StatelessWidget {
         clickable: true,
         hoverable: true,
         hoveringCursor: SystemMouseCursors.click,
-        onTap: () => showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            constraints: BoxConstraints.tight(Size(500, 500)),
-            title: Text("Set Displayed Fields", style: MyTheme.textStyleTitle),
-            content: ColumnSelector(controller: controller),
-          ),
-        ),
+        onTap: () =>
+            ColumnSelector(controller: controller).showAsDialog(context),
         child: SizedBox(
           child: Text("Choose columns", textAlign: TextAlign.center),
         ),

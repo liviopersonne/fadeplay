@@ -48,7 +48,7 @@ class RowElem<T extends Object> extends StatelessWidget {
   }
 
   /// The height of the element
-  double _getHeight() => inactiveTextStyle.fontSize! * 1.5;
+  double _getHeight() => inactiveTextStyle.fontSize! * 1.6;
 
   /// The that the values passed are acceptable
   void _checks() {
