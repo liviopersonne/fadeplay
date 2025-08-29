@@ -8,52 +8,41 @@ import 'package:flutter/material.dart';
 
 final logger = Logging("ColumnSelector");
 
-class ColumnSelector extends StatefulWidget {
+class ColumnSelector extends StatelessWidget {
   ColumnSelector({super.key, required this.controller});
 
   final List<String> allColumns = ItemColumn.allColumns.keys.toList();
   final ColumnBrowserController controller;
+  final dragNotifier = ValueNotifier<bool>(false);
 
-  @override
-  State<ColumnSelector> createState() => _ColumnSelectorState();
-}
+  List<ItemColumn> getSelectedColumns(ColumnBrowserLayout layout) {
+    return layout.elems.map((elem) => elem.column).toList();
+  }
 
-class _ColumnSelectorState extends State<ColumnSelector> {
-  bool dragging = false;
-
-  void setDragging(bool value) => setState(() => dragging = value);
+  List<ItemColumn> getUnselectedColumns(ColumnBrowserLayout layout) {
+    final selectedIds = layout.elems.map((elem) => elem.column.id).toList();
+    final unselectedIds = allColumns.where((id) => !selectedIds.contains(id));
+    return unselectedIds.map((id) => ItemColumn.allColumns[id]!).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ColumnBrowserLayout>(
-      valueListenable: widget.controller.columnsLayout,
-      builder: (context, value, child) {
-        final List<ColumnWithWidth> selectedColumns = value.elems;
-        final List<String> selectedColumnNames = selectedColumns
-            .map((elem) => elem.column.id)
-            .toList();
-        final List<String> otherColumnNames = ItemColumn.allColumns.keys
-            .where((id) => !selectedColumnNames.contains(id))
-            .toList();
-
+      valueListenable: controller.columnsLayout,
+      builder: (_, layout, _) {
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               child: SelectableColumnList(
-                selectedColumnNames,
-                otherColumnNames,
-                setDragging: setDragging,
-                dragging: dragging,
+                columns: getUnselectedColumns(layout),
+                dragNotifier: dragNotifier,
               ),
             ),
             Expanded(
               child: SelectedColumnList(
-                selectedColumnNames,
-                otherColumnNames,
-                controller: widget.controller,
-                dragging: dragging,
+                controller: controller,
+                columns: getSelectedColumns(layout),
+                dragNotifier: dragNotifier,
               ),
             ),
           ],

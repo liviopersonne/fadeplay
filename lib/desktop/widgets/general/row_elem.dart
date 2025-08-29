@@ -10,7 +10,7 @@ class RowElem<T extends Object> extends StatelessWidget {
     required this.child,
     required this.inactiveTextStyle,
     TextStyle? activeTextStyle,
-    required this.inactiveColor,
+    this.inactiveColor,
     Color? activeColor,
     this.hoverable = false,
     this.hoveringCursor = MouseCursor.defer,
@@ -26,8 +26,8 @@ class RowElem<T extends Object> extends StatelessWidget {
   final Widget child;
   final TextStyle inactiveTextStyle;
   final TextStyle activeTextStyle;
-  final Color inactiveColor;
-  final Color activeColor;
+  final Color? inactiveColor;
+  final Color? activeColor;
   final bool hoverable;
   final MouseCursor hoveringCursor;
   final bool clickable;

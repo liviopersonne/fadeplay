@@ -1,123 +1,48 @@
+import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
-import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
+import 'package:fadeplay/desktop/widgets/general/hoverable_drag_target.dart';
 import 'package:fadeplay/desktop/widgets/general/overlayed_list.dart';
+import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
 import 'package:flutter/material.dart';
 
-class SelectedColumnList extends StatefulWidget {
-  const SelectedColumnList(
-    this.selected,
-    this.other, {
+class SelectedColumnList extends StatelessWidget {
+  const SelectedColumnList({
     super.key,
     required this.controller,
-    required this.dragging,
+    required this.columns,
+    required this.dragNotifier,
   });
 
-  final List<String> selected;
-  final List<String> other;
   final ColumnBrowserController controller;
-  final bool dragging;
-
-  @override
-  State<SelectedColumnList> createState() => _SelectedColumnListState();
-}
-
-class _SelectedColumnListState extends State<SelectedColumnList> {
-  /// Index of the item that's being hovered
-  int? hoveringIndex;
-
-  Widget baseWidget({required String content, required Color color}) =>
-      Container(
-        height: MyTheme.textStyleNormal.fontSize! * 1.5,
-        color: color,
-        child: Text(content, style: MyTheme.textStyleNormal),
-      );
+  final List<ItemColumn> columns;
+  final ValueNotifier<bool> dragNotifier;
 
   @override
   Widget build(BuildContext context) {
     return OverlayedList(
       direction: Axis.vertical,
-      itemCount: widget.selected.length,
+      itemCount: columns.length,
       edgeSeparators: true,
       scrollingEnabled: false,
-      itemSizes: (_) => MyTheme.textStyleNormal.fontSize! * 1.5,
+      itemSizes: (_) => RowElem.getHeight(MyTheme.textStyleNormal),
       separatorSizes: (_) => 5,
-      itemBuilder: (_, index) => widget.dragging
-          ? baseWidget(content: widget.selected[index], color: Colors.amber)
-          : GestureDetector(
-              child: Hoverable(
-                hoveringCursor: SystemMouseCursors.click,
-                unhoveredWidget: baseWidget(
-                  content: widget.selected[index],
-                  color: Colors.lightGreen,
-                ),
-                hoveredWidget: baseWidget(
-                  content: widget.selected[index],
-                  color: Colors.blue,
-                ),
-              ),
-              onTap: () {
-                widget.controller.removeColumn(index: index);
-              },
-            ),
-      separatorBuilder: (_, index) => DragTarget<String>(
-        onWillAcceptWithDetails: (_) {
-          setState(() => hoveringIndex = index);
-          return true;
-        },
-        onLeave: (_) => setState(() => hoveringIndex = null),
-        onAcceptWithDetails: (details) => {
-          setState(() => hoveringIndex = null),
-          widget.controller.insertColumn(
-            columnId: details.data,
-            index: index + 1,
-          ),
-        },
-        builder: (_, _, _) => Container(
-          color: hoveringIndex == index ? Colors.white : null,
-          height: 5,
-        ),
+      itemBuilder: (_, i) => RowElem(
+        inactiveTextStyle: MyTheme.textStyleNormal,
+        activeColor: Colors.pink,
+        inactiveColor: Colors.teal,
+        clickable: true,
+        onTap: () => controller.removeColumn(index: i),
+        hoverable: true,
+        hoveringCursor: SystemMouseCursors.click,
+        dragNotifier: dragNotifier,
+        child: Text(columns[i].label),
+      ),
+      separatorBuilder: (_, i) => HoverableDragTarget<ItemColumn>(
+        height: 5,
+        onAcceptWithDetails: (details) =>
+            controller.insertColumn(columnId: details.data.id, index: i + 1),
       ),
     );
-
-    // return ListView.separated(
-    //   scrollDirection: Axis.vertical,
-    //   itemCount: widget.selected.length + 1,
-
-    //   // exchanged separator and item to have separators at the edges
-    //   separatorBuilder: (context, index) => widget.dragging
-    //       ? baseWidget(content: widget.selected[index])
-    //       : GestureDetector(
-    //           child: Hoverable(
-    //             hoveringCursor: SystemMouseCursors.click,
-    //             unhoveredWidget: baseWidget(content: widget.selected[index]),
-    //             hoveredWidget: Container(
-    //               color: Colors.blue,
-    //               child: baseWidget(content: widget.selected[index]),
-    //             ),
-    //           ),
-    //           onTap: () {
-    //             widget.controller.removeColumn(index: index);
-    //           },
-    //         ),
-    //   itemBuilder: (context, index) => DragTarget<String>(
-    //     onWillAcceptWithDetails: (_) {
-    //       setState(() => hoveringIndex = index);
-    //       return true;
-    //     },
-    //     onLeave: (_) => setState(() => hoveringIndex = null),
-    //     onAcceptWithDetails: (details) => {
-    //       setState(() => hoveringIndex = null),
-    //       widget.controller.insertColumn(
-    //         columnId: details.data,
-    //         index: index,
-    //       ),
-    //     },
-    //     builder: (context, candidateData, rejectedData) => Container(
-    //       color: hoveringIndex == index ? Colors.white : Colors.red,
-    //       height: 5,
-    //     ),
-    //   ),
-    // );
   }
 }
