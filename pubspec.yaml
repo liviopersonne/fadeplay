@@ -16,6 +16,7 @@ dependencies:
   media_kit: ^1.2.0
   media_kit_libs_audio: ^1.0.5
 
+  # For logging
   logger: ^2.6.1
 
   # For composite streams
@@ -35,7 +36,7 @@ dependencies:
   # Clipping window size
   window_size: ^0.1.0
 
-  # Widget sizes
+  # Get sizes in dp and sp
   sizer: ^3.1.3
 
 dev_dependencies:
