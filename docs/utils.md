@@ -8,6 +8,8 @@ https://github.com/ubuntu-flutter-community/musicpod: Desktop app
 
 https://www.flutterclutter.dev/flutter/tutorials/create-a-controller-for-a-custom-widget/2021/2149/: Create a controller for a custom widget
 
+https://davidserrano.io/how-to-use-multiple-windows-in-flutter-desktop: For multiple desktop windows
+
 ## Libraries
 
 `just_audio`: Reading audio, seeking, fading, files etc...

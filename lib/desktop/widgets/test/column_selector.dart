@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
+import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/objects/window_manager.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/column_selector/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
 import 'package:flutter/material.dart';
+
+final logger = Logging("TestColumnSelectorWidget");
 
 class TestColumnSelectorWidget extends StatelessWidget {
   const TestColumnSelectorWidget({super.key});
@@ -49,33 +53,17 @@ class WindowColumnSelector extends StatelessWidget {
   final ColumnBrowserController controller;
 
   Future<void> showWindow() async {
-    // final window = await DesktopMultiWindow.createWindow(
-    //   jsonEncode({
-    //     'args1': 'Sub window', // fixed argument
-    //     'args2': 100, // id of the window
-    //     'args3': false, // are arguments passed to the window ?
-    //   }),
-    // );
-
+    // final window = await DesktopMultiWindow.createWindow(jsonEncode({}));
     // window
-    //   ..setFrame(const Offset(0, 0) & const Size(1280, 720))
+    //   ..setFrame(const Offset(100, 100) & const Size(800, 600))
+    //   ..setTitle('Sub Window')
     //   ..center()
-    //   ..setTitle('Another window')
     //   ..show();
 
-    final window = await DesktopMultiWindow.createWindow(
-      jsonEncode({
-        'args1': 'multi_window',
-        'args2': 100,
-        'args3': true,
-        'bussiness': 'bussiness_test',
-      }),
-    );
-    window
-      ..setFrame(const Offset(100, 100) & const Size(800, 600))
-      ..setTitle('Sub Window')
-      ..center()
-      ..show();
+    await WindowManager.createWindow(idName: "1", title: "Hello !");
+    await WindowManager.showWindow(idName: "1");
+    await Future.delayed(Duration(seconds: 3));
+    await WindowManager.hideWindow(idName: "1");
   }
 
   @override

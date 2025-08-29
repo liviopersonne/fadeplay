@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:window_size/window_size.dart';
 
+final logger = Logging("DesktopMain");
 late final AppDatabase database;
 
 void desktopMain(List<String> args) {
@@ -26,6 +27,8 @@ void desktopMain(List<String> args) {
   if (args.isNotEmpty && args.first == 'multi_window') {
     final windowId = int.parse(args[1]);
     final arguments = jsonDecode(args[2]) as Map<String, dynamic>;
+    logger.log("args: $args");
+    logger.log("WindowId: $windowId, arguments: ${arguments.entries}");
     return runApp(SubWindowApp(windowId: windowId, args: arguments));
   }
 
