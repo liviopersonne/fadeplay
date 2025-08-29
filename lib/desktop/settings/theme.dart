@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class MyTheme {
   MyTheme._();
@@ -15,12 +16,23 @@ class MyTheme {
   /// The color of a header when it's being dragged
   static Color headerDraggingColor = Colors.deepPurple.withAlpha(100);
 
-  /// The style of the text of the header when it's being dragged
-  static TextStyle headerDraggingTextStyle = TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.normal,
-    decoration: TextDecoration.none,
-    fontSize: 18,
+  /// The default padding size
+  static double paddingSmall = 3.dp;
+  static double paddingBig = 8.dp;
+
+  /// The text styles
+  static TextStyle textStyleNormal = TextStyle(
+    color: Colors.white,
+    fontSize: 12.sp,
+  );
+  static TextStyle textStyleInactive = TextStyle(
+    color: Colors.grey,
+    fontSize: 12.sp,
+  );
+  static TextStyle textStyleTitle = TextStyle(
+    color: Colors.white,
+    fontSize: 14.sp,
+    fontWeight: FontWeight.bold,
   );
 
   /// Save theme

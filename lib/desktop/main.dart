@@ -9,7 +9,9 @@ import 'package:fadeplay/desktop/widgets/test/database.dart';
 import 'package:fadeplay/desktop/widgets/test/load_full_music.dart';
 import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
 import 'package:fadeplay/desktop/widgets/test/overlayed_list.dart';
+import 'package:fadeplay/desktop/widgets/test/text_column_elem.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:window_size/window_size.dart';
 
 late final AppDatabase database;
@@ -45,15 +47,18 @@ class DesktopApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      // home: TestLoadSingleMusicWidget(),
-      // home: TestLoadFullMusicWidget(),
-      // home: TestDatabaseWidget(),
-      // home: TestAudioMetadata(),
-      // home: TestColumnBrowserWidget(),
-      // home: TestColumnSelectorWidget(),
-      home: TestOverlayedList(),
-      debugShowCheckedModeBanner: false,
+    return Sizer(
+      builder: (context, orientation, screenType) => const MaterialApp(
+        // home: TestLoadSingleMusicWidget(),
+        // home: TestLoadFullMusicWidget(),
+        // home: TestDatabaseWidget(),
+        // home: TestAudioMetadata(),
+        // home: TestColumnBrowserWidget(),
+        // home: TestColumnSelectorWidget(),
+        // home: TestOverlayedList(),
+        home: TestTextColumnElem(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
