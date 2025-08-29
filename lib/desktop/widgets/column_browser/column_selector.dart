@@ -6,7 +6,6 @@ import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:fadeplay/desktop/widgets/general/overlayed_list.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 
 final logger = Logging("ColumnSelector");
 

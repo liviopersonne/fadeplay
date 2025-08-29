@@ -1,12 +1,12 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
-import 'package:fadeplay/desktop/widgets/general/text_column_elem.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
 
-final logger = Logging("TestTextColumnElem");
+final logger = Logging("TestColumnElem");
 
-class TestTextColumnElem extends StatelessWidget {
-  const TestTextColumnElem({super.key});
+class TestColumnElem extends StatelessWidget {
+  const TestColumnElem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +20,22 @@ class TestTextColumnElem extends StatelessWidget {
           child: Column(
             children: List.generate(
               itemCount,
-              (index) => TextColumnElem(
-                text: "Elem $index",
+              (index) => ColumnElem(
                 inactiveTextStyle: MyTheme.textStyleInactive,
                 inactiveColor: Colors.orange,
                 activeTextStyle: MyTheme.textStyleNormal,
                 activeColor: Colors.pink,
                 clickable: true,
-                onTap: () => logger.log("Clicked !!"),
+                onTap: () => logger.log("Clicked $index !!"),
                 hoverable: true,
                 hoveringCursor: SystemMouseCursors.click,
                 draggable: true,
                 draggableData: 1,
-                draggableText: "Burger !!",
+                draggableText: "Elem $index",
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [Text("Elem $index"), Text("Hello !!")],
+                ),
               ),
             ),
           ),

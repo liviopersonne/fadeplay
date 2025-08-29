@@ -2,16 +2,16 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:flutter/material.dart';
 
-final logger = Logging("TextColumnElem");
+final logger = Logging("ColumnElem");
 
-class TextColumnElem<T extends Object> extends StatelessWidget {
-  const TextColumnElem({
+class ColumnElem<T extends Object> extends StatelessWidget {
+  const ColumnElem({
     super.key,
-    required this.text,
+    required this.child,
     required this.inactiveTextStyle,
-    this.activeTextStyle,
+    TextStyle? activeTextStyle,
     required this.inactiveColor,
-    this.activeColor,
+    Color? activeColor,
     this.hoverable = false,
     this.hoveringCursor = MouseCursor.defer,
     this.clickable = false,
@@ -19,13 +19,14 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
     this.draggable = false,
     this.draggableText,
     this.draggableData,
-  });
+  }) : activeTextStyle = activeTextStyle ?? inactiveTextStyle,
+       activeColor = activeColor ?? inactiveColor;
 
-  final String text;
+  final Widget child;
   final TextStyle inactiveTextStyle;
-  final TextStyle? activeTextStyle;
+  final TextStyle activeTextStyle;
   final Color inactiveColor;
-  final Color? activeColor;
+  final Color activeColor;
   final bool hoverable;
   final MouseCursor hoveringCursor;
   final bool clickable;
@@ -40,14 +41,19 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
   /// The that the values passed are acceptable
   void _checks() {
     logger.check(
-      inactiveTextStyle.fontSize != null,
+      inactiveTextStyle.fontSize != null && activeTextStyle.fontSize != null,
       message: "The text styles passed need to have a defined fontSize",
       raiseError: true,
     );
     logger.check(
-      activeTextStyle == null ||
-          inactiveTextStyle.fontSize == activeTextStyle!.fontSize,
+      inactiveTextStyle.fontSize == activeTextStyle.fontSize,
       message: "The text styles passed need to have the same fontSize",
+      raiseError: true,
+    );
+    logger.check(
+      draggableText != null || !draggable,
+      message:
+          "If the widget is draggable then it needs to have a draggableText",
       raiseError: true,
     );
   }
@@ -57,7 +63,10 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
       color: active ? activeColor : inactiveColor,
       height: getHeight(),
       width: double.infinity,
-      child: Text(text, style: active ? activeTextStyle : inactiveTextStyle),
+      child: DefaultTextStyle(
+        style: active ? activeTextStyle : inactiveTextStyle,
+        child: child,
+      ),
     );
   }
 
@@ -66,6 +75,8 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
 
     return Draggable<T>(
       data: draggableData,
+      dragAnchorStrategy: (draggable, context, position) =>
+          Offset(20, getHeight() / 2),
       feedback: Material(
         child: Container(
           color: activeColor,
