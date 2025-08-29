@@ -17,6 +17,7 @@ class RowElem<T extends Object> extends StatelessWidget {
     this.clickable = false,
     this.onTap,
     this.draggable = false,
+    this.dragNotifier,
     this.draggableText,
     this.draggableData,
   }) : activeTextStyle = activeTextStyle ?? inactiveTextStyle,
@@ -32,6 +33,7 @@ class RowElem<T extends Object> extends StatelessWidget {
   final bool clickable;
   final void Function()? onTap;
   final bool draggable;
+  final ValueNotifier<bool>? dragNotifier;
   final String? draggableText;
   final T? draggableData;
 
@@ -60,9 +62,9 @@ class RowElem<T extends Object> extends StatelessWidget {
       raiseError: true,
     );
     logger.check(
-      draggableText != null || !draggable,
+      (draggableText != null && dragNotifier != null) || !draggable,
       message:
-          "If the widget is draggable then it needs to have a draggableText",
+          "If the widget is draggable then it needs to have draggableText and dragging",
       raiseError: true,
     );
   }
@@ -84,6 +86,8 @@ class RowElem<T extends Object> extends StatelessWidget {
 
     return Draggable<T>(
       data: draggableData,
+      onDragStarted: () => dragNotifier?.value = true,
+      onDragEnd: (_) => dragNotifier?.value = false,
       dragAnchorStrategy: (draggable, context, position) =>
           Offset(20, _getHeight() / 2),
       feedback: Material(
@@ -113,11 +117,12 @@ class RowElem<T extends Object> extends StatelessWidget {
       _draggableWrapper(_baseWidget(active: true)),
     );
 
-    return hoverable
+    return hoverable && !(dragNotifier?.value ?? false)
         ? Hoverable(
             hoveringCursor: hoveringCursor,
             unhoveredWidget: inactiveChild,
             hoveredWidget: activeChild,
+            disableNotifier: dragNotifier,
           )
         : inactiveChild;
   }

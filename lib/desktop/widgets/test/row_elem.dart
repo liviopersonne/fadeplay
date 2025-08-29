@@ -11,6 +11,7 @@ class TestRowElem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemCount = 10;
+    final dragging = ValueNotifier<bool>(false);
     return Scaffold(
       body: Center(
         child: Container(
@@ -30,6 +31,7 @@ class TestRowElem extends StatelessWidget {
                 hoverable: true,
                 hoveringCursor: SystemMouseCursors.click,
                 draggable: true,
+                dragNotifier: dragging,
                 draggableData: 1,
                 draggableText: "Elem $index",
                 child: Row(
