@@ -1,6 +1,6 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
-import 'package:fadeplay/desktop/widgets/column_browser/column_selector.dart';
+import 'package:fadeplay/desktop/widgets/column_selector/column_selector.dart';
 import 'package:flutter/material.dart';
 
 class TestColumnSelectorWidget extends StatelessWidget {
