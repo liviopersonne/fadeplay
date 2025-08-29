@@ -52,35 +52,48 @@ class TextColumnElem<T extends Object> extends StatelessWidget {
     );
   }
 
-  Widget _inactiveBaseWidget() => Container(
-    color: inactiveColor,
-    height: getHeight(),
-    width: double.infinity,
-    child: Text(text, style: inactiveTextStyle),
-  );
+  Widget _baseWidget({required bool active}) {
+    return Container(
+      color: active ? activeColor : inactiveColor,
+      height: getHeight(),
+      width: double.infinity,
+      child: Text(text, style: active ? activeTextStyle : inactiveTextStyle),
+    );
+  }
 
-  Widget _activeBaseWidget() => Container(
-    color: activeColor,
-    height: getHeight(),
-    width: double.infinity,
-    child: Text(text, style: activeTextStyle),
-  );
+  Widget _draggableWrapper(Widget child) {
+    if (!draggable) return child;
+
+    return Draggable<T>(
+      data: draggableData,
+      feedback: Material(child: draggableFeedback!),
+      child: child,
+    );
+  }
+
+  Widget _clickableWrapper(Widget child) {
+    if (!clickable) return child;
+
+    return GestureDetector(onTap: onTap, child: child);
+  }
 
   @override
   Widget build(BuildContext context) {
     _checks();
 
-    return Hoverable(
-      hoveringCursor: hoveringCursor,
-      unhoveredWidget: _inactiveBaseWidget(),
-      hoveredWidget: GestureDetector(
-        onTap: onTap,
-        child: Draggable<T>(
-          data: draggableData,
-          feedback: Material(child: draggableFeedback!),
-          child: _activeBaseWidget(),
-        ),
-      ),
+    final inactiveChild = _clickableWrapper(
+      _draggableWrapper(_baseWidget(active: false)),
     );
+    final activeChild = _clickableWrapper(
+      _draggableWrapper(_baseWidget(active: true)),
+    );
+
+    return hoverable
+        ? Hoverable(
+            hoveringCursor: hoveringCursor,
+            unhoveredWidget: inactiveChild,
+            hoveredWidget: activeChild,
+          )
+        : inactiveChild;
   }
 }
