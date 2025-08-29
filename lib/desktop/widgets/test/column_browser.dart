@@ -1,6 +1,7 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/column_selector/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
@@ -66,14 +67,31 @@ class TestColumnBrowserWidget extends StatelessWidget {
               width: 700,
               child: ColumnBrowser(controller: controller),
             ),
-            GestureDetector(
-              onTap: () => controller.addTrack(track1),
-              child: ColorSizeBox(
-                height: 30,
-                width: 100,
-                color: Colors.blue,
-                child: Text("Add track"),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 40,
+              children: [
+                GestureDetector(
+                  onTap: () => controller.addTrack(track1),
+                  child: ColorSizeBox(
+                    height: 30,
+                    width: 100,
+                    color: Colors.blue,
+                    child: Text("Add track"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => ColumnSelector(
+                    controller: controller,
+                  ).showAsDialog(context),
+                  child: ColorSizeBox(
+                    height: 30,
+                    width: 100,
+                    color: Colors.blue,
+                    child: Text("Select columns"),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -81,3 +99,6 @@ class TestColumnBrowserWidget extends StatelessWidget {
     );
   }
 }
+
+// FIXME: Fix removing and adding columns
+// TODO: Create a button widget
