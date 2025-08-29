@@ -1,4 +1,7 @@
+import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:flutter/material.dart';
+
+// TODO: Extend zone of target
 
 class HoverableDragTarget<T extends Object> extends StatefulWidget {
   const HoverableDragTarget({
@@ -36,7 +39,7 @@ class _HoverableDragTargetState<T extends Object>
         return widget.onAcceptWithDetails?.call(details);
       },
       builder: (_, _, _) => Container(
-        color: hovering ? Colors.white : null,
+        color: hovering ? MyTheme.dragTargetColor : null,
         height: widget.height,
         width: widget.width,
       ),

@@ -97,7 +97,7 @@ class _OverlayedListState extends State<OverlayedList> {
     if (widget.edgeSeparators) {
       overlayedContent.addAll([
         overlayedElem(0, -1),
-        overlayedElem(offset, widget.itemCount - 1),
+        if (widget.itemCount > 0) overlayedElem(offset, widget.itemCount - 1),
       ]);
     }
 

@@ -16,6 +16,9 @@ class MyTheme {
   /// The color of a header when it's being dragged
   static Color headerDraggingColor = Colors.deepPurple.withAlpha(100);
 
+  /// The color of a `DragTarget` when it's ready to accept
+  static Color dragTargetColor = Colors.white;
+
   /// The default padding size
   static double paddingSmall = 3.dp;
   static double paddingBig = 8.dp;
