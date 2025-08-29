@@ -1,12 +1,12 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
-import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
+import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
 import 'package:flutter/material.dart';
 
-final logger = Logging("TestColumnElem");
+final logger = Logging("TestRowElem");
 
-class TestColumnElem extends StatelessWidget {
-  const TestColumnElem({super.key});
+class TestRowElem extends StatelessWidget {
+  const TestRowElem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class TestColumnElem extends StatelessWidget {
           child: Column(
             children: List.generate(
               itemCount,
-              (index) => ColumnElem(
+              (index) => RowElem(
                 inactiveTextStyle: MyTheme.textStyleInactive,
                 inactiveColor: Colors.orange,
                 activeTextStyle: MyTheme.textStyleNormal,

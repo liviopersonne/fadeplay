@@ -2,10 +2,10 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:flutter/material.dart';
 
-final logger = Logging("ColumnElem");
+final logger = Logging("RowElem");
 
-class ColumnElem<T extends Object> extends StatelessWidget {
-  const ColumnElem({
+class RowElem<T extends Object> extends StatelessWidget {
+  const RowElem({
     super.key,
     required this.child,
     required this.inactiveTextStyle,
