@@ -1,6 +1,7 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
 class TestColumnBrowserWidget extends StatelessWidget {
@@ -59,7 +60,7 @@ class TestColumnBrowserWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 50,
           children: [
-            Container(
+            ColorSizeBox(
               color: Colors.grey[200],
               height: 500,
               width: 700,
@@ -67,7 +68,7 @@ class TestColumnBrowserWidget extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () => controller.addTrack(track1),
-              child: Container(
+              child: ColorSizeBox(
                 height: 30,
                 width: 100,
                 color: Colors.blue,

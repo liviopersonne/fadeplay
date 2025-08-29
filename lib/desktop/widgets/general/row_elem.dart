@@ -1,4 +1,5 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:flutter/material.dart';
 
@@ -70,7 +71,7 @@ class RowElem<T extends Object> extends StatelessWidget {
   }
 
   Widget _baseWidget({required bool active}) {
-    return Container(
+    return ColorSizeBox(
       color: active ? activeColor : inactiveColor,
       height: _getHeight(),
       width: double.infinity,
@@ -91,7 +92,7 @@ class RowElem<T extends Object> extends StatelessWidget {
       dragAnchorStrategy: (draggable, context, position) =>
           Offset(20, _getHeight() / 2),
       feedback: Material(
-        child: Container(
+        child: ColorSizeBox(
           color: activeColor,
           child: Text(draggableText!, style: activeTextStyle),
         ),

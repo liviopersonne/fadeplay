@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class TestRowElem extends StatelessWidget {
     final dragging = ValueNotifier<bool>(false);
     return Scaffold(
       body: Center(
-        child: Container(
+        child: ColorSizeBox(
           height: 500,
           width: 500,
           color: Colors.grey,

@@ -2,6 +2,7 @@ import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.da
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("ColumnBrowserHeaders");
@@ -95,7 +96,7 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
   final double separatorWidth;
   final int index;
 
-  Widget titleContainer({Color? color}) => Container(
+  Widget titleContainer({Color? color}) => ColorSizeBox(
     color: color,
     width: colWithWidth.columnWidth,
     child: Padding(
@@ -186,7 +187,7 @@ class _ColumnBrowserHeaderDragTargetState
             separatorIndex: widget.index,
           );
         },
-        builder: (context, candidateData, rejectedData) => Container(
+        builder: (context, candidateData, rejectedData) => ColorSizeBox(
           color: dragHovering
               ? Colors.white
               : null, // make the target appear only when I'm dragging over it
@@ -229,9 +230,10 @@ class ColumnBrowserHeaderSeparator extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.resizeColumn,
       child: GestureDetector(
-        child: Container(
+        child: ColorSizeBox(
           color: Colors.red, // TODO: Get color from theme
           width: separatorWidth, // TODO: Get separator width from layout
+          height: double.infinity,
         ),
         onHorizontalDragUpdate: (details) {
           final delta = details.primaryDelta;

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/overlayed_list.dart';
 import 'package:flutter/material.dart';
 
@@ -23,19 +24,19 @@ class TestOverlayedList extends StatelessWidget {
     final separatorColors = randomColors(itemCount + 2);
     return Scaffold(
       body: Center(
-        child: Container(
+        child: ColorSizeBox(
           height: 500,
           width: 500,
           color: Colors.grey,
           child: OverlayedList(
             itemCount: itemCount,
-            itemBuilder: (_, i) => Container(
+            itemBuilder: (_, i) => ColorSizeBox(
               color: itemColors[i],
               width: sizes[i],
               height: sizes[i],
               child: Text("Elem $i"),
             ),
-            separatorBuilder: (_, i) => Container(
+            separatorBuilder: (_, i) => ColorSizeBox(
               color: separatorColors[i + 1].withAlpha(150),
               width: separatorSizes[i + 1],
               height: separatorSizes[i + 1],

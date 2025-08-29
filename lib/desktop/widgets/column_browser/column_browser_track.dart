@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
 class BrowserTrack extends StatelessWidget {
@@ -19,7 +20,7 @@ class BrowserTrack extends StatelessWidget {
     return Row(
       children: [
         for (int i = 0; i < columnLayout.elems.length; i++) ...[
-          Container(
+          ColorSizeBox(
             color: Colors.blue, // TODO: Get color from theme
             width: columnLayout.elems[i].columnWidth,
             child: Padding(
