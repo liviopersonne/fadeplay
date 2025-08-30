@@ -2,6 +2,8 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 
 final logger = Logging("TestKeyboardListener");
 
@@ -15,11 +17,18 @@ class TestKeyboardListener extends StatefulWidget {
 class _TestKeyboardListenerState extends State<TestKeyboardListener> {
   String content = "Hello";
   final _focusNode = FocusNode();
+  HotKey? listenedHotkey;
 
   @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    registerHotkey().then((_) => logger.log("Assigned hotkey"));
+    super.initState();
   }
 
   @override
@@ -49,6 +58,15 @@ class _TestKeyboardListenerState extends State<TestKeyboardListener> {
                 ),
               ),
             ),
+            Text("Pressed ${listenedHotkey?.debugName}"),
+            Offstage(
+              child: HotKeyRecorder(
+                onHotKeyRecorded: (hotKey) => setState(() {
+                  listenedHotkey = hotKey;
+                }),
+              ),
+            ),
+            Text(hotKeyManager.registeredHotKeyList.toString()),
             MyButton(
               text: "Unfocus",
               width: 200,
@@ -62,4 +80,20 @@ class _TestKeyboardListenerState extends State<TestKeyboardListener> {
       ),
     );
   }
+}
+
+Future<void> registerHotkey() async {
+  final HotKey hotkey = HotKey(
+    key: PhysicalKeyboardKey.end,
+    modifiers: [HotKeyModifier.shift],
+    scope: HotKeyScope.system,
+  );
+
+  await hotKeyManager.register(
+    hotkey,
+    keyDownHandler: (hotKey) {
+      logger.log("Pressed hotkey: $hotKey");
+    },
+  );
+  logger.log("1");
 }

@@ -14,16 +14,16 @@ import 'package:fadeplay/desktop/widgets/test/overlayed_list.dart';
 import 'package:fadeplay/desktop/widgets/test/column_elem.dart';
 import 'package:flutter/material.dart';
 import 'package:window_size/window_size.dart';
-
-late final AppDatabase database;
+import 'package:hotkey_manager/hotkey_manager.dart';
 
 void desktopMain() {
   WidgetsFlutterBinding.ensureInitialized();
   SingleMusicPlayer.initialize(); // for audio playing
   final database = AppDatabase();
   registerAllColumns(); // for the columnBrowser
-
   setWindowTitle("Fadeplay");
+  hotKeyManager.unregisterAll(); // useful for hot reload
+
   // setWindowMinSize(Size(300, 300)); // TODO: Set this
 
   // database
