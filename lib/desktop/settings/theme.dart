@@ -40,21 +40,15 @@ class MyTheme {
   static Color colorBackgroundLight = Colors.grey[600]!;
 
   /// Accent color
-  static Color colorAccentHigh = Colors.blueAccent;
-  static Color colorAccentLow = Colors.blue[400]!;
-
-  /// Divider color
-  // static Color colorDivider = Color.from(
-  //   alpha: 1,
-  //   red: 0.4745,
-  //   green: 0.4549,
-  //   blue: 0.4941,
-  // );
+  // static Color colorAccentHigh = Colors.blueAccent;
+  // static Color colorAccentLow = Colors.blue[400]!;
+  static Color colorAccentHigh = Colors.pink;
+  static Color colorAccentLow = Colors.teal;
 
   /// Padding values
   static double paddingSmall = 9;
   static double paddingMedium = 20;
-  static double paddingBig = 28;
+  static double paddingBig = 33;
 
   /// Save theme
   static void saveTheme() {

@@ -20,33 +20,53 @@ class SelectedColumnList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverlayedList(
-      direction: Axis.vertical,
-      itemCount: columns.length,
-      edgeSeparators: true,
-      scrollingEnabled: false,
-      itemSizes: (_) => ColumnElem.getHeight(MyTheme.textStyleNormal),
-      separatorSizes: (_) => 20,
-      itemBuilder: (_, i) => ColumnElem(
-        inactiveTextStyle: MyTheme.textStyleNormal,
-        activeColor: Colors.pink,
-        inactiveColor: Colors.teal,
-        clickable: true,
-        onTap: () => controller.removeColumn(index: i),
-        hoverable: true,
-        hoveringCursor: SystemMouseCursors.click,
-        dragNotifier: dragNotifier,
-        child: Text(columns[i].label),
-      ),
-      separatorBuilder: (_, i) => HoverableDragTarget<ItemColumn>(
-        size: HoverableDragTargetSize.listSeparator(
-          listDirection: Axis.vertical,
-          fullSize: 20,
-          visibleSize: 3,
+    return Column(
+      children: [
+        Container(
+          color: MyTheme.colorBackgroundLight,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(
+            horizontal: MyTheme.paddingMedium,
+            vertical: MyTheme.paddingSmall,
+          ),
+          child: Text("Selectable fields", style: MyTheme.textStyleTitle),
         ),
-        onAcceptWithDetails: (details) =>
-            controller.insertColumn(columnId: details.data.id, index: i + 1),
-      ),
+        Expanded(
+          child: OverlayedList(
+            direction: Axis.vertical,
+            itemCount: columns.length,
+            edgeSeparators: true,
+            scrollingEnabled: false,
+            itemSizes: (_) => ColumnElem.getHeight(MyTheme.textStyleNormal),
+            separatorSizes: (_) => 20,
+            itemBuilder: (_, i) => ColumnElem(
+              inactiveTextStyle: MyTheme.textStyleNormal,
+              activeColor: MyTheme.colorAccentHigh,
+              inactiveColor: MyTheme.colorAccentLow,
+              clickable: true,
+              onTap: () => controller.removeColumn(index: i),
+              hoverable: true,
+              hoveringCursor: SystemMouseCursors.click,
+              dragNotifier: dragNotifier,
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(left: MyTheme.paddingBig),
+                child: Text(columns[i].label),
+              ),
+            ),
+            separatorBuilder: (_, i) => HoverableDragTarget<ItemColumn>(
+              size: HoverableDragTargetSize.listSeparator(
+                listDirection: Axis.vertical,
+                fullSize: 20,
+                visibleSize: 3,
+              ),
+              onAcceptWithDetails: (details) => controller.insertColumn(
+                columnId: details.data.id,
+                index: i + 1,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
