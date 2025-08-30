@@ -99,6 +99,7 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
           ValueListenableBuilder<ColumnBrowserLayout>(
             valueListenable: widget.controller.columnsLayout,
             builder: (context, columnsLayout, child) {
+              logger.log("Constraints: $constraints");
               final adaptedLayout = columnsLayout.adaptedToWidth(
                 constraints.maxWidth,
               );

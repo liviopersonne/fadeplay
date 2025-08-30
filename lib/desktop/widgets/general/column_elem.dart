@@ -13,7 +13,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     TextStyle? activeTextStyle,
     this.inactiveColor,
     Color? activeColor,
-    this.expandedWidth = true,
+    this.minimumWidth = false,
     this.hoverable = false,
     this.hoveringCursor = MouseCursor.defer,
     this.clickable = false,
@@ -30,7 +30,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   final TextStyle activeTextStyle;
   final Color? inactiveColor;
   final Color? activeColor;
-  final bool expandedWidth;
+  final bool minimumWidth;
   final bool hoverable;
   final MouseCursor hoveringCursor;
   final bool clickable;
@@ -110,9 +110,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   }
 
   Widget _expandedWrapper(Widget child) {
-    return expandedWidth
-        ? Expanded(child: child)
-        : IntrinsicWidth(child: child);
+    return minimumWidth ? IntrinsicWidth(child: child) : child;
   }
 
   @override

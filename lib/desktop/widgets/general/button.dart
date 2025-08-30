@@ -14,7 +14,7 @@ class MyButton extends StatelessWidget {
     return ColumnElem(
       activeColor: MyTheme.highAccentColor,
       inactiveColor: MyTheme.lowAccentColor,
-      expandedWidth: false,
+      minimumWidth: true,
       hoverable: true,
       hoveringCursor: SystemMouseCursors.click,
       clickable: true,
