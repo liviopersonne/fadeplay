@@ -1,6 +1,8 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
+import 'package:fadeplay/desktop/widgets/column_browser/column_browser_headers.dart';
 import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/menus/anchored_menu.dart';
 import 'package:flutter/material.dart';
 
 class TestMenu extends StatelessWidget {
@@ -12,27 +14,36 @@ class TestMenu extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: MyMenuAnchor(
-          controller: menuController,
-          // child: anchoredMenu(menuController),
-          child: cursorMenu(menuController),
+        child: AnchoredMenu(
+          width: 100,
+          menuController: menuController,
+          menuItems: {
+            "Item 1": () => logger.log("Clicked item 1"),
+            "Item 2": () => logger.log("Clicked item 2"),
+            "Item 3": () => logger.log("Clicked item 3"),
+          },
+          // child: smallMenuButton(menuController),
+          child: fullscreenMenuButton(menuController),
         ),
       ),
     );
   }
 }
 
-Widget anchoredMenu(MenuController menuController) {
+Widget smallMenuButton(MenuController menuController) {
   return MyButton(
     text: "Open menu",
     width: 200,
     onTap: () {
-      menuController.open();
+      menuController.isOpen ? menuController.close() : menuController.open();
     },
+    onSecondaryTapDown: (details) => menuController.isOpen
+        ? menuController.close()
+        : menuController.open(position: details.localPosition),
   );
 }
 
-Widget cursorMenu(MenuController menuController) {
+Widget fullscreenMenuButton(MenuController menuController) {
   return GestureDetector(
     child: ColorSizeBox(
       color: Colors.blueGrey,
@@ -42,39 +53,4 @@ Widget cursorMenu(MenuController menuController) {
     onTapDown: (details) =>
         menuController.open(position: details.localPosition),
   );
-}
-
-class MyMenuAnchor extends StatelessWidget {
-  const MyMenuAnchor({
-    super.key,
-    required this.controller,
-    required this.child,
-  });
-
-  final MenuController controller;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return MenuAnchor(
-      controller: controller,
-      style: MenuStyle(
-        shape: WidgetStatePropertyAll(
-          BeveledRectangleBorder(
-            side: BorderSide(
-              width: 0.3,
-              color: MyTheme.colorBackgroundVeryDark,
-            ),
-          ),
-        ),
-      ),
-      menuChildren: const [
-        MyButton(text: "Hello 1", width: 100),
-        MyButton(text: "Hello 2", width: 100),
-        MyButton(text: "Hello 3", width: 100),
-      ],
-      // NOTE: I can use `builder` instead of `child` if I want the child to depend on the controller
-      child: child,
-    );
-  }
 }

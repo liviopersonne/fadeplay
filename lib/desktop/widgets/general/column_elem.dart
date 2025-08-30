@@ -18,6 +18,10 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     this.hoveringCursor = MouseCursor.defer,
     this.clickable = false,
     this.onTap,
+    this.onSecondaryTap,
+    this.onTapDown,
+    this.onSecondaryTapDown,
+    this.onDoubleTap,
     this.draggable = false,
     this.dragNotifier,
     this.draggableText,
@@ -35,6 +39,10 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   final MouseCursor hoveringCursor;
   final bool clickable;
   final void Function()? onTap;
+  final void Function()? onSecondaryTap;
+  final void Function(TapDownDetails details)? onTapDown;
+  final void Function(TapDownDetails details)? onSecondaryTapDown;
+  final void Function()? onDoubleTap;
   final bool draggable;
   final ValueNotifier<bool>? dragNotifier;
   final String? draggableText;
@@ -106,7 +114,14 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   Widget _clickableWrapper(Widget child) {
     if (!clickable) return child;
 
-    return GestureDetector(onTap: onTap, child: child);
+    return GestureDetector(
+      onTap: onTap,
+      onSecondaryTap: onSecondaryTap,
+      onTapDown: onTapDown,
+      onSecondaryTapDown: onSecondaryTapDown,
+      onDoubleTap: onDoubleTap,
+      child: child,
+    );
   }
 
   Widget _expandedWrapper(Widget child) {
