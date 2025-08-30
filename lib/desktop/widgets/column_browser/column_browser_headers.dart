@@ -2,7 +2,9 @@ import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.da
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/column_selector/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/menus/anchored_menu.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("ColumnBrowserHeaders");
@@ -26,6 +28,7 @@ class ColumnBrowserHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MenuController menuController = MenuController();
     final List<Widget> rowContent = [];
     final List<Widget> stackContent = [];
     double currentOffset = 0;
@@ -58,15 +61,25 @@ class ColumnBrowserHeaders extends StatelessWidget {
       }
     }
 
-    return GestureDetector(
-      onSecondaryTap: () => logger.log("Open menu"),
-      child: Stack(
-        fit: StackFit.passthrough,
-        children: [
-          Row(children: rowContent),
-          ...stackContent,
-          if (columnLayout.isCropped) CroppedColumnsIndicator(),
-        ],
+    return AnchoredMenu(
+      menuController: menuController,
+      width: 200,
+      menuItems: {
+        "Select Columns": () =>
+            ColumnSelector(controller: controller).showAsDialog(context),
+      },
+      child: GestureDetector(
+        onSecondaryTapDown: (details) => menuController.isOpen
+            ? menuController.close()
+            : menuController.open(position: details.localPosition),
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+            Row(children: rowContent),
+            ...stackContent,
+            if (columnLayout.isCropped) CroppedColumnsIndicator(),
+          ],
+        ),
       ),
     );
   }

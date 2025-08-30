@@ -54,11 +54,11 @@ class DesktopApp extends StatelessWidget {
         // home: TestLoadFullMusicWidget(),
         // home: TestDatabaseWidget(),
         // home: TestAudioMetadata(),
-        // home: TestColumnBrowserWidget(),
+        home: TestColumnBrowserWidget(),
         // home: TestOverlayedList(),
         // home: TestColumnSelectorWidget(),
         // home: TestColumnElem(),
-        home: TestMenu(),
+        // home: TestMenu(),
         debugShowCheckedModeBanner: false,
       ),
     );
