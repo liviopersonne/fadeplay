@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/column_selector/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
-import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
 
 class TestColumnSelectorWidget extends StatelessWidget {
@@ -51,7 +49,7 @@ class DialogColumnSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300,
-      child: RowElem(
+      child: ColumnElem(
         inactiveTextStyle: MyTheme.textStyleNormal,
         inactiveColor: Colors.deepOrange,
         activeColor: Colors.blue,

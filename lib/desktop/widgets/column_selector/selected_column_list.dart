@@ -1,9 +1,9 @@
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable_drag_target.dart';
 import 'package:fadeplay/desktop/widgets/general/overlayed_list.dart';
-import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
 import 'package:flutter/material.dart';
 
 class SelectedColumnList extends StatelessWidget {
@@ -25,9 +25,9 @@ class SelectedColumnList extends StatelessWidget {
       itemCount: columns.length,
       edgeSeparators: true,
       scrollingEnabled: false,
-      itemSizes: (_) => RowElem.getHeight(MyTheme.textStyleNormal),
+      itemSizes: (_) => ColumnElem.getHeight(MyTheme.textStyleNormal),
       separatorSizes: (_) => 20,
-      itemBuilder: (_, i) => RowElem(
+      itemBuilder: (_, i) => ColumnElem(
         inactiveTextStyle: MyTheme.textStyleNormal,
         activeColor: Colors.pink,
         inactiveColor: Colors.teal,

@@ -1,6 +1,6 @@
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
-import 'package:fadeplay/desktop/widgets/general/row_elem.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
 
 class SelectableColumnList extends StatelessWidget {
@@ -18,7 +18,7 @@ class SelectableColumnList extends StatelessWidget {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemCount: columns.length,
-      itemBuilder: (_, i) => RowElem(
+      itemBuilder: (_, i) => ColumnElem(
         inactiveTextStyle: MyTheme.textStyleNormal,
         activeColor: Colors.pink,
         inactiveColor: Colors.teal,

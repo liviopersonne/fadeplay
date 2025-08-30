@@ -3,10 +3,10 @@ import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:flutter/material.dart';
 
-final logger = Logging("RowElem");
+final logger = Logging("ColumnElem");
 
-class RowElem<T extends Object> extends StatelessWidget {
-  const RowElem({
+class ColumnElem<T extends Object> extends StatelessWidget {
+  const ColumnElem({
     super.key,
     required this.child,
     required this.inactiveTextStyle,
