@@ -52,5 +52,5 @@
 
 ## ColumnSelector
 
-- [ ] Deactivate hovering on present columns when dragging
-- [ ] Remove the space between the present columns
+- [x] Deactivate hovering on present columns when dragging
+- [x] Remove the space between the present columns

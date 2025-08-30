@@ -36,7 +36,7 @@ class ColumnBrowserLayout {
   final List<ColumnWithWidth> elems;
 
   /// The sum of the widths of each column
-  final double _totalWidth;
+  double _totalWidth;
 
   /// The scale at which the layout is shown (see adaptedToWidth)
   double scale = 1;
@@ -169,7 +169,10 @@ class ColumnBrowserLayout {
       return;
     }
 
-    elems.insert(index, ColumnWithWidth.fromId(columnId: columnId));
+    final newColumn = ColumnWithWidth.fromId(columnId: columnId);
+    _totalWidth += newColumn.columnWidth;
+
+    elems.insert(index, newColumn);
   }
 
   /// Removes the `columnId` column
@@ -180,6 +183,8 @@ class ColumnBrowserLayout {
     )) {
       return;
     }
+
+    _totalWidth -= elems[index].columnWidth;
 
     elems.removeAt(index);
   }
