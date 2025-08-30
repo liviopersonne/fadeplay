@@ -3,6 +3,10 @@
 - [ ] Make sure I dispose all controllers
 - [ ] Check for containers using only `color` and `height` / `width` and replace with `ColorSizeBox`
 
+## ColumnElem
+
+- [ ] Vertically center text for all font sizes
+
 ## Assets
 
 - [ ] Asset is never loading on the first try

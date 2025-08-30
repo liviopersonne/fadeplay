@@ -2,6 +2,7 @@ import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.da
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/column_selector/column_selector.dart';
+import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
@@ -69,27 +70,20 @@ class TestColumnBrowserWidget extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 40,
               children: [
-                GestureDetector(
+                MyButton(
+                  width: 120,
+                  text: "Add track",
                   onTap: () => controller.addTrack(track1),
-                  child: ColorSizeBox(
-                    height: 30,
-                    width: 100,
-                    color: Colors.blue,
-                    child: Text("Add track"),
-                  ),
                 ),
-                GestureDetector(
+                MyButton(
+                  width: 120,
+                  text: "Select columns",
                   onTap: () => ColumnSelector(
                     controller: controller,
                   ).showAsDialog(context),
-                  child: ColorSizeBox(
-                    height: 30,
-                    width: 100,
-                    color: Colors.blue,
-                    child: Text("Select columns"),
-                  ),
                 ),
               ],
             ),

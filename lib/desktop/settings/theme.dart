@@ -22,11 +22,11 @@ class MyTheme {
   /// The text styles
   static TextStyle textStyleNormal = TextStyle(
     color: Colors.white,
-    fontSize: 12.sp,
+    fontSize: 14,
   );
   static TextStyle textStyleInactive = TextStyle(
     color: Colors.grey,
-    fontSize: 12.sp,
+    fontSize: 14,
   );
   static TextStyle textStyleTitle = TextStyle(
     color: Colors.white,
@@ -37,6 +37,10 @@ class MyTheme {
   /// Background colors
   static Color backgroundDark = Colors.grey[800]!;
   static Color backgroundLight = Colors.grey[600]!;
+
+  /// Accent color
+  static Color highAccentColor = Colors.blueAccent;
+  static Color lowAccentColor = Colors.blue[400]!;
 
   /// Padding values
   static double paddingSmall = 9;

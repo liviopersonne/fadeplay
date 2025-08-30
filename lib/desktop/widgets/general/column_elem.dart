@@ -13,6 +13,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     TextStyle? activeTextStyle,
     this.inactiveColor,
     Color? activeColor,
+    this.expandedWidth = true,
     this.hoverable = false,
     this.hoveringCursor = MouseCursor.defer,
     this.clickable = false,
@@ -29,6 +30,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   final TextStyle activeTextStyle;
   final Color? inactiveColor;
   final Color? activeColor;
+  final bool expandedWidth;
   final bool hoverable;
   final MouseCursor hoveringCursor;
   final bool clickable;
@@ -44,11 +46,11 @@ class ColumnElem<T extends Object> extends StatelessWidget {
       message: "The text style passed needs to have a defined fontSize",
       raiseError: true,
     );
-    return textStyle.fontSize! * 1.5;
+    return textStyle.fontSize! * 1.8;
   }
 
   /// The height of the element
-  double _getHeight() => inactiveTextStyle.fontSize! * 1.6;
+  double _getHeight() => getHeight(inactiveTextStyle);
 
   /// The that the values passed are acceptable
   void _checks() {
@@ -107,6 +109,12 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     return GestureDetector(onTap: onTap, child: child);
   }
 
+  Widget _expandedWrapper(Widget child) {
+    return expandedWidth
+        ? Expanded(child: child)
+        : IntrinsicWidth(child: child);
+  }
+
   @override
   Widget build(BuildContext context) {
     _checks();
@@ -118,13 +126,15 @@ class ColumnElem<T extends Object> extends StatelessWidget {
       _draggableWrapper(_baseWidget(active: true)),
     );
 
-    return hoverable && !(dragNotifier?.value ?? false)
-        ? Hoverable(
-            hoveringCursor: hoveringCursor,
-            unhoveredWidget: inactiveChild,
-            hoveredWidget: activeChild,
-            disableNotifier: dragNotifier,
-          )
-        : inactiveChild;
+    return _expandedWrapper(
+      hoverable && !(dragNotifier?.value ?? false)
+          ? Hoverable(
+              hoveringCursor: hoveringCursor,
+              unhoveredWidget: inactiveChild,
+              hoveredWidget: activeChild,
+              disableNotifier: dragNotifier,
+            )
+          : inactiveChild,
+    );
   }
 }
