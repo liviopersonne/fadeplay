@@ -1,4 +1,5 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
@@ -25,18 +26,38 @@ class _TestKeyboardListenerState extends State<TestKeyboardListener> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: KeyboardListener(
-          focusNode: _focusNode,
-          autofocus: true,
-          onKeyEvent: (value) {
-            setState(() => content = value.toString());
-          },
-          child: ColorSizeBox(
-            height: 300,
-            width: 300,
-            color: Colors.grey,
-            child: Center(child: Text(content)),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            KeyboardListener(
+              focusNode: _focusNode,
+              // autofocus: true,
+              autofocus: false,
+              onKeyEvent: (value) {
+                setState(() => content = value.toString());
+              },
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  // _focusNode.requestFocus();
+                  FocusScope.of(context).requestFocus(_focusNode);
+                }),
+                child: ColorSizeBox(
+                  height: 300,
+                  width: 300,
+                  color: _focusNode.hasFocus ? Colors.teal : Colors.grey,
+                  child: Center(child: Text(content)),
+                ),
+              ),
+            ),
+            MyButton(
+              text: "Unfocus",
+              width: 200,
+              onTap: () => setState(() {
+                // _focusNode.unfocus();
+                FocusScope.of(context).unfocus();
+              }),
+            ),
+          ],
         ),
       ),
     );

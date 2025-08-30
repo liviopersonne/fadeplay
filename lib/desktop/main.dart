@@ -13,7 +13,6 @@ import 'package:fadeplay/desktop/widgets/test/menu.dart';
 import 'package:fadeplay/desktop/widgets/test/overlayed_list.dart';
 import 'package:fadeplay/desktop/widgets/test/column_elem.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 import 'package:window_size/window_size.dart';
 
 late final AppDatabase database;
@@ -49,20 +48,18 @@ class DesktopApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(
-      builder: (context, orientation, screenType) => const MaterialApp(
-        // home: TestLoadSingleMusicWidget(),
-        // home: TestLoadFullMusicWidget(),
-        // home: TestDatabaseWidget(),
-        // home: TestAudioMetadata(),
-        // home: TestColumnBrowserWidget(),
-        // home: TestOverlayedList(),
-        // home: TestColumnSelectorWidget(),
-        // home: TestColumnElem(),
-        // home: TestMenu(),
-        home: TestKeyboardListener(),
-        debugShowCheckedModeBanner: false,
-      ),
+    return const MaterialApp(
+      // home: TestLoadSingleMusicWidget(),
+      // home: TestLoadFullMusicWidget(),
+      // home: TestDatabaseWidget(),
+      // home: TestAudioMetadata(),
+      // home: TestColumnBrowserWidget(),
+      // home: TestOverlayedList(),
+      // home: TestColumnSelectorWidget(),
+      // home: TestColumnElem(),
+      // home: TestMenu(),
+      home: TestKeyboardListener(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
