@@ -79,7 +79,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
       width: double.infinity,
       child: DefaultTextStyle(
         style: active ? activeTextStyle : inactiveTextStyle,
-        child: child,
+        child: Align(alignment: AlignmentGeometry.centerLeft, child: child),
       ),
     );
   }

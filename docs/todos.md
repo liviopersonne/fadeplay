@@ -5,7 +5,7 @@
 
 ## ColumnElem
 
-- [ ] Vertically center text for all font sizes
+- [x] Vertically center text for all font sizes
 
 ## Assets
 
