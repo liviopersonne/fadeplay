@@ -15,21 +15,36 @@ class SelectableColumnList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: columns.length,
-      itemBuilder: (_, i) => ColumnElem(
-        inactiveTextStyle: MyTheme.textStyleNormal,
-        activeColor: Colors.pink,
-        inactiveColor: Colors.teal,
-        draggable: true,
-        dragNotifier: dragNotifier,
-        draggableData: columns[i],
-        draggableText: columns[i].label,
-        hoverable: true,
-        hoveringCursor: SystemMouseCursors.grab,
-        child: Text(columns[i].label),
-      ),
+    return Column(
+      children: [
+        Container(
+          color: MyTheme.colorBackgroundLight,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(
+            horizontal: MyTheme.paddingBig,
+            vertical: MyTheme.paddingSmall,
+          ),
+          child: Text("Selectable fields", style: MyTheme.textStyleTitle),
+        ),
+        Expanded(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: columns.length,
+            itemBuilder: (_, i) => ColumnElem(
+              inactiveTextStyle: MyTheme.textStyleNormal,
+              activeColor: Colors.pink,
+              inactiveColor: Colors.teal,
+              draggable: true,
+              dragNotifier: dragNotifier,
+              draggableData: columns[i],
+              draggableText: columns[i].label,
+              hoverable: true,
+              hoveringCursor: SystemMouseCursors.grab,
+              child: Text(columns[i].label),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

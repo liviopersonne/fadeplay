@@ -58,13 +58,16 @@ class ColumnBrowserHeaders extends StatelessWidget {
       }
     }
 
-    return Stack(
-      fit: StackFit.passthrough,
-      children: [
-        Row(children: rowContent),
-        ...stackContent,
-        if (columnLayout.isCropped) CroppedColumnsIndicator(),
-      ],
+    return GestureDetector(
+      onSecondaryTap: () => logger.log("Open menu"),
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          Row(children: rowContent),
+          ...stackContent,
+          if (columnLayout.isCropped) CroppedColumnsIndicator(),
+        ],
+      ),
     );
   }
 }

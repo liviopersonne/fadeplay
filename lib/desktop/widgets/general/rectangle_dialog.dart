@@ -21,10 +21,12 @@ class RectangleDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      shape: BeveledRectangleBorder(
+        side: BorderSide(width: 0.3, color: MyTheme.colorBackgroundVeryDark),
+      ),
       insetPadding: const EdgeInsets.all(100),
       child: ColorSizeBox(
-        color: MyTheme.backgroundLight,
+        color: MyTheme.colorBackgroundDark,
         height: height,
         width: width,
         child: Column(
@@ -32,7 +34,7 @@ class RectangleDialog extends StatelessWidget {
           children: [
             // title bar
             Container(
-              color: MyTheme.backgroundDark,
+              color: MyTheme.colorBackgroundVeryDark,
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(
                 horizontal: MyTheme.paddingBig,
@@ -41,7 +43,7 @@ class RectangleDialog extends StatelessWidget {
               child: Text(title, style: MyTheme.textStyleTitle),
             ),
 
-            const Divider(height: 1, thickness: 1),
+            Divider(height: 1, thickness: 1),
 
             // body
             Expanded(child: content),

@@ -12,8 +12,8 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColumnElem(
-      activeColor: MyTheme.highAccentColor,
-      inactiveColor: MyTheme.lowAccentColor,
+      activeColor: MyTheme.colorAccentHigh,
+      inactiveColor: MyTheme.colorAccentLow,
       minimumWidth: true,
       hoverable: true,
       hoveringCursor: SystemMouseCursors.click,

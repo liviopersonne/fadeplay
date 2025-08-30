@@ -35,12 +35,21 @@ class MyTheme {
   );
 
   /// Background colors
-  static Color backgroundDark = Colors.grey[800]!;
-  static Color backgroundLight = Colors.grey[600]!;
+  static Color colorBackgroundVeryDark = Colors.grey[800]!;
+  static Color colorBackgroundDark = Colors.grey[700]!;
+  static Color colorBackgroundLight = Colors.grey[600]!;
 
   /// Accent color
-  static Color highAccentColor = Colors.blueAccent;
-  static Color lowAccentColor = Colors.blue[400]!;
+  static Color colorAccentHigh = Colors.blueAccent;
+  static Color colorAccentLow = Colors.blue[400]!;
+
+  /// Divider color
+  // static Color colorDivider = Color.from(
+  //   alpha: 1,
+  //   red: 0.4745,
+  //   green: 0.4549,
+  //   blue: 0.4941,
+  // );
 
   /// Padding values
   static double paddingSmall = 9;
