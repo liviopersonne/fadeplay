@@ -21,7 +21,7 @@ class SelectableColumnList extends StatelessWidget {
           color: MyTheme.colorBackgroundLight,
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.symmetric(
-            horizontal: MyTheme.paddingBig,
+            horizontal: MyTheme.paddingMedium,
             vertical: MyTheme.paddingSmall,
           ),
           child: Text("Selectable fields", style: MyTheme.textStyleTitle),
@@ -40,7 +40,10 @@ class SelectableColumnList extends StatelessWidget {
               draggableText: columns[i].label,
               hoverable: true,
               hoveringCursor: SystemMouseCursors.grab,
-              child: Text(columns[i].label),
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(left: MyTheme.paddingBig),
+                child: Text(columns[i].label),
+              ),
             ),
           ),
         ),

@@ -35,9 +35,9 @@ class RectangleDialog extends StatelessWidget {
             // title bar
             Container(
               color: MyTheme.colorBackgroundVeryDark,
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               padding: EdgeInsets.symmetric(
-                horizontal: MyTheme.paddingBig,
+                horizontal: MyTheme.paddingMedium,
                 vertical: MyTheme.paddingSmall,
               ),
               child: Text(title, style: MyTheme.textStyleTitle),

@@ -53,8 +53,8 @@ class MyTheme {
 
   /// Padding values
   static double paddingSmall = 9;
-  static double paddingMedium = 14;
-  static double paddingBig = 20;
+  static double paddingMedium = 20;
+  static double paddingBig = 28;
 
   /// Save theme
   static void saveTheme() {
