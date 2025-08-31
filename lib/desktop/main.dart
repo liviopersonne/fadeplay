@@ -58,10 +58,10 @@ class DesktopApp extends StatelessWidget {
       // home: TestColumnBrowserWidget(),
       // home: TestOverlayedList(),
       // home: TestColumnSelectorWidget(),
-      home: TestColumnElem(),
+      // home: TestColumnElem(),
       // home: TestMenu(),
       // home: TestKeyboardListener(),
-      // home: TestHotkeys(),
+      home: TestHotkeys(),
       // home: TestFocusOnClick(),
       debugShowCheckedModeBanner: false,
     );

@@ -15,6 +15,7 @@ class FocusOnClick extends StatefulWidget {
     required this.unfocusedWidget,
     required this.focusedWidget,
     this.focusNode,
+    this.autofocus = false,
     this.onTap,
     this.onSecondaryTap,
     this.onTapDown,
@@ -25,6 +26,7 @@ class FocusOnClick extends StatefulWidget {
   final Widget unfocusedWidget;
   final Widget focusedWidget;
   final FocusNode? focusNode;
+  final bool autofocus;
   final void Function()? onTap;
   final void Function()? onSecondaryTap;
   final void Function(TapDownDetails details)? onTapDown;
@@ -57,7 +59,7 @@ class _FocusOnClickState extends State<FocusOnClick> {
     final FocusNode realFocusNode = widget.focusNode ?? _localFocusNode!;
 
     return Focus(
-      autofocus: false,
+      autofocus: widget.autofocus,
       focusNode: realFocusNode,
       onFocusChange: (_) => setState(() => ()),
       child: GestureDetector(
