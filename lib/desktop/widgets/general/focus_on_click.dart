@@ -12,8 +12,7 @@ final logger = Logging("FocusOnClick");
 class FocusOnClick extends StatefulWidget {
   const FocusOnClick({
     super.key,
-    required this.unfocusedWidget,
-    required this.focusedWidget,
+    required this.builder,
     this.focusNode,
     this.autofocus = false,
     this.onTap,
@@ -23,8 +22,7 @@ class FocusOnClick extends StatefulWidget {
     this.onDoubleTap,
   });
 
-  final Widget unfocusedWidget;
-  final Widget focusedWidget;
+  final Widget Function(bool focused) builder;
   final FocusNode? focusNode;
   final bool autofocus;
   final void Function()? onTap;
@@ -72,9 +70,7 @@ class _FocusOnClickState extends State<FocusOnClick> {
         onSecondaryTapDown: widget.onSecondaryTapDown,
         onDoubleTap: widget.onDoubleTap,
 
-        child: realFocusNode.hasFocus
-            ? widget.focusedWidget
-            : widget.unfocusedWidget,
+        child: widget.builder(realFocusNode.hasFocus),
       ),
     );
   }

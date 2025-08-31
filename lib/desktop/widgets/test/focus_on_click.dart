@@ -19,8 +19,7 @@ class TestFocusOnClick extends StatelessWidget {
               width: 200,
               color: Colors.grey,
               child: FocusOnClick(
-                unfocusedWidget: Text("Unfocused"),
-                focusedWidget: Text("Focused"),
+                builder: (focused) => Text(focused ? "Focused" : "Unfocused"),
                 focusNode: focusNode,
                 // focusNode: null,
               ),

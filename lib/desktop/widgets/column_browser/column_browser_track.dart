@@ -17,37 +17,34 @@ class BrowserTrack extends StatelessWidget {
   final Track track;
   final double separatorWidth;
 
-  Widget baseWidget({required bool focused}) {
-    return Row(
-      children: [
-        for (int i = 0; i < columnLayout.elems.length; i++) ...[
-          ColorSizeBox(
-            color: focused
-                ? Colors.blue
-                : Colors.blueGrey, // TODO: Get color from theme
-            width: columnLayout.elems[i].columnWidth,
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: separatorWidth + 3, // TODO: Get extra padding from layout
-              ),
-              child: Text(
-                columnLayout.elems[i].column.getValue(track),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Actions(
       actions: {OpenTrackDetailsIntent: OpenTrackDetailsAction(track: track)},
       child: FocusOnClick(
-        unfocusedWidget: baseWidget(focused: false),
-        focusedWidget: baseWidget(focused: true),
+        builder: (focused) => Row(
+          children: [
+            for (int i = 0; i < columnLayout.elems.length; i++) ...[
+              ColorSizeBox(
+                color: focused
+                    ? Colors.blue
+                    : Colors.blueGrey, // TODO: Get color from theme
+                width: columnLayout.elems[i].columnWidth,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left:
+                        separatorWidth +
+                        3, // TODO: Get extra padding from layout
+                  ),
+                  child: Text(
+                    columnLayout.elems[i].column.getValue(track),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
