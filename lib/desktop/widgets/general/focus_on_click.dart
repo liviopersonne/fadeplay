@@ -59,12 +59,10 @@ class _FocusOnClickState extends State<FocusOnClick> {
     return Focus(
       autofocus: false,
       focusNode: realFocusNode,
+      onFocusChange: (_) => setState(() => ()),
       child: GestureDetector(
         onTap: () {
-          logger.log("Focused !");
-          setState(() {
-            FocusScope.of(context).requestFocus(realFocusNode);
-          });
+          FocusScope.of(context).requestFocus(realFocusNode);
           widget.onTap?.call();
         },
         onSecondaryTap: widget.onSecondaryTap,

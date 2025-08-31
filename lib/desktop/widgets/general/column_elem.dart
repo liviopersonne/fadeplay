@@ -141,19 +141,6 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     );
   }
 
-  Widget _clickableWrapper(Widget child) {
-    if (!clickable) return child;
-
-    return GestureDetector(
-      onTap: onTap,
-      onSecondaryTap: onSecondaryTap,
-      onTapDown: onTapDown,
-      onSecondaryTapDown: onSecondaryTapDown,
-      onDoubleTap: onDoubleTap,
-      child: child,
-    );
-  }
-
   Widget _focusableClickableWrapper(
     Widget unfocusedChild,
     Widget focusedChild,

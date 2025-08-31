@@ -29,6 +29,7 @@ class TestColumnElem extends StatelessWidget {
                 activeColor: Colors.pink,
                 clickable: true,
                 onTap: () => logger.log("Clicked $index !!"),
+                onDoubleTap: () => logger.log("Easter egg !"),
                 hoverable: true,
                 hoveringCursor: SystemMouseCursors.click,
                 draggable: true,
