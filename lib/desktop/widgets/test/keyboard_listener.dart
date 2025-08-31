@@ -16,12 +16,14 @@ class TestKeyboardListener extends StatefulWidget {
 
 class _TestKeyboardListenerState extends State<TestKeyboardListener> {
   String content = "Hello";
-  final _focusNode = FocusNode();
+  final _focusNodes = List.generate(2, (_) => FocusNode());
   HotKey? listenedHotkey;
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
     super.dispose();
   }
 
@@ -38,23 +40,36 @@ class _TestKeyboardListenerState extends State<TestKeyboardListener> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            KeyboardListener(
-              focusNode: _focusNode,
-              // autofocus: true,
-              autofocus: false,
-              onKeyEvent: (value) {
-                setState(() => content = value.toString());
-              },
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  // _focusNode.requestFocus();
-                  FocusScope.of(context).requestFocus(_focusNode);
-                }),
-                child: ColorSizeBox(
-                  height: 300,
-                  width: 300,
-                  color: _focusNode.hasFocus ? Colors.teal : Colors.grey,
-                  child: Center(child: Text(content)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(
+                2,
+                (i) => KeyboardListener(
+                  focusNode: _focusNodes[i],
+                  // autofocus: true,
+                  autofocus: false,
+                  onKeyEvent: (value) {
+                    logger.log("Heard key on $i");
+                    setState(() => content = value.toString());
+                  },
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      // _focusNode.requestFocus();
+                      FocusScope.of(context).requestFocus(_focusNodes[i]);
+                    }),
+                    child: ColorSizeBox(
+                      height: 300,
+                      width: 300,
+                      color: _focusNodes[i].hasFocus
+                          ? Colors.teal
+                          : Colors.grey,
+                      child: Center(
+                        child: Text(
+                          _focusNodes[i].hasFocus ? content : "Unfocused",
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

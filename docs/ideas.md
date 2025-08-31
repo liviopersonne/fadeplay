@@ -76,7 +76,11 @@
 
 - [ ] Export modifications to musicbee db
 
-- [ ] Import track / artist / album infos from ytb / ytb music / musicbrainz / soundcloud / vgmdb / vgm
+- [ ] Import track / artist / album infos from ytb / ytb music / musicbrainz / discogs / soundcloud / vgmdb / vgm
+
+- [ ] Music dbs: musicbrainz (API yes) / discogs (API yes) / rateyourmusic (API no) / vgmdb (API no) / downloads.khinsider.com
+
+- [ ] Check how Musicbrainz Picard works
 
 - [ ] Import lyrics info from genius / others ??
 

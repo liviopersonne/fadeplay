@@ -1,26 +1,27 @@
-// ignore: dangling_library_doc_comments
-/**
-Here is all the information I have on hotkeys
+import 'package:flutter/material.dart';
 
-There are 3 kinds of ways to listen to hotkeys:
+// Check out info about hotkeys at docs/hotkeys.md
 
-1. `KeyboardListener` -> For unique keystrokes in the scope of a widget
+///
+class HotkeyScope extends StatelessWidget {
+  const HotkeyScope({
+    super.key,
+    required this.id,
+    required this.focusNode,
+    this.autofocus = false,
+    required this.child,
+  });
 
-2. `HotKeyRecorder` -> For multiple keystrokes in the scope of a widget
+  final String id;
+  final FocusNode focusNode;
+  final bool autofocus;
+  final Widget child;
 
-3. `hotKeyManager`.register -> For system-wide keystrokes
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
 
 
-`HotKeyRecorder` shows the shortcuts that are being entered in a visual button representation
-However, it only works if it is in the widget tree, and even `SizedBox.shrink` can't hide it
-I found the solution ! Wrap it with `Offstage`
-Aha ! `HardwareKeyboard` is what I'm looking for !
-
-A `HotKey` object has a cool property called `debugName` that shows the text of a hotKey (ex. Shift Left + Key A)
-
-Hotkeys registered with the `hotKeyManager` dont work if their scope is `inapp`, but `system` works
-`system` hotkeys will only work if they have a modifier with them
-If you don't put a modifier on them, they will actually eat the input if you are in the app or vscode, and not work elsewhere
-^ This will also raise an error: don't do it
-
-*/
+// TODO: Make some sort of manager
