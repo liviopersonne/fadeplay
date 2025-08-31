@@ -141,26 +141,20 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     );
   }
 
-  Widget _focusableClickableWrapper(
-    Widget unfocusedChild,
-    Widget focusedChild,
-  ) {
+  Widget _focusableClickableWrapper(Widget Function(bool) builder) {
     return switch ((focusable, clickable)) {
-      (false, false) => unfocusedChild,
+      (false, false) => builder(false),
       (false, true) => GestureDetector(
         onTap: onTap,
         onSecondaryTap: onSecondaryTap,
         onTapDown: onTapDown,
         onSecondaryTapDown: onSecondaryTapDown,
         onDoubleTap: onDoubleTap,
-        child: unfocusedChild,
+        child: builder(false),
       ),
-      (true, false) => FocusOnClick(
-        builder: (focused) => focused ? focusedChild : unfocusedChild,
-        focusNode: focusNode,
-      ),
+      (true, false) => FocusOnClick(builder: builder, focusNode: focusNode),
       (true, true) => FocusOnClick(
-        builder: (focused) => focused ? focusedChild : unfocusedChild,
+        builder: builder,
         focusNode: focusNode,
         onTap: onTap,
         onTapDown: onTapDown,
@@ -179,16 +173,11 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   Widget build(BuildContext context) {
     _checks();
 
-    final rawInactiveChild = _draggableWrapper(_baseWidget(active: false));
-    final rawActiveChild = _draggableWrapper(_baseWidget(active: true));
-
     final inactiveChild = _focusableClickableWrapper(
-      rawInactiveChild,
-      rawActiveChild,
+      (focused) => _draggableWrapper(_baseWidget(active: focused)),
     );
     final activeChild = _focusableClickableWrapper(
-      rawActiveChild,
-      rawActiveChild,
+      (_) => _draggableWrapper(_baseWidget(active: true)),
     );
 
     return _expandedWrapper(
