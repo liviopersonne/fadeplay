@@ -1,6 +1,7 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser_headers.dart';
+import 'package:fadeplay/desktop/widgets/column_browser/column_browser_hotkeys.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser_track.dart';
 import 'package:flutter/material.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
@@ -95,44 +96,46 @@ class _ColumnBrowserState extends State<ColumnBrowser> {
       "Building ColumnBrowser with columns '${widget.controller.columnsLayout}'",
     );
     return LayoutBuilder(
-      builder: (context, constraints) =>
-          ValueListenableBuilder<ColumnBrowserLayout>(
-            valueListenable: widget.controller.columnsLayout,
-            builder: (context, columnsLayout, child) {
-              final adaptedLayout = columnsLayout.adaptedToWidth(
-                constraints.maxWidth,
-              );
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  ColumnBrowserHeaders(
-                    controller: widget.controller,
-                    columnLayout: adaptedLayout,
-                    separatorWidth: widget.separatorWidth,
-                    dragTargetWidth: widget.dragTargetWidth,
-                  ),
+      builder: (context, constraints) => Shortcuts(
+        shortcuts: columnBrowserHotkeyScope.shortcuts,
+        child: ValueListenableBuilder<ColumnBrowserLayout>(
+          valueListenable: widget.controller.columnsLayout,
+          builder: (context, columnsLayout, child) {
+            final adaptedLayout = columnsLayout.adaptedToWidth(
+              constraints.maxWidth,
+            );
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                ColumnBrowserHeaders(
+                  controller: widget.controller,
+                  columnLayout: adaptedLayout,
+                  separatorWidth: widget.separatorWidth,
+                  dragTargetWidth: widget.dragTargetWidth,
+                ),
 
-                  Expanded(
-                    child: ValueListenableBuilder<List<Track>>(
-                      valueListenable: widget.controller.tracks,
-                      builder: (context, trackList, child) {
-                        return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: trackList.length,
-                          itemBuilder: (context, index) => BrowserTrack(
-                            track: trackList[index],
-                            columnLayout: adaptedLayout,
-                            separatorWidth: widget.separatorWidth,
-                          ),
-                        );
-                      },
-                    ),
+                Expanded(
+                  child: ValueListenableBuilder<List<Track>>(
+                    valueListenable: widget.controller.tracks,
+                    builder: (context, trackList, child) {
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: trackList.length,
+                        itemBuilder: (context, index) => BrowserTrack(
+                          track: trackList[index],
+                          columnLayout: adaptedLayout,
+                          separatorWidth: widget.separatorWidth,
+                        ),
+                      );
+                    },
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }
