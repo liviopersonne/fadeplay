@@ -1,10 +1,36 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/general/focus_on_click.dart';
 import 'package:fadeplay/desktop/widgets/general/hoverable.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("ColumnElem");
 
+/// This is a central widget which encapsulates lots of things that are used a lot throughout this app.
+/// Its particularity is that it has a fixed height that can be calculated through `getHeight`, and which depends
+/// only on the font size of the `TextStyle` passed.
+///
+/// This widget can be either active or inactive, we pass a `TextStyle` and a `Color` for those 2 states.
+/// Since there is a fixed height, the 2 `TextStyle`s passed must have the same font size.
+///
+/// The `minimumWidth` parameter decides whether the width is limited to the width of `child` or not.
+///
+/// There are 4 behaviours encapsulated in this widget:
+///
+/// 1. **Hovering**: if `hoverable` is true then the widget becomes active when hovering it with the mouse,
+/// and the cursor become `hoveringCursor`.///
+///
+/// 2. **Clicking**: if `clickable` is true then we can click on the widget and we can pass a few callbacks.
+///
+/// 3. **Dragging**: if `draggable` is true then we can drag the widget to its corresponding drag targets.
+/// The data passed in that drag is `draggableData`, and the feedback widget has the same style as the
+/// active widget but with only a string inside: `draggableText`..
+/// There is also a `dragNotifier` which makes the widget undraggable if it is true. This is to deactivate
+/// interactivity on all other widgets in a list if we are currently dragging one.
+///
+/// 4. **Focusing**: if `focusable` is true then we can focus this widget by clicking on it. If a widget
+/// is focused then it becomes active. This is useful for listening for hotkeys. If you want to be able
+/// to focus / unfocus the widget from outside, then you can provide a `focusNode`.
 class ColumnElem<T extends Object> extends StatelessWidget {
   const ColumnElem({
     super.key,
@@ -26,6 +52,8 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     this.dragNotifier,
     this.draggableText,
     this.draggableData,
+    this.focusable = false,
+    this.focusNode,
   }) : activeTextStyle = activeTextStyle ?? inactiveTextStyle,
        activeColor = activeColor ?? inactiveColor;
 
@@ -47,6 +75,8 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   final ValueNotifier<bool>? dragNotifier;
   final String? draggableText;
   final T? draggableData;
+  final bool focusable;
+  final FocusNode? focusNode;
 
   static double getHeight(TextStyle textStyle) {
     logger.check(
@@ -75,7 +105,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     logger.check(
       (draggableText != null && dragNotifier != null) || !draggable,
       message:
-          "If the widget is draggable then it needs to have draggableText and dragging",
+          "If the widget is draggable then it needs to have draggableText and a dragNotifier",
       raiseError: true,
     );
   }
@@ -124,6 +154,38 @@ class ColumnElem<T extends Object> extends StatelessWidget {
     );
   }
 
+  Widget _focusableClickableWrapper(
+    Widget unfocusedChild,
+    Widget focusedChild,
+  ) {
+    return switch ((focusable, clickable)) {
+      (false, false) => unfocusedChild,
+      (false, true) => GestureDetector(
+        onTap: onTap,
+        onSecondaryTap: onSecondaryTap,
+        onTapDown: onTapDown,
+        onSecondaryTapDown: onSecondaryTapDown,
+        onDoubleTap: onDoubleTap,
+        child: child,
+      ),
+      (true, false) => FocusOnClick(
+        unfocusedWidget: unfocusedChild,
+        focusedWidget: focusedChild,
+        focusNode: focusNode,
+      ),
+      (true, true) => FocusOnClick(
+        unfocusedWidget: unfocusedChild,
+        focusedWidget: focusedChild,
+        focusNode: focusNode,
+        onTap: onTap,
+        onTapDown: onTapDown,
+        onSecondaryTap: onSecondaryTap,
+        onSecondaryTapDown: onSecondaryTapDown,
+        onDoubleTap: onDoubleTap,
+      ),
+    };
+  }
+
   Widget _expandedWrapper(Widget child) {
     return minimumWidth ? IntrinsicWidth(child: child) : child;
   }
@@ -132,11 +194,16 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   Widget build(BuildContext context) {
     _checks();
 
-    final inactiveChild = _clickableWrapper(
-      _draggableWrapper(_baseWidget(active: false)),
+    final rawInactiveChild = _draggableWrapper(_baseWidget(active: false));
+    final rawActiveChild = _draggableWrapper(_baseWidget(active: true));
+
+    final inactiveChild = _focusableClickableWrapper(
+      rawInactiveChild,
+      rawActiveChild,
     );
-    final activeChild = _clickableWrapper(
-      _draggableWrapper(_baseWidget(active: true)),
+    final activeChild = _focusableClickableWrapper(
+      rawActiveChild,
+      rawActiveChild,
     );
 
     return _expandedWrapper(

@@ -35,6 +35,8 @@ class TestColumnElem extends StatelessWidget {
                 dragNotifier: dragging,
                 draggableData: 1,
                 draggableText: "Elem $index",
+                focusable: true,
+                focusNode: FocusNode(),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [Text("Elem $index"), Text("Hello !!")],
