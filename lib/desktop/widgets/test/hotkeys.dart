@@ -1,3 +1,4 @@
+import 'package:fadeplay/desktop/objects/hotkeys/hotkey_scope.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +29,7 @@ class _TestHotkeysState extends State<TestHotkeys> {
     return Scaffold(
       body: Center(
         child: Shortcuts(
-          shortcuts: {
-            SingleActivator(LogicalKeyboardKey.keyC, control: true):
-                CopyIntent(),
-          },
+          shortcuts: testHotkeyScope.shortcuts,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(
@@ -85,3 +83,10 @@ class CopyAction extends Action<CopyIntent> {
     return null;
   }
 }
+
+final testHotkeyScope = HotkeyScope(
+  id: "TestHotkeys",
+  shortcuts: {
+    SingleActivator(LogicalKeyboardKey.keyC, control: true): CopyIntent(),
+  },
+);

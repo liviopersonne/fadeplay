@@ -49,4 +49,49 @@ If there are multiple Widgets that can perform the same hotkeys but you want to 
 
 If the widgets are separately focusable but don't pass personallized data to the action, then `Actions` can cover all the widgets together
 
-There are ways to simplify stuff, as described in the article
+There are ways to simplify stuff, as described in the article:
+
+- You can avoid separating `Intent` and `Action` by using `CallbackShortcuts` but you can't pass arguments to the action if you do this
+
+- Instead of creating a subclass for `Action`, you can just call `CallbackAction`
+
+You can invoke actions without using the `Shortcuts` widget:
+
+```dart
+// Find the actions
+Action<SelectAllIntent>? selectAll = Actions.maybeFind<SelectAllIntent>(
+  context,
+);
+
+// Invoke the action
+Object? result;
+if (selectAll != null) {
+  result = Actions.of(
+    context,
+  ).invokeAction(selectAll, const SelectAllIntent());
+}
+
+// The 2 at the same time
+Object? result = Actions.maybeInvoke<SelectAllIntent>(
+  context,
+  const SelectAllIntent(),
+);
+
+// Invoke an Action with a button press
+@override
+Widget build(BuildContext context) {
+  return Actions(
+    actions: <Type, Action<Intent>>{SelectAllIntent: SelectAllAction(model)},
+    // A builder is used to provide a small context which prevents the handler from searching up the widget tree
+    child: Builder(
+      builder: (context) => TextButton(
+        onPressed: Actions.handler<SelectAllIntent>(
+          context,
+          SelectAllIntent(controller: controller),
+        ),
+        child: const Text('SELECT ALL'),
+      ),
+    ),
+  );
+}
+```
