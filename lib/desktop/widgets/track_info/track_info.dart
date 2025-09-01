@@ -3,58 +3,11 @@ import 'dart:io';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
-import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/track_info/tag_editor.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("TrackInfoPage");
-
-class TagEditor extends StatelessWidget {
-  const TagEditor({
-    super.key,
-    required this.label,
-    required this.active,
-    this.openDetails,
-    this.controller,
-  });
-
-  final String label;
-  final bool active;
-  final void Function()? openDetails;
-  final TextEditingController? controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: MyTheme.textStyleNormal),
-        SizedBox(
-          width: 300,
-          child: TextField(
-            controller: controller,
-            style: MyTheme.textStyleNormal,
-            readOnly: !active,
-            showCursor: true,
-            cursorColor: MyTheme.textStyleNormal.color,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-              filled: true,
-              fillColor: active
-                  ? MyTheme.colorBackgroundLight
-                  : MyTheme.colorBackgroundDark,
-              isDense: true,
-              suffixIcon: active && openDetails != null
-                  ? MyButton(text: "+", onTap: openDetails)
-                  : null,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class TrackInfoPage extends StatelessWidget {
   const TrackInfoPage({super.key, required this.track});
@@ -79,7 +32,7 @@ class TrackInfoPage extends StatelessWidget {
                     : Text("No image"),
               ),
 
-              TextField(readOnly: false, controller: textController),
+              Text("Rating"),
             ],
           ),
         ),
@@ -87,22 +40,50 @@ class TrackInfoPage extends StatelessWidget {
         Expanded(
           flex: 5,
           child: Column(
-            spacing: 40,
+            spacing: MyTheme.paddingTiny,
             children: [
-              ColorSizeBox(color: Colors.lightBlue, height: 200, width: 100),
-              TagEditor(label: "Tag 1", active: true),
-              TagEditor(
-                label: "Tag 67",
-                active: true,
-                openDetails: () => logger.log("Hey !"),
+              TagEditor(label: "Title:", openDetails: () => ()),
+              TagEditor(label: "Original title:", active: true),
+              TagEditor(label: "Artist:", openDetails: () => ()),
+              TagEditor(label: "All artists:", active: true),
+              TagEditor(label: "Album:", openDetails: () => ()),
+              TagEditor(label: "Source:", active: true),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                spacing: MyTheme.paddingMedium,
+                children: [
+                  TagEditor(
+                    label: "Track:",
+                    numbersOnly: true,
+                    textFieldWidth: 50,
+                  ),
+                  TagEditor(
+                    label: "of:",
+                    numbersOnly: true,
+                    textFieldWidth: 50,
+                  ),
+                ],
               ),
-              TagEditor(
-                label: "Random tag",
-                active: false,
-                controller: textController,
-                openDetails: () =>
-                    logger.error("That's not supposed to happen"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                spacing: MyTheme.paddingMedium,
+                children: [
+                  TagEditor(label: "Disk:", textFieldWidth: 50),
+                  TagEditor(label: "of:", textFieldWidth: 50),
+                ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [TagEditor(label: "Year:", textFieldWidth: 146)],
+              ),
+              // TagEditor(label: "Moods", active: true),
+              // TagEditor(label: "Instruments", active: true),
+              // TagEditor(label: "Safety", active: true),
+              // TagEditor(label: "Lyrics", active: false),
+              // TagEditor(label: "Start time", active: true),
+              // TagEditor(label: "End time", active: true),
+              // TagEditor(label: "Created at", active: false),
+              // TagEditor(label: "File", active: false),
             ],
           ),
         ),

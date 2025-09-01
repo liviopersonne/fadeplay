@@ -76,8 +76,8 @@ class TestTrackInfo extends StatelessWidget {
       body: Center(
         child: ColorSizeBox(
           color: Colors.grey,
-          height: 500,
-          width: 600,
+          height: 600,
+          width: 1000,
           child: TrackInfoPage(track: track),
         ),
       ),
