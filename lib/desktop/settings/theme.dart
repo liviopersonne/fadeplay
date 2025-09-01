@@ -34,6 +34,7 @@ class MyTheme {
   static Color colorBackgroundVeryDark = Colors.grey[800]!;
   static Color colorBackgroundDark = Colors.grey[700]!;
   static Color colorBackgroundLight = Colors.grey[600]!;
+  static Color colorBackgroundVeryLight = Colors.grey[500]!;
 
   /// Accent color
   // static Color colorAccentHigh = Colors.blueAccent;
