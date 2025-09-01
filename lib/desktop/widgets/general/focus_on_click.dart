@@ -1,4 +1,5 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("FocusOnClick");
@@ -37,18 +38,40 @@ class FocusOnClick extends StatefulWidget {
 
 class _FocusOnClickState extends State<FocusOnClick> {
   FocusNode? _localFocusNode;
+  late final SerialTapGestureRecognizer _primaryTapRecognizer;
+  late final TapGestureRecognizer _secondaryTapRecognizer;
 
   @override
   void initState() {
+    super.initState();
     if (widget.focusNode == null) {
       _localFocusNode = FocusNode();
     }
-    super.initState();
+    _primaryTapRecognizer =
+        SerialTapGestureRecognizer(
+            allowedButtonsFilter: (buttons) => buttons & kPrimaryButton != 0,
+          )
+          ..onSerialTapUp = (details) {
+            if (details.count == 1) {
+              widget.onTap?.call();
+            } else if (details.count == 2) {
+              widget.onDoubleTap?.call();
+            }
+          };
+    _secondaryTapRecognizer =
+        TapGestureRecognizer(
+            allowedButtonsFilter: (buttons) => buttons & kSecondaryButton != 0,
+          )
+          ..onTap = widget.onSecondaryTap
+          ..onTapDown = (details) => widget.onSecondaryTapDown?.call(details);
   }
 
   @override
   void dispose() {
     _localFocusNode?.dispose();
+    _localFocusNode = null;
+    _primaryTapRecognizer.dispose();
+    _secondaryTapRecognizer.dispose();
     super.dispose();
   }
 
@@ -60,15 +83,32 @@ class _FocusOnClickState extends State<FocusOnClick> {
       autofocus: widget.autofocus,
       focusNode: realFocusNode,
       onFocusChange: (_) => setState(() => ()),
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(realFocusNode);
-          widget.onTap?.call();
+      child: RawGestureDetector(
+        gestures: {
+          SerialTapGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<SerialTapGestureRecognizer>(
+                () => _primaryTapRecognizer,
+                (instance) {
+                  instance.onSerialTapDown = (details) {
+                    if (details.count == 1) {
+                      FocusScope.of(context).requestFocus(realFocusNode);
+                      widget.onTapDown?.call(
+                        TapDownDetails(
+                          globalPosition: details.globalPosition,
+                          localPosition: details.localPosition,
+                          kind: details.kind,
+                        ),
+                      );
+                    }
+                  };
+                },
+              ),
+          TapGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+                () => _secondaryTapRecognizer,
+                (instance) {},
+              ),
         },
-        onSecondaryTap: widget.onSecondaryTap,
-        onTapDown: widget.onTapDown,
-        onSecondaryTapDown: widget.onSecondaryTapDown,
-        onDoubleTap: widget.onDoubleTap,
 
         child: widget.builder(realFocusNode.hasFocus),
       ),
