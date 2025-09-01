@@ -24,7 +24,7 @@ class OpenTrackDetailsAction extends Action<OpenTrackDetailsIntent> {
   @override
   Object? invoke(OpenTrackDetailsIntent intent) {
     // TODO: implement invoke
-    logger.log("Opening track ${track.title}");
+    logger.log("Opening track details ${track.title}");
     return null;
   }
 }

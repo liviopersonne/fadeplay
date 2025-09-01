@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 class MyTheme {
   MyTheme._();
 
-  /// The padding between a title label and the separatro on the left
-  static double headerLabelPadding = 3;
-
   /// The color of a header
   static Color headerBaseColor = Colors.amber;
 
@@ -45,6 +42,7 @@ class MyTheme {
   static Color colorAccentLow = Colors.teal;
 
   /// Padding values
+  static double paddingTiny = 3;
   static double paddingSmall = 9;
   static double paddingMedium = 20;
   static double paddingBig = 33;

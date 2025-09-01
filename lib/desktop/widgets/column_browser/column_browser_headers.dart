@@ -91,7 +91,7 @@ class CroppedColumnsIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      right: MyTheme.headerLabelPadding,
+      right: MyTheme.paddingTiny,
       top: 0,
       bottom: 0,
       child: Text("->"),
@@ -116,9 +116,7 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
     color: color,
     width: colWithWidth.columnWidth,
     child: Padding(
-      padding: EdgeInsets.only(
-        left: separatorWidth + MyTheme.headerLabelPadding,
-      ),
+      padding: EdgeInsets.only(left: separatorWidth + MyTheme.paddingTiny),
       child: Text(colWithWidth.column.label, overflow: TextOverflow.ellipsis),
     ),
   );
@@ -126,7 +124,7 @@ class ColumnBrowserHeaderLabel extends StatelessWidget {
   Widget draggedTitleContainer({Color? color}) => Material(
     color: color,
     child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: MyTheme.headerLabelPadding),
+      padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingTiny),
       child: Text(colWithWidth.column.label, overflow: TextOverflow.ellipsis),
     ),
   );
