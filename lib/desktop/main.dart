@@ -14,6 +14,7 @@ import 'package:fadeplay/desktop/widgets/test/load_single_music.dart';
 import 'package:fadeplay/desktop/widgets/test/menu.dart';
 import 'package:fadeplay/desktop/widgets/test/overlayed_list.dart';
 import 'package:fadeplay/desktop/widgets/test/column_elem.dart';
+import 'package:fadeplay/desktop/widgets/test/track_info.dart';
 import 'package:flutter/material.dart';
 import 'package:window_size/window_size.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -55,7 +56,7 @@ class DesktopApp extends StatelessWidget {
       // home: TestLoadFullMusicWidget(),
       // home: TestDatabaseWidget(),
       // home: TestAudioMetadata(),
-      home: TestColumnBrowserWidget(),
+      // home: TestColumnBrowserWidget(),
       // home: TestOverlayedList(),
       // home: TestColumnSelectorWidget(),
       // home: TestColumnElem(),
@@ -63,6 +64,7 @@ class DesktopApp extends StatelessWidget {
       // home: TestKeyboardListener(),
       // home: TestHotkeys(),
       // home: TestFocusOnClick(),
+      home: TestTrackInfo(),
       debugShowCheckedModeBanner: false,
     );
   }
