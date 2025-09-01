@@ -78,17 +78,15 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   final bool focusable;
   final FocusNode? focusNode;
 
+  /// The height of the element
   static double getHeight(TextStyle textStyle) {
     logger.check(
       textStyle.fontSize != null,
       message: "The text style passed needs to have a defined fontSize",
       raiseError: true,
     );
-    return textStyle.fontSize! * 1.8;
+    return textStyle.fontSize! * 1.8.ceilToDouble();
   }
-
-  /// The height of the element
-  double _getHeight() => getHeight(inactiveTextStyle);
 
   /// The that the values passed are acceptable
   void _checks() {
@@ -113,7 +111,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   Widget _baseWidget({required bool active}) {
     return ColorSizeBox(
       color: active ? activeColor : inactiveColor,
-      height: _getHeight(),
+      height: getHeight(inactiveTextStyle),
       width: double.infinity,
       child: DefaultTextStyle(
         style: active ? activeTextStyle : inactiveTextStyle,
@@ -130,7 +128,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
       onDragStarted: () => dragNotifier?.value = true,
       onDragEnd: (_) => dragNotifier?.value = false,
       dragAnchorStrategy: (draggable, context, position) =>
-          Offset(20, _getHeight() / 2),
+          Offset(20, getHeight(inactiveTextStyle) / 2),
       feedback: Material(
         child: ColorSizeBox(
           color: activeColor,
