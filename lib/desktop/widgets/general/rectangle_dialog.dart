@@ -1,4 +1,5 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
+import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
@@ -11,44 +12,68 @@ class RectangleDialog extends StatelessWidget {
     required this.height,
     required this.width,
     required this.content,
+    this.onConfirm,
   });
 
   final String title;
   final double height;
   final double width;
   final Widget content;
+  final void Function()? onConfirm;
 
   @override
   Widget build(BuildContext context) {
+    final dialogParts = [
+      // title bar
+      Container(
+        color: MyTheme.colorBackgroundVeryDark,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(
+          horizontal: MyTheme.paddingMedium,
+          vertical: MyTheme.paddingSmall,
+        ),
+        child: Text(title, style: MyTheme.textStyleTitle),
+      ),
+
+      Divider(height: 1, thickness: 1),
+
+      // body
+      Expanded(child: content),
+    ];
+
+    if (onConfirm != null) {
+      dialogParts.addAll([
+        Divider(height: 1, thickness: 1),
+        ColoredBox(
+          color: MyTheme.colorBackgroundVeryDark,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: MyTheme.paddingMedium,
+              vertical: MyTheme.paddingSmall,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              spacing: MyTheme.paddingMedium,
+              children: [
+                MyButton(text: "Cancel"),
+                MyButton(text: "Confirm"),
+              ],
+            ),
+          ),
+        ),
+      ]);
+    }
+
     return Dialog(
       shape: BeveledRectangleBorder(
         side: BorderSide(width: 0.3, color: MyTheme.colorBackgroundVeryDark),
       ),
-      insetPadding: const EdgeInsets.all(100),
+      // insetPadding: const EdgeInsets.all(50),
       child: ColorSizeBox(
         color: MyTheme.colorBackgroundDark,
         height: height,
         width: width,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // title bar
-            Container(
-              color: MyTheme.colorBackgroundVeryDark,
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(
-                horizontal: MyTheme.paddingMedium,
-                vertical: MyTheme.paddingSmall,
-              ),
-              child: Text(title, style: MyTheme.textStyleTitle),
-            ),
-
-            Divider(height: 1, thickness: 1),
-
-            // body
-            Expanded(child: content),
-          ],
-        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: dialogParts),
       ),
     );
   }

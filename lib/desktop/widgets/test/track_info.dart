@@ -3,6 +3,7 @@ import 'package:fadeplay/desktop/objects/tracks/album.dart';
 import 'package:fadeplay/desktop/objects/tracks/artist.dart';
 import 'package:fadeplay/desktop/objects/tracks/source.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/track_info/track_info.dart';
 import 'package:flutter/material.dart';
@@ -76,9 +77,13 @@ class TestTrackInfo extends StatelessWidget {
       body: Center(
         child: ColorSizeBox(
           color: Colors.grey,
-          height: 600,
-          width: 1000,
-          child: TrackInfoPage(track: track),
+          height: 50,
+          width: 200,
+          child: MyButton(
+            text: "Open track info",
+            onTap: () => TrackInfoPage(track: track).showAsDialog(context),
+          ),
+          // child: TrackInfoPage(track: track),
         ),
       ),
     );
