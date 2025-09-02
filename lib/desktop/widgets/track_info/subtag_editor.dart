@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/track_info/tag_editor.dart';
 import 'package:flutter/material.dart';

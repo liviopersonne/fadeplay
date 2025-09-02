@@ -41,8 +41,8 @@ class _RectangleDialogState extends State<RectangleDialog> {
 
   @override
   void initState() {
-    _pageController = widget.pages.length > 1 ? PageController() : null;
     super.initState();
+    _pageController = widget.pages.length > 1 ? PageController() : null;
   }
 
   @override
@@ -88,7 +88,11 @@ class _RectangleDialogState extends State<RectangleDialog> {
                   focusable: true,
                   minimumWidth: true,
                   clickable: true,
-                  onTap: () => _pageController?.jumpToPage(i),
+                  onTap: () => _pageController?.animateToPage(
+                    i,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  ),
                   child: Text(widget.pages.keys.elementAt(i)),
                 ),
               ),
@@ -102,12 +106,11 @@ class _RectangleDialogState extends State<RectangleDialog> {
           child: PageView(
             scrollDirection: Axis.horizontal,
             physics: NeverScrollableScrollPhysics(),
+
             controller: _pageController,
             children: widget.pages.values.map((page) => page).toList(),
           ),
         ),
-
-        // Expanded(child: pages.values.first), // TODO: Make this a pageView
       ]);
     } else if (widget.pages.length == 1) {
       // body
@@ -134,8 +137,8 @@ class _RectangleDialogState extends State<RectangleDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               spacing: MyTheme.paddingMedium,
               children: [
-                MyButton(text: "Cancel"),
-                MyButton(text: "Confirm"),
+                MyButton(text: "Cancel", onTap: () => Navigator.pop(context)),
+                MyButton(text: "Confirm", onTap: widget.onConfirm),
               ],
             ),
           ),
@@ -147,7 +150,6 @@ class _RectangleDialogState extends State<RectangleDialog> {
       shape: BeveledRectangleBorder(
         side: BorderSide(width: 0.3, color: MyTheme.colorBackgroundUltraDark),
       ),
-      // insetPadding: const EdgeInsets.all(50),
       child: ColorSizeBox(
         color: MyTheme.colorBackgroundDark,
         height: widget.height,
