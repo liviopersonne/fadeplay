@@ -81,7 +81,7 @@ class TestTrackInfo extends StatelessWidget {
           width: 200,
           child: MyButton(
             text: "Open track info",
-            onTap: () => TrackInfoPage(track: track).showAsDialog(context),
+            onTap: () => TrackInfoDialog(track: track).showAsDialog(context),
           ),
           // child: TrackInfoPage(track: track),
         ),

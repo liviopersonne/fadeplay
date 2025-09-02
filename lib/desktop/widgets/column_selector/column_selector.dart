@@ -36,7 +36,7 @@ class ColumnSelector extends StatelessWidget {
           title: "Set Displayed Fields",
           height: 400,
           width: 600,
-          content: this,
+          pages: {"": this},
         );
       },
     );

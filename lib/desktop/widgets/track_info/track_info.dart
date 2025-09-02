@@ -4,6 +4,7 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/button.dart';
+import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:fadeplay/desktop/widgets/general/rectangle_dialog.dart';
 import 'package:fadeplay/desktop/widgets/track_info/rating_editor.dart';
@@ -13,8 +14,8 @@ import 'package:flutter/material.dart';
 
 final logger = Logging("TrackInfoPage");
 
-class TrackInfoPage extends StatelessWidget {
-  const TrackInfoPage({super.key, required this.track});
+class TrackInfoDialog {
+  const TrackInfoDialog({required this.track});
 
   final Track track;
 
@@ -26,50 +27,29 @@ class TrackInfoPage extends StatelessWidget {
           title: "Track info",
           height: 560,
           width: 860,
-          content: this,
+          pages: {
+            "Tags": TrackTagsPage(track: track),
+            "Artists": ColorSizeBox(
+              color: Colors.amber,
+              child: Text("Artists"),
+            ),
+            "Lyrics": ColorSizeBox(color: Colors.amber, child: Text("Lyrics")),
+            "File": ColorSizeBox(color: Colors.amber, child: Text("File")),
+          },
           onConfirm: () {},
         );
       },
     );
   }
+}
+
+class TrackTagsPage extends StatelessWidget {
+  const TrackTagsPage({super.key, required this.track});
+
+  final Track track;
 
   @override
   Widget build(BuildContext context) {
-    final pages = ["Tags", "Artists", "Lyrics", "File"];
-
-    return Column(
-      children: [
-        ColoredBox(
-          color: MyTheme.colorBackgroundVeryDark,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingMedium),
-            child: Row(
-              spacing: MyTheme.paddingSmall,
-              children: List.generate(
-                pages.length,
-                (i) => ColumnElem(
-                  inactiveTextStyle: MyTheme.textStyleNormal,
-                  inactiveColor: MyTheme.colorBackgroundVeryDark,
-                  activeColor: MyTheme.colorBackgroundLight,
-                  hoverable: true,
-                  hoveringCursor: SystemMouseCursors.click,
-                  focusable: true,
-                  minimumWidth: true,
-                  child: Text(pages[i]),
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        Divider(height: 1, thickness: 1),
-
-        Expanded(child: mainPage(context)),
-      ],
-    );
-  }
-
-  Widget mainPage(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: MyTheme.paddingMedium,

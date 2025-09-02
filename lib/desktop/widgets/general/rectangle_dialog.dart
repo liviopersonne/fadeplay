@@ -1,29 +1,40 @@
+import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
+
+final logger = Logging("RectangleDialog");
 
 /// A model for a `Dialog` that is a rectangular window with a title bar,
 /// and some content underneath, with a set height and width
+///
+/// The content is passed in a `pages` map which maps a page title to the page.
+/// If this map contains only 1 page, then no page bar will be shown above the page.
+/// If the map contains more than 1 page, the page bar will be shown
+///
+/// By setting `onConfirm` != null, a cancel and a confirm button will appear beneath
+/// the page, clicking on the confirm button will call `onConfirm`
 class RectangleDialog extends StatelessWidget {
   const RectangleDialog({
     super.key,
     required this.title,
     required this.height,
     required this.width,
-    required this.content,
+    required this.pages,
     this.onConfirm,
   });
 
   final String title;
   final double height;
   final double width;
-  final Widget content;
+  final Map<String, Widget> pages;
   final void Function()? onConfirm;
 
   @override
   Widget build(BuildContext context) {
-    final dialogParts = [
+    final dialogParts = <Widget>[
       // title bar
       Container(
         color: MyTheme.colorBackgroundUltraDark,
@@ -36,11 +47,49 @@ class RectangleDialog extends StatelessWidget {
       ),
 
       Divider(height: 1, thickness: 1),
-
-      // body
-      Expanded(child: content),
     ];
 
+    // pages bar
+    if (pages.length > 1) {
+      dialogParts.addAll([
+        ColoredBox(
+          color: MyTheme.colorBackgroundVeryDark,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingMedium),
+            child: Row(
+              spacing: MyTheme.paddingSmall,
+              children: List.generate(
+                pages.length,
+                (i) => ColumnElem(
+                  inactiveTextStyle: MyTheme.textStyleNormal,
+                  inactiveColor: MyTheme.colorBackgroundVeryDark,
+                  activeColor: MyTheme.colorBackgroundLight,
+                  hoverable: true,
+                  hoveringCursor: SystemMouseCursors.click,
+                  focusable: true,
+                  minimumWidth: true,
+                  child: Text(pages.keys.elementAt(i)),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        Divider(height: 1, thickness: 1),
+
+        Expanded(child: pages.values.first), // TODO: Make this a pageView
+      ]);
+    } else if (pages.length == 1) {
+      // body
+      dialogParts.addAll([Expanded(child: pages.values.first)]);
+    } else {
+      logger.error(
+        "Invalid number of pages were passed to the RectangleDialog: '${pages.length}",
+      );
+      throw Error();
+    }
+
+    // Cancel & Confirm buttons at the bottom
     if (onConfirm != null) {
       dialogParts.addAll([
         Divider(height: 1, thickness: 1),
