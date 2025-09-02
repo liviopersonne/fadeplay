@@ -24,15 +24,22 @@ class TrackTagsPage extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: MyTheme.paddingMedium,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox.square(
                   dimension: 230,
                   child: track.imageUri != null
                       ? Image.file(File.fromUri(track.imageUri!))
-                      : Text("No image"),
+                      : ColoredBox(
+                          color: MyTheme.colorBackgroundLight,
+                          child: Center(
+                            child: Text(
+                              "No image",
+                              style: MyTheme.textStyleNormal,
+                            ),
+                          ),
+                        ),
                 ),
 
                 Row(

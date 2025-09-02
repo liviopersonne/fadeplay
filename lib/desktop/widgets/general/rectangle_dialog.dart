@@ -141,8 +141,8 @@ class _RectangleDialogState extends State<RectangleDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               spacing: MyTheme.paddingMedium,
               children: [
-                MyButton(text: "Cancel", onTap: () => Navigator.pop(context)),
                 MyButton(text: "Confirm", onTap: widget.onConfirm),
+                MyButton(text: "Cancel", onTap: () => Navigator.pop(context)),
               ],
             ),
           ),

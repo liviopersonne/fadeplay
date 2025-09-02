@@ -23,7 +23,12 @@ class BrowserTrack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Actions(
-      actions: {OpenTrackDetailsIntent: OpenTrackDetailsAction(track: track)},
+      actions: {
+        OpenTrackDetailsIntent: OpenTrackDetailsAction(
+          context: context,
+          track: track,
+        ),
+      },
       child: ColumnElem(
         inactiveTextStyle: MyTheme.textStyleNormal,
         inactiveColor: MyTheme.colorAccentLow,

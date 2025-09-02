@@ -19,7 +19,7 @@ class TrackInfoDialog {
       builder: (_) {
         return RectangleDialog(
           title: "Track info",
-          height: 560,
+          height: 558,
           width: 860,
           pages: {
             "Tags": TrackTagsPage(track: track),

@@ -56,7 +56,7 @@ class DesktopApp extends StatelessWidget {
       // home: TestLoadFullMusicWidget(),
       // home: TestDatabaseWidget(),
       // home: TestAudioMetadata(),
-      // home: TestColumnBrowserWidget(),
+      home: TestColumnBrowserWidget(),
       // home: TestOverlayedList(),
       // home: TestColumnSelectorWidget(),
       // home: TestColumnElem(),
@@ -64,7 +64,7 @@ class DesktopApp extends StatelessWidget {
       // home: TestKeyboardListener(),
       // home: TestHotkeys(),
       // home: TestFocusOnClick(),
-      home: TestTrackInfo(),
+      // home: TestTrackInfo(),
       debugShowCheckedModeBanner: false,
     );
   }

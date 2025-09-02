@@ -55,6 +55,10 @@ class TagEditor extends StatelessWidget {
             showCursor: !isListSelector,
             cursorColor: MyTheme.textStyleNormal.color,
             decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: MyTheme.colorAccentHigh),
+              ),
               border: OutlineInputBorder(borderRadius: BorderRadius.zero),
               filled: true,
               fillColor: active
