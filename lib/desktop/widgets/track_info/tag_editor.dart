@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class TagEditor extends StatelessWidget {
   const TagEditor({
     super.key,
-    required this.label,
+    this.label,
     this.active = true,
     this.textFieldWidth = 400,
     this.numbersOnly = false,
@@ -25,7 +25,7 @@ class TagEditor extends StatelessWidget {
        openDetails = null,
        numbersOnly = false;
 
-  final String label;
+  final String? label;
   final bool active;
   final double textFieldWidth;
   final bool numbersOnly;
@@ -33,58 +33,64 @@ class TagEditor extends StatelessWidget {
   final TextEditingController? controller;
   final List<String>? values;
 
+  Widget _textBox() {
+    final bool isListSelector = values != null;
+    return ConstrainedBox(
+      constraints: BoxConstraints.loose(Size.fromWidth(textFieldWidth)),
+      child: TextField(
+        inputFormatters: numbersOnly
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : null,
+        autocorrect: true,
+        controller: controller,
+        style: MyTheme.textStyleNormal,
+        readOnly: !active,
+        showCursor: !isListSelector,
+        cursorColor: MyTheme.textStyleNormal.color,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: MyTheme.colorAccentHigh),
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+          filled: true,
+          fillColor: active
+              ? MyTheme.colorBackgroundLight
+              : MyTheme.colorBackgroundDark,
+          isDense: true,
+          suffixIconConstraints: BoxConstraints.tight(Size(30, 25)),
+          suffixIcon: active && openDetails != null
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 5.0),
+                  child: ColumnElem(
+                    inactiveTextStyle: MyTheme.textStyleNormal,
+                    activeColor: MyTheme.colorBackgroundDark,
+                    minimumWidth: true,
+                    hoverable: true,
+                    hoveringCursor: SystemMouseCursors.click,
+                    clickable: true,
+                    onTap: openDetails,
+                    child: Center(child: Text("...")),
+                  ),
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool isListSelector = values != null;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      spacing: MyTheme.paddingSmall,
-      children: [
-        Text(label, style: MyTheme.textStyleNormal),
-        ConstrainedBox(
-          constraints: BoxConstraints.loose(Size.fromWidth(textFieldWidth)),
-          child: TextField(
-            inputFormatters: numbersOnly
-                ? [FilteringTextInputFormatter.digitsOnly]
-                : null,
-            autocorrect: true,
-            controller: controller,
-            style: MyTheme.textStyleNormal,
-            readOnly: !active,
-            showCursor: !isListSelector,
-            cursorColor: MyTheme.textStyleNormal.color,
-            decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: MyTheme.colorAccentHigh),
-              ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-              filled: true,
-              fillColor: active
-                  ? MyTheme.colorBackgroundLight
-                  : MyTheme.colorBackgroundDark,
-              isDense: true,
-              suffixIconConstraints: BoxConstraints.tight(Size(30, 25)),
-              suffixIcon: active && openDetails != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 5.0),
-                      child: ColumnElem(
-                        inactiveTextStyle: MyTheme.textStyleNormal,
-                        activeColor: MyTheme.colorBackgroundDark,
-                        minimumWidth: true,
-                        hoverable: true,
-                        hoveringCursor: SystemMouseCursors.click,
-                        clickable: true,
-                        onTap: openDetails,
-                        child: Center(child: Text("...")),
-                      ),
-                    )
-                  : null,
-            ),
-          ),
-        ),
-      ],
-    );
+    return label != null
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: MyTheme.paddingSmall,
+            children: [
+              Text(label!, style: MyTheme.textStyleNormal),
+              _textBox(),
+            ],
+          )
+        : _textBox();
   }
 }

@@ -7,8 +7,8 @@ import 'package:fadeplay/desktop/widgets/track_info/subtag_editor.dart';
 import 'package:fadeplay/desktop/widgets/track_info/tag_editor.dart';
 import 'package:flutter/material.dart';
 
-class TrackTagsPage extends StatelessWidget {
-  const TrackTagsPage({super.key, required this.track});
+class TrackTagsEditor extends StatelessWidget {
+  const TrackTagsEditor({super.key, required this.track});
 
   final Track track;
 

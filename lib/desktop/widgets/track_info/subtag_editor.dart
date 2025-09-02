@@ -58,6 +58,7 @@ class _SubtagEditorState extends State<SubtagEditor>
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         TagEditor(
           label: widget.label,

@@ -27,13 +27,13 @@ class TestTrackInfo extends StatelessWidget {
       imageUri: Uri.file(image1),
     );
     final artist2 = Artist(
-      name: "Artist 1",
-      originalName: "Original Artist 1",
+      name: "Artist 2",
+      originalName: "Original Artist 2",
       imageUri: Uri.file(image2),
     );
     final artist3 = Artist(
-      name: "Artist 1",
-      originalName: "Original Artist 1",
+      name: "Artist 3",
+      originalName: "Original Artist 3",
       imageUri: Uri.file(image3),
     );
     final source = Source(
