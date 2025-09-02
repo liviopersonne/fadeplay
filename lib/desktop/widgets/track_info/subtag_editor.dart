@@ -45,7 +45,6 @@ class _SubtagEditorState extends State<SubtagEditor>
           ..addListener(() {
             setState(() {});
           });
-    Future.delayed(Duration(seconds: 2)).then((_) => controller.forward());
   }
 
   @override

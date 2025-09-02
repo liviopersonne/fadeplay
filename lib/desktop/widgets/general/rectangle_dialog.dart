@@ -16,7 +16,7 @@ final logger = Logging("RectangleDialog");
 ///
 /// By setting `onConfirm` != null, a cancel and a confirm button will appear beneath
 /// the page, clicking on the confirm button will call `onConfirm`
-class RectangleDialog extends StatelessWidget {
+class RectangleDialog extends StatefulWidget {
   const RectangleDialog({
     super.key,
     required this.title,
@@ -33,6 +33,25 @@ class RectangleDialog extends StatelessWidget {
   final void Function()? onConfirm;
 
   @override
+  State<RectangleDialog> createState() => _RectangleDialogState();
+}
+
+class _RectangleDialogState extends State<RectangleDialog> {
+  PageController? _pageController;
+
+  @override
+  void initState() {
+    _pageController = widget.pages.length > 1 ? PageController() : null;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final dialogParts = <Widget>[
       // title bar
@@ -43,14 +62,14 @@ class RectangleDialog extends StatelessWidget {
           horizontal: MyTheme.paddingMedium,
           vertical: MyTheme.paddingSmall,
         ),
-        child: Text(title, style: MyTheme.textStyleTitle),
+        child: Text(widget.title, style: MyTheme.textStyleTitle),
       ),
 
       Divider(height: 1, thickness: 1),
     ];
 
     // pages bar
-    if (pages.length > 1) {
+    if (widget.pages.length > 1) {
       dialogParts.addAll([
         ColoredBox(
           color: MyTheme.colorBackgroundVeryDark,
@@ -59,7 +78,7 @@ class RectangleDialog extends StatelessWidget {
             child: Row(
               spacing: MyTheme.paddingSmall,
               children: List.generate(
-                pages.length,
+                widget.pages.length,
                 (i) => ColumnElem(
                   inactiveTextStyle: MyTheme.textStyleNormal,
                   inactiveColor: MyTheme.colorBackgroundVeryDark,
@@ -68,7 +87,9 @@ class RectangleDialog extends StatelessWidget {
                   hoveringCursor: SystemMouseCursors.click,
                   focusable: true,
                   minimumWidth: true,
-                  child: Text(pages.keys.elementAt(i)),
+                  clickable: true,
+                  onTap: () => _pageController?.jumpToPage(i),
+                  child: Text(widget.pages.keys.elementAt(i)),
                 ),
               ),
             ),
@@ -77,20 +98,29 @@ class RectangleDialog extends StatelessWidget {
 
         Divider(height: 1, thickness: 1),
 
-        Expanded(child: pages.values.first), // TODO: Make this a pageView
+        Expanded(
+          child: PageView(
+            scrollDirection: Axis.horizontal,
+            physics: NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            children: widget.pages.values.map((page) => page).toList(),
+          ),
+        ),
+
+        // Expanded(child: pages.values.first), // TODO: Make this a pageView
       ]);
-    } else if (pages.length == 1) {
+    } else if (widget.pages.length == 1) {
       // body
-      dialogParts.addAll([Expanded(child: pages.values.first)]);
+      dialogParts.addAll([Expanded(child: widget.pages.values.first)]);
     } else {
       logger.error(
-        "Invalid number of pages were passed to the RectangleDialog: '${pages.length}",
+        "Invalid number of pages were passed to the RectangleDialog: '${widget.pages.length}",
       );
       throw Error();
     }
 
     // Cancel & Confirm buttons at the bottom
-    if (onConfirm != null) {
+    if (widget.onConfirm != null) {
       dialogParts.addAll([
         Divider(height: 1, thickness: 1),
         ColoredBox(
@@ -120,8 +150,8 @@ class RectangleDialog extends StatelessWidget {
       // insetPadding: const EdgeInsets.all(50),
       child: ColorSizeBox(
         color: MyTheme.colorBackgroundDark,
-        height: height,
-        width: width,
+        height: widget.height,
+        width: widget.width,
         child: Column(mainAxisSize: MainAxisSize.min, children: dialogParts),
       ),
     );
