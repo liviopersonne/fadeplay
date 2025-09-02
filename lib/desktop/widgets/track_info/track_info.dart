@@ -4,6 +4,7 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/track_info/subtag_editor.dart';
 import 'package:fadeplay/desktop/widgets/track_info/tag_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -26,13 +27,15 @@ class TrackInfoPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox.square(
-                dimension: 100,
+                dimension: 200,
                 child: track.imageUri != null
                     ? Image.file(File.fromUri(track.imageUri!))
                     : Text("No image"),
               ),
 
               Text("Rating"),
+              Text("Safety"),
+              Text("Has Lyrics ?"),
             ],
           ),
         ),
@@ -42,10 +45,9 @@ class TrackInfoPage extends StatelessWidget {
           child: Column(
             spacing: MyTheme.paddingTiny,
             children: [
-              TagEditor(label: "Title:", openDetails: () => ()),
-              TagEditor(label: "Original title:", active: true),
+              SubtagEditor(label: "Title:", subtagLabel: "Original title:"),
               TagEditor(label: "Artist:", openDetails: () => ()),
-              TagEditor(label: "All artists:", active: true),
+              // TagEditor(label: "All artists:", active: true),
               TagEditor(label: "Album:", openDetails: () => ()),
               TagEditor(label: "Source:", active: true),
               Row(
@@ -57,11 +59,7 @@ class TrackInfoPage extends StatelessWidget {
                     numbersOnly: true,
                     textFieldWidth: 50,
                   ),
-                  TagEditor(
-                    label: "of:",
-                    numbersOnly: true,
-                    textFieldWidth: 50,
-                  ),
+                  TagEditor(label: "of", numbersOnly: true, textFieldWidth: 50),
                 ],
               ),
               Row(
@@ -69,16 +67,18 @@ class TrackInfoPage extends StatelessWidget {
                 spacing: MyTheme.paddingMedium,
                 children: [
                   TagEditor(label: "Disk:", textFieldWidth: 50),
-                  TagEditor(label: "of:", textFieldWidth: 50),
+                  TagEditor(label: "of", textFieldWidth: 50),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [TagEditor(label: "Year:", textFieldWidth: 146)],
+              Padding(
+                padding: EdgeInsets.only(bottom: MyTheme.paddingTiny),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [TagEditor(label: "Year:", textFieldWidth: 142.2)],
+                ),
               ),
-              // TagEditor(label: "Moods", active: true),
-              // TagEditor(label: "Instruments", active: true),
-              // TagEditor(label: "Safety", active: true),
+              TagEditor(label: "Moods", active: true),
+              TagEditor(label: "Instruments", active: true),
               // TagEditor(label: "Lyrics", active: false),
               // TagEditor(label: "Start time", active: true),
               // TagEditor(label: "End time", active: true),
