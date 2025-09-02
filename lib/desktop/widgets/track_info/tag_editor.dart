@@ -1,5 +1,4 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
-import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
