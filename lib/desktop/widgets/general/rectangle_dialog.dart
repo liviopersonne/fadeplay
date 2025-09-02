@@ -76,7 +76,6 @@ class _RectangleDialogState extends State<RectangleDialog> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingMedium),
             child: Row(
-              spacing: MyTheme.paddingSmall,
               children: List.generate(
                 widget.pages.length,
                 (i) => ColumnElem(
@@ -93,7 +92,12 @@ class _RectangleDialogState extends State<RectangleDialog> {
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   ),
-                  child: Text(widget.pages.keys.elementAt(i)),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MyTheme.paddingSmall,
+                    ),
+                    child: Text(widget.pages.keys.elementAt(i)),
+                  ),
                 ),
               ),
             ),
