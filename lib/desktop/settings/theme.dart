@@ -31,7 +31,8 @@ class MyTheme {
   );
 
   /// Background colors
-  static Color colorBackgroundVeryDark = Colors.grey[800]!;
+  static Color colorBackgroundUltraDark = Colors.grey[800]!;
+  static Color colorBackgroundVeryDark = Color.fromARGB(255, 82, 82, 82);
   static Color colorBackgroundDark = Colors.grey[700]!;
   static Color colorBackgroundLight = Colors.grey[600]!;
   static Color colorBackgroundVeryLight = Colors.grey[500]!;

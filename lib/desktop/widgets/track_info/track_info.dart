@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
+import 'package:fadeplay/desktop/widgets/general/button.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:fadeplay/desktop/widgets/general/rectangle_dialog.dart';
 import 'package:fadeplay/desktop/widgets/track_info/rating_editor.dart';
 import 'package:fadeplay/desktop/widgets/track_info/subtag_editor.dart';
@@ -22,7 +24,7 @@ class TrackInfoPage extends StatelessWidget {
       builder: (_) {
         return RectangleDialog(
           title: "Track info",
-          height: 540,
+          height: 560,
           width: 860,
           content: this,
           onConfirm: () {},
@@ -33,6 +35,41 @@ class TrackInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pages = ["Tags", "Artists", "Lyrics", "File"];
+
+    return Column(
+      children: [
+        ColoredBox(
+          color: MyTheme.colorBackgroundVeryDark,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingMedium),
+            child: Row(
+              spacing: MyTheme.paddingSmall,
+              children: List.generate(
+                pages.length,
+                (i) => ColumnElem(
+                  inactiveTextStyle: MyTheme.textStyleNormal,
+                  inactiveColor: MyTheme.colorBackgroundVeryDark,
+                  activeColor: MyTheme.colorBackgroundLight,
+                  hoverable: true,
+                  hoveringCursor: SystemMouseCursors.click,
+                  focusable: true,
+                  minimumWidth: true,
+                  child: Text(pages[i]),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        Divider(height: 1, thickness: 1),
+
+        Expanded(child: mainPage(context)),
+      ],
+    );
+  }
+
+  Widget mainPage(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: MyTheme.paddingMedium,

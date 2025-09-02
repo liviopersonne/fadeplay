@@ -30,7 +30,7 @@ class AnchoredMenu extends StatelessWidget {
           BeveledRectangleBorder(
             side: BorderSide(
               width: 0.3,
-              color: MyTheme.colorBackgroundVeryDark,
+              color: MyTheme.colorBackgroundUltraDark,
             ),
           ),
         ),

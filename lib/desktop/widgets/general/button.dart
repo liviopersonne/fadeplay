@@ -6,6 +6,8 @@ class MyButton extends StatelessWidget {
   const MyButton({
     super.key,
     required this.text,
+    this.activeColor,
+    this.inactiveColor,
     this.onTap,
     this.onSecondaryTap,
     this.onTapDown,
@@ -15,6 +17,8 @@ class MyButton extends StatelessWidget {
   });
 
   final String text;
+  final Color? activeColor;
+  final Color? inactiveColor;
   final double? width;
   final void Function()? onTap;
   final void Function()? onSecondaryTap;
@@ -25,8 +29,8 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColumnElem(
-      activeColor: MyTheme.colorAccentHigh,
-      inactiveColor: MyTheme.colorAccentLow,
+      activeColor: activeColor ?? MyTheme.colorAccentHigh,
+      inactiveColor: inactiveColor ?? MyTheme.colorAccentLow,
       minimumWidth: true,
       hoverable: true,
       hoveringCursor: SystemMouseCursors.click,

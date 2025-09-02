@@ -26,7 +26,7 @@ class RectangleDialog extends StatelessWidget {
     final dialogParts = [
       // title bar
       Container(
-        color: MyTheme.colorBackgroundVeryDark,
+        color: MyTheme.colorBackgroundUltraDark,
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(
           horizontal: MyTheme.paddingMedium,
@@ -45,7 +45,7 @@ class RectangleDialog extends StatelessWidget {
       dialogParts.addAll([
         Divider(height: 1, thickness: 1),
         ColoredBox(
-          color: MyTheme.colorBackgroundVeryDark,
+          color: MyTheme.colorBackgroundUltraDark,
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: MyTheme.paddingMedium,
@@ -66,7 +66,7 @@ class RectangleDialog extends StatelessWidget {
 
     return Dialog(
       shape: BeveledRectangleBorder(
-        side: BorderSide(width: 0.3, color: MyTheme.colorBackgroundVeryDark),
+        side: BorderSide(width: 0.3, color: MyTheme.colorBackgroundUltraDark),
       ),
       // insetPadding: const EdgeInsets.all(50),
       child: ColorSizeBox(
