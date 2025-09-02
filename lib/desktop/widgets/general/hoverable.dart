@@ -6,14 +6,12 @@ import 'package:flutter/material.dart';
 class Hoverable extends StatefulWidget {
   const Hoverable({
     super.key,
-    required this.hoveredWidget,
-    required this.unhoveredWidget,
+    required this.builder,
     this.hoveringCursor = MouseCursor.defer,
     this.disableNotifier,
   });
 
-  final Widget hoveredWidget;
-  final Widget unhoveredWidget;
+  final Widget Function(bool hovering) builder;
   final MouseCursor hoveringCursor;
   final ValueNotifier<bool>? disableNotifier;
 
@@ -31,7 +29,7 @@ class _HoverableState extends State<Hoverable> {
         cursor: widget.hoveringCursor,
         onEnter: (_) => setState(() => hovering = true),
         onExit: (_) => setState(() => hovering = false),
-        child: hovering ? widget.hoveredWidget : widget.unhoveredWidget,
+        child: hovering ? widget.builder(true) : widget.builder(false),
       );
     } else {
       return ValueListenableBuilder<bool>(
@@ -41,8 +39,8 @@ class _HoverableState extends State<Hoverable> {
           onEnter: (_) => setState(() => hovering = true),
           onExit: (_) => setState(() => hovering = false),
           child: (hovering && !disabled)
-              ? widget.hoveredWidget
-              : widget.unhoveredWidget,
+              ? widget.builder(true)
+              : widget.builder(false),
         ),
       );
     }

@@ -182,8 +182,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
       hoverable && !(dragNotifier?.value ?? false)
           ? Hoverable(
               hoveringCursor: hoveringCursor,
-              unhoveredWidget: inactiveChild,
-              hoveredWidget: activeChild,
+              builder: (hovering) => hovering ? activeChild : inactiveChild,
               disableNotifier: dragNotifier,
             )
           : inactiveChild,
