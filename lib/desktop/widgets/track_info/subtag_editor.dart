@@ -8,13 +8,15 @@ class SubtagEditor extends StatefulWidget {
     required this.label,
     required this.subtagLabel,
     this.textFieldWidth = 400,
-    this.controller,
+    this.textController,
+    this.subTextController,
   });
 
   final String label;
   final String subtagLabel;
   final double textFieldWidth;
-  final TextEditingController? controller;
+  final TextEditingController? textController;
+  final TextEditingController? subTextController;
   @override
   State<SubtagEditor> createState() => _SubtagEditorState();
 }
@@ -23,31 +25,33 @@ class _SubtagEditorState extends State<SubtagEditor>
     with SingleTickerProviderStateMixin {
   late Animation<double> _boxHeight;
   late Animation<double> _paddingHeight;
-  late AnimationController controller;
+  late AnimationController _animController;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-      duration: const Duration(seconds: 2),
+    _animController = AnimationController(
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     _boxHeight =
         Tween<double>(begin: 0, end: 37).animate(
-          CurvedAnimation(parent: controller, curve: Curves.easeOutCirc),
+          CurvedAnimation(parent: _animController, curve: Curves.easeInOutCirc),
         )..addListener(() {
           setState(() {});
         });
     _paddingHeight =
-        Tween<double>(begin: 0, end: MyTheme.paddingTiny).animate(controller)
-          ..addListener(() {
-            setState(() {});
-          });
+        Tween<double>(
+          begin: 0,
+          end: MyTheme.paddingTiny,
+        ).animate(_animController)..addListener(() {
+          setState(() {});
+        });
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _animController.dispose();
     super.dispose();
   }
 
@@ -55,7 +59,12 @@ class _SubtagEditorState extends State<SubtagEditor>
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TagEditor(label: widget.label),
+        TagEditor(
+          label: widget.label,
+          textFieldWidth: widget.textFieldWidth,
+          controller: widget.textController,
+          openDetails: () => _animController.toggle(),
+        ),
 
         Offstage(
           offstage: _boxHeight.value == 0,
@@ -65,7 +74,11 @@ class _SubtagEditorState extends State<SubtagEditor>
               constraints: BoxConstraints.loose(
                 Size.fromHeight(_boxHeight.value),
               ),
-              child: TagEditor(label: widget.subtagLabel),
+              child: TagEditor(
+                label: widget.subtagLabel,
+                controller: widget.subTextController,
+                textFieldWidth: widget.textFieldWidth,
+              ),
             ),
           ),
         ),
