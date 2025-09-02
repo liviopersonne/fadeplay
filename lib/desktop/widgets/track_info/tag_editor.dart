@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
+import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -65,9 +66,15 @@ class TagEditor extends StatelessWidget {
               suffixIcon: active && openDetails != null
                   ? Padding(
                       padding: const EdgeInsets.only(right: 5.0),
-                      child: GestureDetector(
+                      child: ColumnElem(
+                        inactiveTextStyle: MyTheme.textStyleNormal,
+                        activeColor: MyTheme.colorBackgroundDark,
+                        minimumWidth: true,
+                        hoverable: true,
+                        hoveringCursor: SystemMouseCursors.click,
+                        clickable: true,
                         onTap: openDetails,
-                        child: ColorSizeBox(color: Colors.blue),
+                        child: Center(child: Text("...")),
                       ),
                     )
                   : null,

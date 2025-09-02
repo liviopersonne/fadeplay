@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 ///
 /// - `starCount` can go from 1 to 5
 class RatingEditor extends StatefulWidget {
-  RatingEditor({super.key, int starCount = 5, int starHeight = 26})
+  RatingEditor({super.key, int starCount = 5, int starHeight = 22})
     : starCount = starCount.clamp(1, 5).toInt(),
       starHeight = starHeight - (starHeight % 2);
   // starHeight needs to be pair to avoid rounding errors in sizes
