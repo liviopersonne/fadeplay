@@ -1,3 +1,4 @@
+import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +25,9 @@ class _RatingEditorState extends State<RatingEditor> {
   int? _hoveringRating;
   int _currentRating = 0;
 
-  final inactiveColor = Colors.white;
+  final inactiveColor = MyTheme.colorBackgroundVeryLight;
   final hoveredColor = Colors.lightBlue;
-  final activeColor = Colors.blue;
+  final activeColor = Colors.white;
 
   Color _halfStarColor(int index) {
     if (_hoveringRating != null) {
@@ -36,28 +37,32 @@ class _RatingEditorState extends State<RatingEditor> {
     }
   }
 
+  Widget _ratingClickDetector(int rating) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hoveringRating = rating),
+      onExit: (_) => setState(() => _hoveringRating = null),
+      child: GestureDetector(
+        onTap: () => setState(() {
+          _currentRating = rating;
+          widget._rating.value = rating;
+        }),
+        child: SizedBox(
+          width: widget.starHeight / 2,
+          height: widget.starHeight,
+          child: Text(""), // I need this so that the button exists
+        ),
+      ),
+    );
+  }
+
   Widget _starClickDetector(int index) {
     return Stack(
       children: [
         Row(
           children: List.generate(2, (i) {
             final localRating = 2 * index + i + 1;
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              onEnter: (_) => setState(() => _hoveringRating = localRating),
-              onExit: (_) => setState(() => _hoveringRating = null),
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  _currentRating = localRating;
-                  widget._rating.value = localRating;
-                }),
-                child: SizedBox(
-                  width: widget.starHeight / 2,
-                  height: widget.starHeight,
-                  child: Text(""), // I need this so that the button exists
-                ),
-              ),
-            );
+            return _ratingClickDetector(localRating);
           }),
         ),
         IgnorePointer(
@@ -89,16 +94,21 @@ class _RatingEditorState extends State<RatingEditor> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: widget.starHeight,
-      width: widget.starHeight * widget.starCount,
+      width: widget.starHeight * (widget.starCount + 1),
       child: ListView.builder(
-        itemCount: widget.starCount,
+        itemCount: widget.starCount + 1,
         scrollDirection: Axis.horizontal,
 
         physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (_, i) => SizedBox.square(
-          dimension: widget.starHeight,
-          child: _starClickDetector(i),
-        ),
+        itemBuilder: (_, i) => i == 0
+            ? SizedBox.square(
+                dimension: widget.starHeight,
+                child: _ratingClickDetector(0),
+              )
+            : SizedBox.square(
+                dimension: widget.starHeight,
+                child: _starClickDetector(i - 1),
+              ),
       ),
     );
   }

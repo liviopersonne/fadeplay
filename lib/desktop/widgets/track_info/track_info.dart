@@ -71,7 +71,6 @@ class TrackTagsPage extends StatelessWidget {
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  spacing: 22,
                   children: [
                     Text("Rating:", style: MyTheme.textStyleNormal),
                     RatingEditor(starCount: 5),
