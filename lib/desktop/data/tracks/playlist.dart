@@ -13,4 +13,15 @@ class Playlist {
     this.imageUri,
     this.containingFolder,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (other is Playlist) {
+      return other.name == name || other.containingFolder == containingFolder;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => name.hashCode + containingFolder.hashCode;
 }
