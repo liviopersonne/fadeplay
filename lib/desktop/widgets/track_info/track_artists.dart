@@ -1,3 +1,4 @@
+import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/objects/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
@@ -23,6 +24,7 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
   int _artistCount = 0;
   late final List<TextEditingController> _textControllers;
   late final List<TextEditingController> _subtextControllers;
+  late final List<TextEditingController> _dropdownTextControllers;
 
   @override
   void initState() {
@@ -36,6 +38,10 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
       final artist = widget.track.artists.entries.elementAt(i);
       return TextEditingController(text: artist.key.originalName);
     });
+    _dropdownTextControllers = List.generate(_artistCount, (i) {
+      final artist = widget.track.artists.entries.elementAt(i);
+      return TextEditingController(text: artist.value.name);
+    });
 
     addNewTagEditor();
   }
@@ -46,6 +52,9 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
       c.dispose();
     }
     for (var c in _subtextControllers) {
+      c.dispose();
+    }
+    for (var c in _dropdownTextControllers) {
       c.dispose();
     }
     super.dispose();
@@ -65,6 +74,7 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
       }),
     );
     _subtextControllers.add(TextEditingController());
+    _dropdownTextControllers.add(TextEditingController());
   }
 
   @override
@@ -94,10 +104,10 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
                 subTextController: _subtextControllers[i],
               ),
               TagEditor.selectFromList(
-                values: ["Item"],
+                values: ArtistRole.values.map((e) => e.name).toList(),
                 textFieldWidth: 280,
                 multiselect: false,
-                textController: TextEditingController(),
+                textController: _dropdownTextControllers[i],
               ), // TODO: This will be the artist type
               SizedBox(width: 20), // some padding for the scrollbar
             ],

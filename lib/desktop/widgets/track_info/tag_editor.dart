@@ -56,6 +56,7 @@ class TagEditor extends StatelessWidget {
                   throw UnimplementedError(); // TODO: This is gonna be hard
                 } else {
                   textController?.text = value;
+                  _menuController?.close();
                 }
               },
             ),
