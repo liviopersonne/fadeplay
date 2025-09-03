@@ -30,21 +30,14 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
     _artistCount = widget.track.artists.length;
     _textControllers = List.generate(_artistCount, (i) {
       final artist = widget.track.artists.entries.elementAt(i);
-      return TextEditingController.fromValue(
-        TextEditingValue(text: artist.key.name),
-      );
+      return TextEditingController(text: artist.key.name);
     });
     _subtextControllers = List.generate(_artistCount, (i) {
       final artist = widget.track.artists.entries.elementAt(i);
-      return TextEditingController.fromValue(
-        TextEditingValue(text: artist.key.originalName ?? ""),
-      );
+      return TextEditingController(text: artist.key.originalName);
     });
-    final a = TextEditingController().addListener(
-      () => logger.log(
-        "Adding new artist",
-      ), // FIXME: This doesn't work but I have to sleep
-    );
+
+    addNewTagEditor();
   }
 
   @override
@@ -56,6 +49,22 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
       c.dispose();
     }
     super.dispose();
+  }
+
+  void addNewTagEditor() {
+    final countCopy = _artistCount;
+    _textControllers.add(
+      TextEditingController()..addListener(() {
+        if (_artistCount == countCopy) {
+          logger.debug("Adding artist to track");
+          setState(() {
+            addNewTagEditor();
+            _artistCount += 1;
+          });
+        }
+      }),
+    );
+    _subtextControllers.add(TextEditingController());
   }
 
   @override
@@ -81,10 +90,8 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
                 label: "Artist name",
                 subtagLabel: "Original name",
                 textFieldWidth: 430,
-                textController: i < _artistCount ? _textControllers[i] : null,
-                subTextController: i < _artistCount
-                    ? _subtextControllers[i]
-                    : null,
+                textController: _textControllers[i],
+                subTextController: _subtextControllers[i],
               ),
               TagEditor(
                 textFieldWidth: 280,
