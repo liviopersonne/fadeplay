@@ -1,5 +1,5 @@
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/mixes/transition.dart';
+import 'package:fadeplay/desktop/data/mixes/transition.dart';
 
 final logger = Logging("Mix");
 

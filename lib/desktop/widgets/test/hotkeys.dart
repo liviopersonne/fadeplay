@@ -1,4 +1,4 @@
-import 'package:fadeplay/desktop/objects/hotkeys/hotkey_scope.dart';
+import 'package:fadeplay/desktop/data/hotkeys/hotkey_scope.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:flutter/material.dart';

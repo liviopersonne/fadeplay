@@ -1,5 +1,5 @@
-import 'package:fadeplay/desktop/objects/tracks/playlist_folder.dart';
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/playlist_folder.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 
 class Playlist {
   String name;

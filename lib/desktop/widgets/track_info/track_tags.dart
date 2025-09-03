@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/track_info/rating_editor.dart';
 import 'package:fadeplay/desktop/widgets/track_info/subtag_editor.dart';

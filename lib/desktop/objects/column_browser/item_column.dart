@@ -1,6 +1,6 @@
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 
-import 'track_columns/_all.dart';
+import '../../data/track_columns/_all.dart';
 
 // NOTE: `T` is usually `Track`
 

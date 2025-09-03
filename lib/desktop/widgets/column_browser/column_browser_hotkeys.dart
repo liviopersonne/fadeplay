@@ -1,6 +1,6 @@
-import 'package:fadeplay/desktop/objects/hotkeys/hotkey_scope.dart';
+import 'package:fadeplay/desktop/data/hotkeys/hotkey_scope.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/track_info/track_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

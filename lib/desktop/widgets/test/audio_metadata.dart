@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/tracks/audio_metadata.dart';
+import 'package:fadeplay/desktop/data/tracks/audio_metadata.dart';
 import 'package:flutter/material.dart';
 
 final logger = Logging("TestAudioMetadata");

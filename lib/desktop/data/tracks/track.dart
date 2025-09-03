@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/tracks/album.dart';
-import 'package:fadeplay/desktop/objects/tracks/artist.dart';
-import 'package:fadeplay/desktop/objects/tracks/audio_metadata.dart';
-import 'package:fadeplay/desktop/objects/tracks/source.dart';
+import 'package:fadeplay/desktop/data/tracks/album.dart';
+import 'package:fadeplay/desktop/data/tracks/artist.dart';
+import 'package:fadeplay/desktop/data/tracks/audio_metadata.dart';
+import 'package:fadeplay/desktop/data/tracks/source.dart';
 import 'package:path/path.dart' as path;
 
 final logger = Logging("Track");

@@ -1,4 +1,4 @@
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/objects/column_browser/item_column.dart';
 
 class TitleColumn extends ItemColumn with BigColumn {

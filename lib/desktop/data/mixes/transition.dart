@@ -1,6 +1,6 @@
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/settings.dart';
 
 final logger = Logging("Transition");

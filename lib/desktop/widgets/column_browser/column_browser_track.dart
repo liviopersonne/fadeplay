@@ -1,5 +1,5 @@
 import 'package:fadeplay/desktop/objects/column_browser/column_browser_layout.dart';
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser_hotkeys.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';

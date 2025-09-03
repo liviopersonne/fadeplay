@@ -4,7 +4,7 @@ import 'package:fadeplay/desktop/widgets/column_browser/column_browser_headers.d
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser_hotkeys.dart';
 import 'package:fadeplay/desktop/widgets/column_browser/column_browser_track.dart';
 import 'package:flutter/material.dart';
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 
 final logger = Logging("ColumnBrowser");
 

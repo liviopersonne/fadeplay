@@ -1,8 +1,8 @@
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
-import 'package:fadeplay/desktop/objects/tracks/album.dart';
-import 'package:fadeplay/desktop/objects/tracks/artist.dart';
-import 'package:fadeplay/desktop/objects/tracks/source.dart';
-import 'package:fadeplay/desktop/objects/tracks/track.dart';
+import 'package:fadeplay/desktop/data/tracks/album.dart';
+import 'package:fadeplay/desktop/data/tracks/artist.dart';
+import 'package:fadeplay/desktop/data/tracks/source.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/track_info/track_info.dart';
