@@ -78,25 +78,12 @@ class _RectangleDialogState extends State<RectangleDialog> {
             child: Row(
               children: List.generate(
                 widget.pages.length,
-                (i) => ColumnElem(
-                  inactiveTextStyle: MyTheme.textStyleNormal,
-                  inactiveColor: MyTheme.colorBackgroundVeryDark,
-                  activeColor: MyTheme.colorBackgroundLight,
-                  hoverable: true,
-                  hoveringCursor: SystemMouseCursors.click,
-                  focusable: true,
-                  minimumWidth: true,
-                  clickable: true,
+                (i) => MyButton.menuButton(
+                  text: widget.pages.keys.elementAt(i),
                   onTap: () => _pageController?.animateToPage(
                     i,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MyTheme.paddingSmall,
-                    ),
-                    child: Text(widget.pages.keys.elementAt(i)),
                   ),
                 ),
               ),

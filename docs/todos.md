@@ -3,6 +3,7 @@
 - [ ] Make sure I dispose all controllers
 - [ ] Make sure I dispose all focusNodes
 - [ ] Check for containers using only `color` and `height` / `width` and replace with `ColorSizeBox`
+- [ ] Manage different focus scopes (notably in the track tag editor artist section)
 
 ## ColumnElem
 

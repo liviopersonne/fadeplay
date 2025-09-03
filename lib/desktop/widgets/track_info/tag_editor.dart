@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
+import 'package:fadeplay/desktop/widgets/menus/anchored_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,17 +14,19 @@ class TagEditor extends StatelessWidget {
     this.numbersOnly = false,
     this.openDetails,
     this.controller,
-  }) : values = null;
+  }) : values = null,
+       _menuController = null;
 
-  const TagEditor.selectFromList({
+  TagEditor.selectFromList({
     super.key,
-    required this.label,
+    this.label,
     this.textFieldWidth = 300,
     this.controller,
     required this.values,
   }) : active = true,
        openDetails = null,
-       numbersOnly = false;
+       numbersOnly = false,
+       _menuController = MenuController();
 
   final String? label;
   final bool active;
@@ -32,48 +35,76 @@ class TagEditor extends StatelessWidget {
   final void Function()? openDetails;
   final TextEditingController? controller;
   final List<String>? values;
+  final MenuController? _menuController;
+
+  Widget _anchoredMenuWrapper({
+    required Widget child,
+    required bool isListSelector,
+  }) {
+    return isListSelector
+        ? AnchoredMenu(
+            menuItems: {"Item1": () {}, "Item2": () {}, "Item3": () {}},
+            menuController: _menuController!,
+            width: textFieldWidth,
+            child: child,
+          )
+        : child;
+  }
+
+  void _dropdownSuffixOnTap() {
+    if (_menuController!.isOpen) {
+      _menuController.close();
+    } else {
+      _menuController.open();
+    }
+  }
 
   Widget _textBox() {
     final bool isListSelector = values != null;
-    return ConstrainedBox(
-      constraints: BoxConstraints.loose(Size.fromWidth(textFieldWidth)),
-      child: TextField(
-        inputFormatters: numbersOnly
-            ? [FilteringTextInputFormatter.digitsOnly]
-            : null,
-        autocorrect: true,
-        controller: controller,
-        style: MyTheme.textStyleNormal,
-        readOnly: !active,
-        showCursor: !isListSelector,
-        cursorColor: MyTheme.textStyleNormal.color,
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.zero,
-            borderSide: BorderSide(color: MyTheme.colorAccentHigh),
-          ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-          filled: true,
-          fillColor: active
-              ? MyTheme.colorBackgroundLight
-              : MyTheme.colorBackgroundDark,
-          isDense: true,
-          suffixIconConstraints: BoxConstraints.tight(Size(30, 25)),
-          suffixIcon: active && openDetails != null
-              ? Padding(
-                  padding: const EdgeInsets.only(right: 5.0),
-                  child: ColumnElem(
-                    inactiveTextStyle: MyTheme.textStyleNormal,
-                    activeColor: MyTheme.colorBackgroundDark,
-                    minimumWidth: true,
-                    hoverable: true,
-                    hoveringCursor: SystemMouseCursors.click,
-                    clickable: true,
-                    onTap: openDetails,
-                    child: Center(child: Text("...")),
-                  ),
-                )
+    return _anchoredMenuWrapper(
+      isListSelector: isListSelector,
+      child: ConstrainedBox(
+        constraints: BoxConstraints.loose(Size.fromWidth(textFieldWidth)),
+        child: TextField(
+          inputFormatters: numbersOnly
+              ? [FilteringTextInputFormatter.digitsOnly]
               : null,
+          autocorrect: true,
+          controller: controller,
+          style: MyTheme.textStyleNormal,
+          readOnly: !active,
+          showCursor: !isListSelector,
+          cursorColor: MyTheme.textStyleNormal.color,
+          decoration: InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.zero,
+              borderSide: BorderSide(color: MyTheme.colorAccentHigh),
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+            filled: true,
+            fillColor: active
+                ? MyTheme.colorBackgroundLight
+                : MyTheme.colorBackgroundDark,
+            isDense: true,
+            suffixIconConstraints: BoxConstraints.tight(Size(30, 25)),
+            suffixIcon: (active && openDetails != null) || isListSelector
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: ColumnElem(
+                      inactiveTextStyle: MyTheme.textStyleNormal,
+                      activeColor: MyTheme.colorBackgroundDark,
+                      minimumWidth: true,
+                      hoverable: true,
+                      hoveringCursor: SystemMouseCursors.click,
+                      clickable: true,
+                      onTap: isListSelector
+                          ? _dropdownSuffixOnTap
+                          : openDetails,
+                      child: Center(child: Text(isListSelector ? "⮟" : "...")),
+                    ),
+                  )
+                : null,
+          ),
         ),
       ),
     );

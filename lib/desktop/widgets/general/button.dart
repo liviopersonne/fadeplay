@@ -14,7 +14,20 @@ class MyButton extends StatelessWidget {
     this.onSecondaryTapDown,
     this.onDoubleTap,
     this.width,
-  });
+  }) : focusable = false;
+
+  MyButton.menuButton({
+    super.key,
+    required this.text,
+    this.onTap,
+    this.onSecondaryTap,
+    this.onTapDown,
+    this.onSecondaryTapDown,
+    this.onDoubleTap,
+    this.width,
+    this.focusable = true,
+  }) : inactiveColor = MyTheme.colorBackgroundVeryDark,
+       activeColor = MyTheme.colorBackgroundLight;
 
   final String text;
   final Color? activeColor;
@@ -25,6 +38,7 @@ class MyButton extends StatelessWidget {
   final void Function(TapDownDetails details)? onTapDown;
   final void Function(TapDownDetails details)? onSecondaryTapDown;
   final void Function()? onDoubleTap;
+  final bool focusable;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +48,7 @@ class MyButton extends StatelessWidget {
       minimumWidth: true,
       hoverable: true,
       hoveringCursor: SystemMouseCursors.click,
+      focusable: focusable,
       clickable: true,
       onTap: onTap,
       onSecondaryTap: onSecondaryTap,

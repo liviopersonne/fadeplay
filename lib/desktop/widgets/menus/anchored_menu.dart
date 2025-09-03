@@ -10,14 +10,14 @@ class AnchoredMenu extends StatelessWidget {
   const AnchoredMenu({
     super.key,
     required this.menuItems,
-    required this.width,
+    this.width,
     required this.child,
     required this.menuController,
   });
 
   final Map<String, void Function()?> menuItems;
   final Widget child;
-  final double width;
+  final double? width;
   final MenuController menuController;
 
   @override
@@ -37,7 +37,8 @@ class AnchoredMenu extends StatelessWidget {
       ),
       menuChildren: menuItems.entries
           .map(
-            (item) => MyButton(
+            (item) => MyButton.menuButton(
+              focusable: false,
               text: item.key,
               onTap: () {
                 item.value?.call();
