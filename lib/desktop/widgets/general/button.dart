@@ -59,13 +59,13 @@ class MyButton extends StatelessWidget {
       child: width != null
           ? SizedBox(
               width: width,
-              child: Center(child: Text(text)),
+              child: Center(child: Text(text, overflow: TextOverflow.ellipsis)),
             )
           : Padding(
               padding: EdgeInsetsGeometry.symmetric(
                 horizontal: MyTheme.paddingSmall,
               ),
-              child: Center(child: Text(text)),
+              child: Center(child: Text(text, overflow: TextOverflow.ellipsis)),
             ),
     );
   }

@@ -26,6 +26,7 @@ class AnchoredMenu extends StatelessWidget {
       consumeOutsideTap: true,
       controller: menuController,
       style: MenuStyle(
+        maximumSize: WidgetStatePropertyAll(Size.fromHeight(256)),
         shape: WidgetStatePropertyAll(
           BeveledRectangleBorder(
             side: BorderSide(
@@ -35,19 +36,24 @@ class AnchoredMenu extends StatelessWidget {
           ),
         ),
       ),
-      menuChildren: menuItems.entries
-          .map(
-            (item) => MyButton.menuButton(
-              focusable: false,
-              text: item.key,
-              onTap: () {
-                item.value?.call();
-                menuController.close();
-              },
-              width: width,
+
+      menuChildren: <Widget>[
+        RawScrollbar(
+          child: SingleChildScrollView(
+            child: Column(
+              children: menuItems.keys
+                  .map(
+                    (e) => MyButton.menuButton(
+                      text: e,
+                      focusable: false,
+                      width: width,
+                    ),
+                  )
+                  .toList(),
             ),
-          )
-          .toList(),
+          ),
+        ),
+      ],
       // NOTE: I can use `builder` instead of `child` if I want the child to depend on the controller
       child: child,
     );
