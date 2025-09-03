@@ -13,28 +13,34 @@ class TagEditor extends StatelessWidget {
     this.textFieldWidth = 400,
     this.numbersOnly = false,
     this.openDetails,
-    this.controller,
+    this.textController,
   }) : values = null,
-       _menuController = null;
+       _menuController = null,
+       multiselect = false,
+       _readOnly = !active;
 
   TagEditor.selectFromList({
     super.key,
     this.label,
     this.textFieldWidth = 300,
-    this.controller,
+    required TextEditingController this.textController,
     required this.values,
+    this.multiselect = false,
   }) : active = true,
        openDetails = null,
        numbersOnly = false,
+       _readOnly = true,
        _menuController = MenuController();
 
   final String? label;
   final bool active;
+  final bool _readOnly;
   final double textFieldWidth;
   final bool numbersOnly;
   final void Function()? openDetails;
-  final TextEditingController? controller;
+  final TextEditingController? textController;
   final List<String>? values;
+  final bool multiselect;
   final MenuController? _menuController;
 
   Widget _anchoredMenuWrapper({
@@ -43,19 +49,16 @@ class TagEditor extends StatelessWidget {
   }) {
     return isListSelector
         ? AnchoredMenu(
-            menuItems: {
-              "IteItem12Item12m8Item12Item12Item12Item12Item12": () {},
-              "Item9": () {},
-              "Item11": () {},
-              "Item12Item12Item12": () {},
-              "ItemItem1213": () {},
-              "IteItem12Item12Item12m14": () {},
-              "Item15": () {},
-              "Item16": () {},
-              "IteItem12m17": () {},
-              "Item18": () {},
-              "Item19": () {},
-            },
+            menuItems: Map.fromIterable(
+              values!,
+              value: (value) => () {
+                if (multiselect) {
+                  throw UnimplementedError(); // TODO: This is gonna be hard
+                } else {
+                  textController?.text = value;
+                }
+              },
+            ),
             menuController: _menuController!,
             width: textFieldWidth,
             child: child,
@@ -82,9 +85,9 @@ class TagEditor extends StatelessWidget {
               ? [FilteringTextInputFormatter.digitsOnly]
               : null,
           autocorrect: true,
-          controller: controller,
+          controller: textController,
           style: MyTheme.textStyleNormal,
-          readOnly: !active,
+          readOnly: _readOnly,
           showCursor: !isListSelector,
           cursorColor: MyTheme.textStyleNormal.color,
           decoration: InputDecoration(

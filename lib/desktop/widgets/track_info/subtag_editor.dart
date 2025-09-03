@@ -63,7 +63,7 @@ class _SubtagEditorState extends State<SubtagEditor>
         TagEditor(
           label: widget.label,
           textFieldWidth: widget.textFieldWidth,
-          controller: widget.textController,
+          textController: widget.textController,
           openDetails: () => _animController.toggle(),
         ),
 
@@ -77,7 +77,7 @@ class _SubtagEditorState extends State<SubtagEditor>
               ),
               child: TagEditor(
                 label: widget.subtagLabel,
-                controller: widget.subTextController,
+                textController: widget.subTextController,
                 textFieldWidth: widget.textFieldWidth,
               ),
             ),

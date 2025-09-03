@@ -41,12 +41,13 @@ class AnchoredMenu extends StatelessWidget {
         RawScrollbar(
           child: SingleChildScrollView(
             child: Column(
-              children: menuItems.keys
+              children: menuItems.entries
                   .map(
                     (e) => MyButton.menuButton(
-                      text: e,
+                      text: e.key,
                       focusable: false,
                       width: width,
+                      onTap: e.value,
                     ),
                   )
                   .toList(),

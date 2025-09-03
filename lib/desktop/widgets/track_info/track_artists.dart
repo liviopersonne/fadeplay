@@ -96,6 +96,8 @@ class _TrackArtistsEditorState extends State<TrackArtistsEditor> {
               TagEditor.selectFromList(
                 values: ["Item"],
                 textFieldWidth: 280,
+                multiselect: false,
+                textController: TextEditingController(),
               ), // TODO: This will be the artist type
               SizedBox(width: 20), // some padding for the scrollbar
             ],
