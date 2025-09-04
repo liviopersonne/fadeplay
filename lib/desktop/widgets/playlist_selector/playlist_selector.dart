@@ -29,7 +29,7 @@ class PlaylistSelector extends StatelessWidget {
   }
 }
 
-class PlaylistFolderSelector extends StatelessWidget {
+class PlaylistFolderSelector extends StatefulWidget {
   const PlaylistFolderSelector({
     super.key,
     required this.folder,
@@ -40,6 +40,32 @@ class PlaylistFolderSelector extends StatelessWidget {
   final List<PlaylistFolder> remainingFolders;
 
   @override
+  State<PlaylistFolderSelector> createState() => _PlaylistFolderSelectorState();
+}
+
+class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
+  late final List<PlaylistFolder> _myChildren;
+  late final List<PlaylistFolder> _childRemaining;
+  bool _checkAdded = false; // TODO: Remove
+  // bool _unfolded = true;
+
+  @override
+  void initState() {
+    super.initState();
+    logger.log(
+      "Recursion step ${widget.folder.name} with remaining: ${widget.remainingFolders.map((f) => f.name)}",
+    );
+    _myChildren = widget.remainingFolders
+        .where((f) => f.containingFolder == widget.folder)
+        .toList();
+    _childRemaining = List.from(
+      widget.remainingFolders
+        ..removeWhere((f) => f.containingFolder == widget.folder)
+        ..toList(),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     /* TODO: Here's the plan
       1. Take yourself out of remainingFolders
@@ -47,29 +73,36 @@ class PlaylistFolderSelector extends StatelessWidget {
       3. Add all of their selectors to a padded row
       4. Add a title on top
     */
-    logger.log(
-      "Recursion step ${folder.name} with remaining: ${remainingFolders.map((f) => f.name)}",
-    );
 
-    final myChildren = remainingFolders
-        .where((f) => f.containingFolder == folder)
-        .toList();
-    remainingFolders
-      ..remove(folder)
-      ..removeWhere((f) => f.containingFolder == folder);
+    Future.delayed(Duration(seconds: 2)).then((_) async {
+      setState(() {
+        if (widget.folder.name == "15" && !_checkAdded) {
+          _checkAdded = true;
+          _myChildren.add(
+            PlaylistFolder(name: "99", containingFolder: widget.folder),
+          );
+        }
+      });
+      Future.delayed(Duration(seconds: 2)).then((_) {
+        setState(() {
+          _myChildren.removeWhere((f) => f.name == "13");
+        });
+      });
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(folder.name),
+        Text(widget.folder.name),
         Padding(
           padding: EdgeInsets.only(left: MyTheme.paddingSmall),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final child in myChildren)
+              for (final child in _myChildren)
                 PlaylistFolderSelector(
                   folder: child,
-                  remainingFolders: remainingFolders,
+                  remainingFolders: _childRemaining,
                 ),
             ],
           ),
