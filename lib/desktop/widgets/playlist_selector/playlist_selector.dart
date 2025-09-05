@@ -47,6 +47,7 @@ class PlaylistFolderSelector extends StatefulWidget {
 class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
   late List<PlaylistFolder> _remainingChildren;
   late List<PlaylistFolder> _myChildren;
+  bool _unfolded = true;
 
   @override
   void initState() {
@@ -94,7 +95,7 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
 
     return IntrinsicHeight(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
@@ -102,24 +103,30 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
             children: [
               ColumnElem(
                 inactiveTextStyle: MyTheme.textStyleNormal,
-                hoverable: true,
                 minimumWidth: true,
-                child: Text("O"),
+                clickable: true,
+                onTap: () => setState(() => _unfolded = !_unfolded),
+                child: Align(
+                  alignment: AlignmentGeometry.center,
+                  child: Text(_unfolded ? "⮝" : "⮟"),
+                ),
               ),
               Expanded(child: VerticalDivider(thickness: 2)),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MyButton.menuButton(text: widget.folder.name, width: 40),
-              for (final child in _myChildren)
-                PlaylistFolderSelector(
-                  folder: child,
-                  remainingFolders: _remainingChildren,
-                ),
-            ],
-          ),
+          _unfolded
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MyButton.menuButton(text: widget.folder.name, width: 40),
+                    for (final child in _myChildren)
+                      PlaylistFolderSelector(
+                        folder: child,
+                        remainingFolders: _remainingChildren,
+                      ),
+                  ],
+                )
+              : MyButton.menuButton(text: widget.folder.name, width: 40),
         ],
       ),
     );
