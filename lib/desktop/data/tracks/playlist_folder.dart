@@ -8,7 +8,7 @@ class PlaylistFolder {
   @override
   bool operator ==(Object other) {
     if (other is PlaylistFolder) {
-      return other.name == name || other.containingFolder == containingFolder;
+      return other.name == name && other.containingFolder == containingFolder;
     }
     return false;
   }

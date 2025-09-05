@@ -14,7 +14,8 @@ class TestPlaylistSelector extends StatelessWidget {
     final folder3 = PlaylistFolder(name: "13", containingFolder: folder1);
     final folder4 = PlaylistFolder(name: "14");
     final folder5 = PlaylistFolder(name: "15", containingFolder: folder3);
-    final allFolders = [folder1, folder2, folder3, folder4, folder5];
+    final folder6 = PlaylistFolder(name: "16", containingFolder: folder1);
+    final allFolders = [folder1, folder2, folder3, folder4, folder5, folder6];
 
     final playlist1 = Playlist(name: "1", containingFolder: folder1);
 
