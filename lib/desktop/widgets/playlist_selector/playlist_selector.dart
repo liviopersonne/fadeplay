@@ -92,46 +92,36 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
   Widget build(BuildContext context) {
     logger.log("Build ${widget.folder.name}");
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            ColumnElem(
-              inactiveTextStyle: MyTheme.textStyleTitle,
-              hoverable: true,
-              minimumWidth: true,
-              child: Text("O"),
-            ),
-            SizedBox(
-              height:
-                  _myChildren.length *
-                  ColumnElem.getHeight(MyTheme.textStyleTitle),
-              child: VerticalDivider(thickness: 5),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MyButton.menuButton(text: widget.folder.name, width: 40),
-            Padding(
-              padding: EdgeInsets.only(left: MyTheme.paddingSmall),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final child in _myChildren)
-                    PlaylistFolderSelector(
-                      folder: child,
-                      remainingFolders: _remainingChildren,
-                    ),
-                ],
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ColumnElem(
+                inactiveTextStyle: MyTheme.textStyleNormal,
+                hoverable: true,
+                minimumWidth: true,
+                child: Text("O"),
               ),
-            ),
-          ],
-        ),
-      ],
+              Expanded(child: VerticalDivider(thickness: 2)),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyButton.menuButton(text: widget.folder.name, width: 40),
+              for (final child in _myChildren)
+                PlaylistFolderSelector(
+                  folder: child,
+                  remainingFolders: _remainingChildren,
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
