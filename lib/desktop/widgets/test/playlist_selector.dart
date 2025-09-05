@@ -1,5 +1,6 @@
 import 'package:fadeplay/desktop/data/tracks/playlist.dart';
 import 'package:fadeplay/desktop/data/tracks/playlist_folder.dart';
+import 'package:fadeplay/desktop/settings/theme.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
 import 'package:fadeplay/desktop/widgets/playlist_selector/playlist_selector.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,13 @@ class TestPlaylistSelector extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: ColorSizeBox(
-          color: Colors.grey,
+          color: MyTheme.colorBackgroundVeryDark,
           height: 400,
           width: 500,
           child: Center(
             child: Column(
               children: [
-                PlaylistFolderSelector(
+                PlaylistSelectorElem(
                   folder: allFolders.first,
                   remainingFolders: allFolders,
                 ),

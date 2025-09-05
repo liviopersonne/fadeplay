@@ -1,9 +1,22 @@
 import 'package:fadeplay/desktop/data/tracks/playlist.dart';
 import 'package:fadeplay/desktop/data/tracks/playlist_folder.dart';
 import 'package:fadeplay/desktop/settings/theme.dart';
-import 'package:fadeplay/desktop/widgets/general/button.dart';
 import 'package:fadeplay/desktop/widgets/general/column_elem.dart';
 import 'package:flutter/material.dart';
+
+class PlaylistOrFolder {
+  const PlaylistOrFolder.playlist(Playlist this.playlist)
+    : isFolder = false,
+      folder = null;
+
+  const PlaylistOrFolder.folder(PlaylistFolder this.folder)
+    : isFolder = true,
+      playlist = null;
+
+  final Playlist? playlist;
+  final PlaylistFolder? folder;
+  final bool isFolder;
+}
 
 class PlaylistSelector extends StatelessWidget {
   const PlaylistSelector({
@@ -15,23 +28,34 @@ class PlaylistSelector extends StatelessWidget {
   final List<Playlist> playlists;
   final List<PlaylistFolder> folders;
 
-  Widget _uniquePlaylistItem(Playlist playlist) {
-    return ColumnElem(
-      inactiveTextStyle: MyTheme.textStyleNormal,
-      hoverable: true,
-      hoveringCursor: SystemMouseCursors.click,
-      child: Text(playlist.name),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final List<PlaylistOrFolder> allElems = playlists
+        .map((p) => PlaylistOrFolder.playlist(p))
+        .followedBy(folders.map((f) => PlaylistOrFolder.folder(f)))
+        .toList();
+
+    final List<PlaylistOrFolder> rootElems = allElems
+        .where(
+          (e) => e.isFolder
+              ? e.folder!.containingFolder == null
+              : e.playlist!.containingFolder == null,
+        )
+        .toList();
+
+    return ListView.builder(
+      itemCount: rootElems.length,
+      itemBuilder: (_, i) {
+        final elem = rootElems[i];
+        return Container();
+        // return PlaylistSelectorElem(folder: elem.folder!, remainingFolders: allElems);
+      },
+    );
   }
 }
 
-class PlaylistFolderSelector extends StatefulWidget {
-  const PlaylistFolderSelector({
+class PlaylistSelectorElem extends StatefulWidget {
+  const PlaylistSelectorElem({
     super.key,
     required this.folder,
     required this.remainingFolders,
@@ -41,10 +65,10 @@ class PlaylistFolderSelector extends StatefulWidget {
   final List<PlaylistFolder> remainingFolders;
 
   @override
-  State<PlaylistFolderSelector> createState() => _PlaylistFolderSelectorState();
+  State<PlaylistSelectorElem> createState() => _PlaylistSelectorElemState();
 }
 
-class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
+class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
   late List<PlaylistFolder> _remainingChildren;
   late List<PlaylistFolder> _myChildren;
   bool _unfolded = true;
@@ -69,7 +93,7 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
   }
 
   @override
-  void didUpdateWidget(covariant PlaylistFolderSelector oldWidget) {
+  void didUpdateWidget(covariant PlaylistSelectorElem oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.remainingFolders != widget.remainingFolders ||
         oldWidget.folder != widget.folder) {
@@ -93,6 +117,19 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
   Widget build(BuildContext context) {
     logger.log("Build ${widget.folder.name}");
 
+    final Widget baseButton = ColumnElem(
+      inactiveTextStyle: MyTheme.textStyleNormal,
+      inactiveColor: MyTheme.colorBackgroundVeryDark,
+      activeColor: MyTheme.colorBackgroundDark,
+      hoverable: true,
+      hoveringCursor: SystemMouseCursors.click,
+      minimumWidth: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingSmall),
+        child: Text(widget.folder.name),
+      ),
+    );
+
     return IntrinsicHeight(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -106,10 +143,7 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
                 minimumWidth: true,
                 clickable: true,
                 onTap: () => setState(() => _unfolded = !_unfolded),
-                child: Align(
-                  alignment: AlignmentGeometry.center,
-                  child: Text(_unfolded ? "⮝" : "⮟"),
-                ),
+                child: Center(child: Text(_unfolded ? "⮝" : "⮟")),
               ),
               Expanded(child: VerticalDivider(thickness: 2)),
             ],
@@ -118,15 +152,15 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MyButton.menuButton(text: widget.folder.name, width: 40),
+                    baseButton,
                     for (final child in _myChildren)
-                      PlaylistFolderSelector(
+                      PlaylistSelectorElem(
                         folder: child,
                         remainingFolders: _remainingChildren,
                       ),
                   ],
                 )
-              : MyButton.menuButton(text: widget.folder.name, width: 40),
+              : baseButton,
         ],
       ),
     );
