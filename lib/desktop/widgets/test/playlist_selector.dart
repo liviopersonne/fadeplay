@@ -19,6 +19,19 @@ class TestPlaylistSelector extends StatelessWidget {
     final allFolders = [folder1, folder2, folder3, folder4, folder5, folder6];
 
     final playlist1 = Playlist(name: "1", containingFolder: folder1);
+    final playlist2 = Playlist(name: "2", containingFolder: folder2);
+    final playlist3 = Playlist(name: "3", containingFolder: folder3);
+    final playlist4 = Playlist(name: "4", containingFolder: folder4);
+    final playlist5 = Playlist(name: "5", containingFolder: folder5);
+    final playlist6 = Playlist(name: "6", containingFolder: folder6);
+    final allPlaylists = [
+      playlist1,
+      playlist2,
+      playlist3,
+      playlist4,
+      playlist5,
+      playlist6,
+    ];
 
     return Scaffold(
       body: Center(
@@ -29,10 +42,7 @@ class TestPlaylistSelector extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
-                PlaylistSelectorElem(
-                  folder: allFolders.first,
-                  remainingFolders: allFolders,
-                ),
+                PlaylistSelector(playlists: allPlaylists, folders: allFolders),
               ],
             ),
           ),
