@@ -92,43 +92,56 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
   Widget build(BuildContext context) {
     logger.log("Build ${widget.folder.name}");
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
+        Row(
+          spacing: MyTheme.paddingTiny,
           children: [
             ColumnElem(
-              inactiveTextStyle: MyTheme.textStyleTitle,
-              hoverable: true,
+              inactiveTextStyle: MyTheme.textStyleNormal,
               minimumWidth: true,
-              child: Text("O"),
+              child: SizedBox(
+                width: 20,
+                child: Text("O", textAlign: TextAlign.center),
+              ),
             ),
-            SizedBox(
-              height:
-                  _myChildren.length *
-                  ColumnElem.getHeight(MyTheme.textStyleTitle),
-              child: VerticalDivider(thickness: 5),
+            MyButton.menuButton(
+              text: widget.folder.name,
+              width: 40,
+              inactiveTextStyle: MyTheme.textStyleNormal,
             ),
           ],
         ),
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            MyButton.menuButton(text: widget.folder.name, width: 40),
-            Padding(
-              padding: EdgeInsets.only(left: MyTheme.paddingSmall),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final child in _myChildren)
+            for (final child in _myChildren)
+              Padding(
+                padding: EdgeInsetsGeometry.only(left: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max, // TODO
+                  spacing: MyTheme.paddingSmall,
+                  children: [
+                    SizedBox(
+                      height: ColumnElem.getHeight(MyTheme.textStyleNormal),
+                      child: VerticalDivider(width: 1),
+                    ),
                     PlaylistFolderSelector(
                       folder: child,
                       remainingFolders: _remainingChildren,
                     ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.only(left: MyTheme.paddingSmall),
+            //   child: PlaylistFolderSelector(
+            //     folder: child,
+            //     remainingFolders: _remainingChildren,
+            //   ),
+            // ),
           ],
         ),
       ],

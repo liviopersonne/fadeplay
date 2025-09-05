@@ -6,6 +6,7 @@ class MyButton extends StatelessWidget {
   const MyButton({
     super.key,
     required this.text,
+    this.inactiveTextStyle,
     this.activeColor,
     this.inactiveColor,
     this.onTap,
@@ -19,6 +20,7 @@ class MyButton extends StatelessWidget {
   MyButton.menuButton({
     super.key,
     required this.text,
+    this.inactiveTextStyle,
     this.onTap,
     this.onSecondaryTap,
     this.onTapDown,
@@ -30,6 +32,7 @@ class MyButton extends StatelessWidget {
        activeColor = MyTheme.colorBackgroundLight;
 
   final String text;
+  final TextStyle? inactiveTextStyle;
   final Color? activeColor;
   final Color? inactiveColor;
   final double? width;
@@ -55,7 +58,7 @@ class MyButton extends StatelessWidget {
       onTapDown: onTapDown,
       onSecondaryTapDown: onSecondaryTapDown,
       onDoubleTap: onDoubleTap,
-      inactiveTextStyle: MyTheme.textStyleNormal,
+      inactiveTextStyle: inactiveTextStyle ?? MyTheme.textStyleNormal,
       child: width != null
           ? SizedBox(
               width: width,
