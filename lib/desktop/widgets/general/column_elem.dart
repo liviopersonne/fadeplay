@@ -34,7 +34,7 @@ final logger = Logging("ColumnElem");
 class ColumnElem<T extends Object> extends StatelessWidget {
   const ColumnElem({
     super.key,
-    required this.child,
+    this.child,
     required this.inactiveTextStyle,
     TextStyle? activeTextStyle,
     this.inactiveColor,
@@ -57,7 +57,7 @@ class ColumnElem<T extends Object> extends StatelessWidget {
   }) : activeTextStyle = activeTextStyle ?? inactiveTextStyle,
        activeColor = activeColor ?? inactiveColor;
 
-  final Widget child;
+  final Widget? child;
   final TextStyle inactiveTextStyle;
   final TextStyle activeTextStyle;
   final Color? inactiveColor;

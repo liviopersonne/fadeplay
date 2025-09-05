@@ -49,6 +49,17 @@ class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
         .toList();
   }
 
+  Widget _layeredButtons() {
+    return ColumnElem(
+      inactiveTextStyle: MyTheme.textStyleNormal,
+      inactiveColor: Colors.amber,
+      activeColor: Colors.blue,
+      hoverable: true,
+      minimumWidth: true,
+      child: SizedBox(width: 200),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Widget baseButton = ColumnElem(
@@ -64,43 +75,48 @@ class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
       ),
     );
 
-    return IntrinsicHeight(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    return Stack(
+      children: [
+        _layeredButtons(),
+        IntrinsicHeight(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ColumnElem(
-                inactiveTextStyle: MyTheme.textStyleNormal,
-                minimumWidth: true,
-                clickable: true,
-                onTap: () => setState(() => _unfolded = !_unfolded),
-                child: Center(child: Text(_unfolded ? "⮝" : "⮟")),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ColumnElem(
+                    inactiveTextStyle: MyTheme.textStyleNormal,
+                    minimumWidth: true,
+                    clickable: true,
+                    onTap: () => setState(() => _unfolded = !_unfolded),
+                    child: Center(child: Text(_unfolded ? "⮝" : "⮟")),
+                  ),
+                  Expanded(child: VerticalDivider(thickness: 2)),
+                ],
               ),
-              Expanded(child: VerticalDivider(thickness: 2)),
+              _unfolded
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        baseButton,
+                        for (final child in _myChildren)
+                          child.isFolder
+                              ? PlaylistSelectorElem(
+                                  folder: child.folder!,
+                                  remainingElems: _remainingChildren,
+                                )
+                              : PlaylistSelectorPlaylistElem(
+                                  playlist: child.playlist!,
+                                ),
+                      ],
+                    )
+                  : baseButton,
             ],
           ),
-          _unfolded
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    baseButton,
-                    for (final child in _myChildren)
-                      child.isFolder
-                          ? PlaylistSelectorElem(
-                              folder: child.folder!,
-                              remainingElems: _remainingChildren,
-                            )
-                          : PlaylistSelectorPlaylistElem(
-                              playlist: child.playlist!,
-                            ),
-                  ],
-                )
-              : baseButton,
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

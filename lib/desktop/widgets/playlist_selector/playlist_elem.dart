@@ -9,6 +9,6 @@ class PlaylistSelectorPlaylistElem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyButton(text: playlist.name, width: 200);
+    return MyButton(text: playlist.name);
   }
 }

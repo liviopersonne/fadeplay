@@ -31,6 +31,7 @@ class TestPlaylistSelector extends StatelessWidget {
       playlist4,
       playlist5,
       playlist6,
+      ...List.generate(10, (i) => Playlist(name: (i + 20).toString())),
     ];
 
     return Scaffold(
@@ -38,7 +39,7 @@ class TestPlaylistSelector extends StatelessWidget {
         child: ColorSizeBox(
           color: MyTheme.colorBackgroundVeryDark,
           height: 400,
-          width: 500,
+          width: 300,
           child: Center(
             child: Column(
               children: [
