@@ -44,58 +44,52 @@ class PlaylistFolderSelector extends StatefulWidget {
 }
 
 class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
-  late final List<PlaylistFolder> _myChildren;
-  bool _checkAdded = false; // TODO: Remove
-  // bool _unfolded = true;
+  late List<PlaylistFolder> _remainingChildren;
+  late List<PlaylistFolder> _myChildren;
 
   @override
   void initState() {
     super.initState();
-    _myChildren = widget.remainingFolders
-        .where((f) => f.containingFolder == widget.folder)
-        .toList();
-    logger.log(
-      """Recursion init step ${widget.folder.name} with children: ${_myChildren.map((e) => e.name)}
-      and remaining: ${widget.remainingFolders.map((f) => "(${f.name}, ${f.containingFolder?.name})")}""",
-    );
+    logger.log("Init ${widget.folder.name}");
+    _recomputeChildren();
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted && widget.folder.name == "11") {
+        setState(() {
+          // _myChildren.add(
+          //   PlaylistFolder(name: "99", containingFolder: widget.folder),
+          // );
+          _myChildren.removeWhere((f) => f.name == "13");
+          // _myChildren.removeWhere((f) => f.name == "12");
+        });
+      }
+    });
   }
 
   @override
-  void dispose() {
-    logger.log("Disposing ${widget.folder.name}");
-    super.dispose();
+  void didUpdateWidget(covariant PlaylistFolderSelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.remainingFolders != widget.remainingFolders ||
+        oldWidget.folder != widget.folder) {
+      _recomputeChildren();
+    }
+  }
+
+  void _recomputeChildren() {
+    logger.log("Recompute ${widget.folder.name}");
+
+    _remainingChildren = List<PlaylistFolder>.from(widget.remainingFolders)
+      ..remove(widget.folder)
+      ..removeWhere((f) => f.containingFolder == widget.folder);
+
+    _myChildren = widget.remainingFolders
+        .where((f) => f.containingFolder == widget.folder)
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    /* TODO: Here's the plan
-      1. Take yourself out of remainingFolders
-      2. Find all of the folder's children
-      3. Add all of their selectors to a padded row
-      4. Add a title on top
-    */
-
-    Future.delayed(Duration(seconds: 2)).then((_) async {
-      if (widget.folder.name == "11" && !_checkAdded) {
-        setState(() {
-          _checkAdded = true;
-          // _myChildren.add(
-          //   PlaylistFolder(name: "99", containingFolder: widget.folder),
-          // );
-          // _myChildren.removeWhere((f) => f.name == "13");
-          _myChildren.removeWhere((f) => f.name == "12");
-        });
-      }
-    });
-
-    final remainingChildren = List<PlaylistFolder>.from(widget.remainingFolders)
-      ..removeWhere((f) => f.containingFolder == widget.folder)
-      ..remove(widget.folder)
-      ..toList();
-
-    logger.log(
-      "Recursion step ${widget.folder.name} with children: ${_myChildren.map((e) => e.name)} and remaining: ${remainingChildren.map((e) => e.name)}",
-    );
+    logger.log("Build ${widget.folder.name}");
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +103,7 @@ class _PlaylistFolderSelectorState extends State<PlaylistFolderSelector> {
               for (final child in _myChildren)
                 PlaylistFolderSelector(
                   folder: child,
-                  remainingFolders: remainingChildren,
+                  remainingFolders: _remainingChildren,
                 ),
             ],
           ),
