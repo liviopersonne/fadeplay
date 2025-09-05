@@ -10,10 +10,12 @@ class PlaylistSelectorElem extends StatefulWidget {
     super.key,
     required this.folder,
     required this.remainingElems,
+    required this.width,
   });
 
   final PlaylistFolder folder;
   final List<PlaylistOrFolder> remainingElems;
+  final double width;
 
   @override
   State<PlaylistSelectorElem> createState() => _PlaylistSelectorElemState();
@@ -22,7 +24,7 @@ class PlaylistSelectorElem extends StatefulWidget {
 class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
   late List<PlaylistOrFolder> _remainingChildren;
   late List<PlaylistOrFolder> _myChildren;
-  bool _unfolded = true;
+  var _unfolded = true;
 
   @override
   void initState() {
@@ -49,35 +51,32 @@ class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
         .toList();
   }
 
-  Widget _layeredButtons() {
-    return ColumnElem(
-      inactiveTextStyle: MyTheme.textStyleNormal,
-      inactiveColor: Colors.amber,
-      activeColor: Colors.blue,
-      hoverable: true,
-      minimumWidth: true,
-      child: SizedBox(width: 200),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Widget baseButton = ColumnElem(
-      inactiveTextStyle: MyTheme.textStyleNormal,
-      inactiveColor: MyTheme.colorBackgroundVeryDark,
-      activeColor: MyTheme.colorBackgroundDark,
-      hoverable: true,
-      hoveringCursor: SystemMouseCursors.click,
-      minimumWidth: true,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingSmall),
-        child: Text(widget.folder.name),
+    final double arrowWidth = 16;
+
+    final Widget baseTitle = IgnorePointer(
+      child: ColumnElem(
+        inactiveTextStyle: MyTheme.textStyleNormal,
+        minimumWidth: true,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: MyTheme.paddingSmall),
+          child: Text(widget.folder.name),
+        ),
       ),
     );
 
     return Stack(
       children: [
-        _layeredButtons(),
+        ColumnElem(
+          inactiveTextStyle: MyTheme.textStyleNormal,
+          minimumWidth: true,
+          hoverable: true,
+          activeColor: MyTheme.colorBackgroundDark,
+          inactiveColor: MyTheme.colorBackgroundVeryDark,
+          focusable: true,
+          child: SizedBox(width: widget.width),
+        ),
         IntrinsicHeight(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -91,7 +90,15 @@ class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
                     minimumWidth: true,
                     clickable: true,
                     onTap: () => setState(() => _unfolded = !_unfolded),
-                    child: Center(child: Text(_unfolded ? "⮝" : "⮟")),
+                    child: Center(
+                      child: SizedBox(
+                        width: arrowWidth,
+                        child: Text(
+                          _unfolded ? "⮝" : "⮟",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
                   ),
                   Expanded(child: VerticalDivider(thickness: 2)),
                 ],
@@ -100,19 +107,21 @@ class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        baseButton,
+                        baseTitle,
                         for (final child in _myChildren)
                           child.isFolder
                               ? PlaylistSelectorElem(
                                   folder: child.folder!,
                                   remainingElems: _remainingChildren,
+                                  width: widget.width - arrowWidth,
                                 )
                               : PlaylistSelectorPlaylistElem(
                                   playlist: child.playlist!,
+                                  width: widget.width - arrowWidth,
                                 ),
                       ],
                     )
-                  : baseButton,
+                  : baseTitle,
             ],
           ),
         ),

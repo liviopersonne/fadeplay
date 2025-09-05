@@ -31,18 +31,24 @@ class PlaylistSelector extends StatelessWidget {
         .toList();
 
     return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final child in rootElems)
-              child.isFolder
-                  ? PlaylistSelectorElem(
-                      folder: child.folder!,
-                      remainingElems: allElems,
-                    )
-                  : PlaylistSelectorPlaylistElem(playlist: child.playlist!),
-          ],
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final child in rootElems)
+                child.isFolder
+                    ? PlaylistSelectorElem(
+                        folder: child.folder!,
+                        remainingElems: allElems,
+                        width: constraints.maxWidth,
+                      )
+                    : PlaylistSelectorPlaylistElem(
+                        playlist: child.playlist!,
+                        width: constraints.maxWidth,
+                      ),
+            ],
+          ),
         ),
       ),
     );
