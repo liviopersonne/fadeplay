@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:fadeplay/desktop/data/tracks/source.dart';
 import 'package:fadeplay/desktop/db/queries/source.dart';
 import 'package:fadeplay/desktop/db/schemas.dart' as db;
@@ -42,11 +43,11 @@ Future<List<Source>> testGetSources() async {
   final imgUri1 = Uri.file("/home/livio/Bureau/fadeplay_tests/img1.png");
   database.delete(database.sources).go();
   await upsertSource(
-    source: Source(title: "source 1", imageUri: imgUri1),
-  );
-  await upsertSource(
     source: Source(title: "source 2", originalTitle: "og 2"),
   );
+  await upsertSource(
+    source: Source(title: "source 1", imageUri: imgUri1),
+  );
   await upsertSource(source: Source(title: "source 3"));
-  return await getSources();
+  return await getSources(orderBy: [(u) => OrderingTerm(expression: u.title)]);
 }
