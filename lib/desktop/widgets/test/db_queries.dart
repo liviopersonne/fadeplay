@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:fadeplay/desktop/data/tracks/source.dart';
-import 'package:fadeplay/desktop/db/queries/source.dart';
+import 'package:fadeplay/desktop/db/queries/queries.dart';
 import 'package:fadeplay/desktop/db/schemas.dart' as db;
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/widgets/general/color_size_box.dart';
@@ -42,14 +42,14 @@ class TestDbQueries extends StatelessWidget {
 Future<List<Source>> testGetSources() async {
   final imgUri1 = Uri.file("/home/livio/Bureau/fadeplay_tests/img1.png");
   database.delete(database.sources).go();
-  await upsertSource(
+  await DbQuery.upsertSource(
     source: Source(title: "source 2", originalTitle: "og 2"),
   );
-  await upsertSource(
+  await DbQuery.upsertSource(
     source: Source(title: "source 1", imageUri: imgUri1),
   );
-  await upsertSource(source: Source(title: "source 3"));
-  return await getSources(
+  await DbQuery.upsertSource(source: Source(title: "source 3"));
+  return await DbQuery.getSources(
     orderBy: [
       (u) => OrderingTerm(expression: u.title, mode: OrderingMode.desc),
     ],

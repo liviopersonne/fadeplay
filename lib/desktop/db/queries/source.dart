@@ -1,11 +1,6 @@
-import 'package:drift/drift.dart';
-import 'package:fadeplay/desktop/data/tracks/source.dart' as obj;
-import 'package:fadeplay/desktop/db/schemas.dart' as db;
-import 'package:fadeplay/desktop/objects/logger.dart';
+part of 'queries.dart';
 
-final logger = Logging("getSources");
-
-Future<List<obj.Source>> getSources({
+Future<List<obj.Source>> _getSources({
   List<OrderingTerm Function(db.$SourcesTable u)>? orderBy,
   Expression<bool> Function(db.$SourcesTable u)? filter,
 }) async {
@@ -34,7 +29,7 @@ Future<List<obj.Source>> getSources({
       .toList();
 }
 
-Future<void> upsertSource({required obj.Source source}) async {
+Future<void> _upsertSource({required obj.Source source}) async {
   final database = db.AppDatabase();
 
   await database
