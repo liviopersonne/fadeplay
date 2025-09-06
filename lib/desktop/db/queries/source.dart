@@ -6,11 +6,16 @@ import 'package:fadeplay/desktop/objects/logger.dart';
 final logger = Logging("getSources");
 
 Future<List<obj.Source>> getSources({
-  List<OrderingTerm Function(db.$SourcesTable)>? orderBy,
+  List<OrderingTerm Function(db.$SourcesTable u)>? orderBy,
+  Expression<bool> Function(db.$SourcesTable u)? filter,
 }) async {
   final database = db.AppDatabase();
 
   final query = database.select(database.sources);
+
+  if (filter != null) {
+    query.where(filter);
+  }
 
   if (orderBy != null) {
     query.orderBy(orderBy);

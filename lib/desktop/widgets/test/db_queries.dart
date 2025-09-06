@@ -49,5 +49,10 @@ Future<List<Source>> testGetSources() async {
     source: Source(title: "source 1", imageUri: imgUri1),
   );
   await upsertSource(source: Source(title: "source 3"));
-  return await getSources(orderBy: [(u) => OrderingTerm(expression: u.title)]);
+  return await getSources(
+    orderBy: [
+      (u) => OrderingTerm(expression: u.title, mode: OrderingMode.desc),
+    ],
+    filter: (u) => u.title.isBiggerOrEqualValue("source 2"),
+  );
 }
