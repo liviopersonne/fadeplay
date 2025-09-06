@@ -34,7 +34,7 @@ Future<void> _upsertSource({required obj.Source source}) async {
 
   await database
       .into(database.sources)
-      .insert(
+      .insertOnConflictUpdate(
         db.SourcesCompanion.insert(
           title: source.title,
           originalTitle: Value(source.originalTitle),
