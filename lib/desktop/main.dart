@@ -6,6 +6,7 @@ import 'package:fadeplay/desktop/widgets/test/audio_metadata.dart';
 import 'package:fadeplay/desktop/widgets/test/column_browser.dart';
 import 'package:fadeplay/desktop/widgets/test/column_selector.dart';
 import 'package:fadeplay/desktop/widgets/test/database.dart';
+import 'package:fadeplay/desktop/widgets/test/db_queries.dart';
 import 'package:fadeplay/desktop/widgets/test/focus_on_click.dart';
 import 'package:fadeplay/desktop/widgets/test/hotkeys.dart';
 import 'package:fadeplay/desktop/widgets/test/keyboard_listener.dart';
@@ -66,7 +67,8 @@ class DesktopApp extends StatelessWidget {
       // home: TestHotkeys(),
       // home: TestFocusOnClick(),
       // home: TestTrackInfo(),
-      home: TestPlaylistSelector(),
+      // home: TestPlaylistSelector(),
+      home: TestDbQueries(),
       debugShowCheckedModeBanner: false,
     );
   }

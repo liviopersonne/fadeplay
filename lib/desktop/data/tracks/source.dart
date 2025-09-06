@@ -6,4 +6,9 @@ class Source {
   Uri? imageUri;
 
   Source({required this.title, this.originalTitle, this.imageUri});
+
+  @override
+  String toString() {
+    return "Source<$title${originalTitle == null ? "" : "($originalTitle)"}, ${imageUri == null ? 'noImg' : 'Img'}>";
+  }
 }
