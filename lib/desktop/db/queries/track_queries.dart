@@ -16,11 +16,11 @@ Future<List<obj.Track>> _getTracks({
 
   // FIXME: Replace with left joins
   final fullQuery = query.join([
-    innerJoin(
+    leftOuterJoin(
       database.albums,
       database.albums.id.equalsExp(database.tracks.albumId),
     ),
-    innerJoin(
+    leftOuterJoin(
       database.sources,
       database.sources.id.equalsExp(database.tracks.sourceId),
     ),
@@ -74,8 +74,8 @@ Future<List<obj.Track>> _getTracks({
 
   for (var row in allRows) {
     final track = row.readTable(database.tracks);
-    final source = row.readTable(database.sources);
-    final album = row.readTable(database.albums);
+    final source = row.readTableOrNull(database.sources);
+    final album = row.readTableOrNull(database.albums);
     final artists =
         await (artistsQuery..where(database.tracks.id.equals(track.id))).get();
     final moods = await (moodsQuery..where(database.tracks.id.equals(track.id)))
@@ -110,20 +110,24 @@ Future<List<obj.Track>> _getTracks({
             ? Duration(milliseconds: track.endTime!)
             : null,
         rating: track.rating != null ? track.rating! / 2 : null,
-        source: obj.Source(
-          title: source.title,
-          originalTitle: source.originalTitle,
-          imageUri: source.imagePath != null
-              ? Uri.parse(source.imagePath!)
-              : null,
-        ),
-        album: obj.Album(
-          title: album.title,
-          originalTitle: album.originalTitle,
-          imageUri: album.imagePath != null
-              ? Uri.parse(album.imagePath!)
-              : null,
-        ),
+        source: source == null
+            ? null
+            : obj.Source(
+                title: source.title,
+                originalTitle: source.originalTitle,
+                imageUri: source.imagePath != null
+                    ? Uri.parse(source.imagePath!)
+                    : null,
+              ),
+        album: album == null
+            ? null
+            : obj.Album(
+                title: album.title,
+                originalTitle: album.originalTitle,
+                imageUri: album.imagePath != null
+                    ? Uri.parse(album.imagePath!)
+                    : null,
+              ),
 
         artists: Map.fromEntries(
           artists.map((row) {
