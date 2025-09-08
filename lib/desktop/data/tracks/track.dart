@@ -109,15 +109,16 @@ class Track extends HasId {
   @override
   bool operator ==(Object other) {
     if (other is Track) {
+      if (id != null) {
+        return id == other.id;
+      }
       return fileUri == other.fileUri;
-    } else {
-      return false;
     }
+    return false;
   }
 
-  // TODO: Use the database id ??
   @override
-  int get hashCode => fileUri.hashCode;
+  int get hashCode => id?.hashCode ?? fileUri.hashCode;
 
   @override
   String toString() {
