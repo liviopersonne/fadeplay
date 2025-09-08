@@ -234,29 +234,43 @@ Future<int> _upsertTrack({required obj.Track track}) async {
         );
   });
   for (obj.Mood mood in track.moods) {
-    final moodId = mood.id ?? await _upsertMood(mood: mood);
+    logger.check(
+      mood.id != null,
+      message:
+          "The mood '${mood.mood}' from track '${track.title}' doesn't exist",
+      raiseError: true,
+    );
     await database
         .into(database.trackMoods)
-        .insert(TrackMoodsCompanion.insert(trackId: trackId, moodId: moodId));
+        .insert(TrackMoodsCompanion.insert(trackId: trackId, moodId: mood.id!));
   }
   for (obj.Instrument instrument in track.instruments) {
-    final instrumentId =
-        instrument.id ?? await _upsertInstrument(instrument: instrument);
+    logger.check(
+      instrument.id != null,
+      message:
+          "The instrument '${instrument.instrument}' from track '${track.title}' doesn't exist",
+      raiseError: true,
+    );
     await database
         .into(database.trackInstruments)
         .insert(
           TrackInstrumentsCompanion.insert(
             trackId: trackId,
-            instrumentId: instrumentId,
+            instrumentId: instrument.id!,
           ),
         );
   }
   for (obj.Safety safety in track.safeties) {
-    final safetyId = safety.id ?? await _upsertSafety(safety: safety);
+    logger.check(
+      safety.id != null,
+      message:
+          "The safety '${safety.safety}' from track '${track.title}' doesn't exist",
+      raiseError: true,
+    );
     await database
         .into(database.trackSafeties)
         .insert(
-          TrackSafetiesCompanion.insert(trackId: trackId, safetyId: safetyId),
+          TrackSafetiesCompanion.insert(trackId: trackId, safetyId: safety.id!),
         );
   }
 
