@@ -14,6 +14,7 @@ Future<List<obj.Track>> _getTracks({
     query.orderBy(orderBy);
   }
 
+  // FIXME: Replace with left joins
   final fullQuery = query.join([
     innerJoin(
       database.albums,

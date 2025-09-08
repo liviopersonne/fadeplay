@@ -103,6 +103,9 @@ class DbQuery {
   static Future<int> upsertTrack({required obj.Track track}) =>
       _upsertTrack(track: track);
 
+  /// Note that the tracks fetched by the query don't include data on:
+  /// album, artists, instruments, moods, safeties & source.
+  /// This is to avoid massive queries, so you shouldn't upsert these tracks
   static Future<List<obj.Transition>> getTransition({
     List<OrderingTerm Function(db.$TransitionsTable u)>? orderBy,
     Expression<bool> Function(db.$TransitionsTable u)? filter,

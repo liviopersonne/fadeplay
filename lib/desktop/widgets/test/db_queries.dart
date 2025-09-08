@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
+import 'package:fadeplay/desktop/data/tracks/album.dart';
 import 'package:fadeplay/desktop/data/tracks/artist.dart';
 import 'package:fadeplay/desktop/data/tracks/source.dart';
+import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/db/queries/queries.dart';
 import 'package:fadeplay/desktop/db/schemas.dart' as db;
 import 'package:fadeplay/desktop/objects/logger.dart';
@@ -16,7 +18,8 @@ class TestDbQueries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final request = testSources();
-    final request = testArtists();
+    // final request = testArtists();
+    final request = testTracks();
     return Scaffold(
       body: Center(
         child: ColorSizeBox(
@@ -77,4 +80,26 @@ Future<List<Artist>> testArtists() async {
   );
 
   return await DbQuery.getArtists();
+}
+
+Future<List<Track>> testTracks() async {
+  final imgUri1 = Uri.file("/home/livio/Bureau/fadeplay_tests/img1.png");
+  final fileUri1 = Uri.file(
+    "/home/livio/Bureau/fadeplay_tests/timber_hearth.mp3",
+  );
+
+  database.delete(database.tracks).go();
+  final trackId = await DbQuery.upsertTrack(
+    track: Track(
+      fileUri: fileUri1,
+      imageUri: imgUri1,
+      title: "Track 1",
+      artistString: "Artists of track 1",
+      album: Album(title: "Album 1"),
+      source: Source(title: "Source 1"),
+      // FIXME: Replace with left joins to get the tracks
+    ),
+  );
+
+  return await DbQuery.getTracks();
 }
