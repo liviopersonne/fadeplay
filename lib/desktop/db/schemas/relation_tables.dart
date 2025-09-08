@@ -78,7 +78,12 @@ class TrackArtists extends Table with TrackId {
 }
 
 class TrackSafeties extends Table with TrackId {
-  IntColumn get safetyId => intEnum<Safety>()();
+  IntColumn get safetyId => integer().references(
+    Safeties,
+    #id,
+    onUpdate: KeyAction.cascade,
+    onDelete: KeyAction.cascade,
+  )();
   @override
   List<Set<Column>>? get uniqueKeys => [
     {trackId, safetyId},

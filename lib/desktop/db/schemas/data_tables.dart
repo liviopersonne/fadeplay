@@ -11,8 +11,14 @@ class Tracks extends Table with DateAndId {
   late final IntColumn trackNumber = integer().nullable().check(
     validTrackDiskNumbers(trackNumber, diskNumber),
   )();
+  late final IntColumn trackTotal = integer().nullable().check(
+    validTrackDiskNumbers(trackTotal, diskTotal),
+  )();
   late final IntColumn diskNumber = integer().nullable().check(
     validTrackDiskNumbers(trackNumber, diskNumber),
+  )();
+  late final IntColumn diskTotal = integer().nullable().check(
+    validTrackDiskNumbers(trackTotal, diskTotal),
   )();
   late final IntColumn duration = integer().check(
     duration.isBiggerThanValue(0),
@@ -114,7 +120,7 @@ class Transitions extends Table with DateAndId {
   late final IntColumn fadeinduration = integer().check(
     fadeinduration.isBiggerOrEqualValue(0),
   )();
-  RealColumn get delay => real().withDefault(const Constant(0.0))();
+  IntColumn get delay => integer().withDefault(const Constant(0))();
   TextColumn get comment => text().nullable()();
   IntColumn get type => intEnum<TransitionType>()();
 }

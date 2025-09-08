@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fadeplay/desktop/data/tracks/playlist.dart';
 import 'package:fadeplay/desktop/data/tracks/playlist_folder.dart';
 
@@ -16,6 +18,6 @@ class PlaylistOrFolder {
 
   String get name => isFolder ? folder!.name : playlist!.name;
 
-  PlaylistFolder? get containingFolder =>
-      isFolder ? folder!.containingFolder : playlist!.containingFolder;
+  FutureOr<PlaylistFolder> Function()? get getContainingFolder =>
+      isFolder ? folder!.getContainingFolder : playlist!.getContainingFolder;
 }

@@ -1,18 +1,32 @@
-class PlaylistFolder {
+import 'dart:async';
+
+import 'package:fadeplay/desktop/data/has_id.dart';
+
+class PlaylistFolder extends HasId {
+  @override
+  int? id;
   String name;
   Uri? imageUri;
-  PlaylistFolder? containingFolder;
+  FutureOr<PlaylistFolder> Function()? getContainingFolder;
 
-  PlaylistFolder({required this.name, this.imageUri, this.containingFolder});
+  PlaylistFolder({
+    this.id,
+    required this.name,
+    this.imageUri,
+    this.getContainingFolder,
+  });
 
   @override
   bool operator ==(Object other) {
     if (other is PlaylistFolder) {
-      return other.name == name && other.containingFolder == containingFolder;
+      if (id == null) {
+        return other.id == null && other.name == name;
+      }
+      return other.id == id;
     }
     return false;
   }
 
   @override
-  int get hashCode => name.hashCode + containingFolder.hashCode;
+  int get hashCode => id.hashCode;
 }

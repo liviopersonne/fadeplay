@@ -1,3 +1,4 @@
+import 'package:fadeplay/desktop/data/has_id.dart';
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/data/tracks/track.dart';
@@ -5,7 +6,9 @@ import 'package:fadeplay/desktop/settings/settings.dart';
 
 final logger = Logging("Transition");
 
-class Transition {
+class Transition extends HasId {
+  @override
+  final int? id;
   final DateTime createdAt;
   final Track track1;
   final Track track2;
@@ -18,6 +21,7 @@ class Transition {
   final TransitionType type;
 
   Transition({
+    this.id,
     DateTime? createdAt,
     required this.track1,
     required this.track2,

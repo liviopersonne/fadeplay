@@ -43,7 +43,7 @@ class AppDatabase extends _$AppDatabase {
   // Database seed
   Future<void> seedMoods() async {
     for (String mood in moodElems) {
-      await into(moods).insert(MoodsCompanion.insert(label: mood.toString()));
+      await into(moods).insert(MoodsCompanion.insert(label: mood));
     }
   }
 
@@ -51,15 +51,19 @@ class AppDatabase extends _$AppDatabase {
     for (String instrument in instrumentElems) {
       await into(
         instruments,
-      ).insert(InstrumentsCompanion.insert(label: instrument.toString()));
+      ).insert(InstrumentsCompanion.insert(label: instrument));
     }
   }
 
   Future<void> seedLanguages() async {
     for (String language in languageElems) {
-      await into(
-        languages,
-      ).insert(LanguagesCompanion.insert(label: language.toString()));
+      await into(languages).insert(LanguagesCompanion.insert(label: language));
+    }
+  }
+
+  Future<void> seedSafeties() async {
+    for (String safety in safetyElems) {
+      await into(safeties).insert(SafetiesCompanion.insert(label: safety));
     }
   }
 
@@ -76,6 +80,7 @@ class AppDatabase extends _$AppDatabase {
           await seedMoods();
           await seedInstruments();
           await seedLanguages();
+          await seedSafeties();
         }
         // This is to enable foreign keys in sqlite3, so that we can delete cascade
         await customStatement('PRAGMA foreign_keys = ON;');

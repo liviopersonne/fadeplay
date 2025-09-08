@@ -25,8 +25,8 @@ class PlaylistSelector extends StatelessWidget {
     final List<PlaylistOrFolder> rootElems = allElems
         .where(
           (e) => e.isFolder
-              ? e.folder!.containingFolder == null
-              : e.playlist!.containingFolder == null,
+              ? e.folder!.getContainingFolder == null
+              : e.playlist!.getContainingFolder == null,
         )
         .toList();
 

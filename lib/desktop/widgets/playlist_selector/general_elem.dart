@@ -44,10 +44,10 @@ class _PlaylistSelectorElemState extends State<PlaylistSelectorElem> {
   void _recomputeChildren() {
     _remainingChildren = List<PlaylistOrFolder>.from(widget.remainingElems)
       ..removeWhere((e) => e.folder == widget.folder)
-      ..removeWhere((e) => e.containingFolder == widget.folder);
+      ..removeWhere((e) => e.getContainingFolder == widget.folder);
 
     _myChildren = widget.remainingElems
-        .where((e) => e.containingFolder == widget.folder)
+        .where((e) => e.getContainingFolder == widget.folder)
         .toList();
   }
 

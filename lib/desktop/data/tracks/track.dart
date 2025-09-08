@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:fadeplay/desktop/data/has_id.dart';
+import 'package:fadeplay/desktop/data/tracks/instrument.dart';
+import 'package:fadeplay/desktop/data/tracks/mood.dart';
+import 'package:fadeplay/desktop/data/tracks/safety.dart';
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/objects/logger.dart';
 import 'package:fadeplay/desktop/data/tracks/album.dart';
@@ -11,15 +15,19 @@ import 'package:path/path.dart' as path;
 final logger = Logging("Track");
 
 /// A song and its metadata
-class Track {
+class Track extends HasId {
+  @override
+  final int? id;
   final DateTime createdAt;
   String title;
   String? originalTitle;
   Map<Artist, ArtistRole> artists;
   String? artistString;
   Album? album;
-  PositionAndTotal? trackNumber;
-  PositionAndTotal? diskNumber;
+  int? trackNumber;
+  int? trackTotal;
+  int? diskNumber;
+  int? diskTotal;
   int? releaseYear;
   Uri fileUri;
   File file;
@@ -28,13 +36,14 @@ class Track {
   late Duration duration;
   Duration? startTime;
   Duration? endTime;
-  int? rating;
-  List<String> moods;
-  List<String> instruments;
+  double? rating;
+  List<Mood> moods;
+  List<Instrument> instruments;
   Source? source;
-  Safety? safety;
+  List<Safety> safeties;
 
   Track({
+    this.id,
     DateTime? createdAt,
     required this.title,
     this.originalTitle,
@@ -42,7 +51,9 @@ class Track {
     this.artistString,
     this.album,
     this.trackNumber,
+    this.trackTotal,
     this.diskNumber,
+    this.diskTotal,
     this.releaseYear,
     required this.fileUri,
     this.imageUri,
@@ -53,7 +64,7 @@ class Track {
     this.moods = const [],
     this.instruments = const [],
     this.source,
-    this.safety,
+    this.safeties = const [],
   }) : createdAt = createdAt ?? DateTime.now(),
        file = File.fromUri(fileUri) {
     if (MetadataReader.checkExtension(file)) {
@@ -88,8 +99,8 @@ class Track {
       message: "End time must be shorter than track duration",
     );
     final f = logger.check(
-      rating == null || (0 <= rating! && rating! <= 10),
-      message: "Rating must be between 0 and 10",
+      rating == null || (0 <= rating! && rating! <= 5),
+      message: "Rating must be between 0 and 5",
     );
 
     return a && b && c && d && e && f;
@@ -107,12 +118,4 @@ class Track {
   // TODO: Use the database id ??
   @override
   int get hashCode => fileUri.hashCode;
-}
-
-/// Helper class that implements position and total number of objects
-class PositionAndTotal {
-  int number;
-  int totalNumber;
-
-  PositionAndTotal({required this.number, required this.totalNumber});
 }

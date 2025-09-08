@@ -1,27 +1,36 @@
+import 'dart:async';
+
+import 'package:fadeplay/desktop/data/has_id.dart';
 import 'package:fadeplay/desktop/data/tracks/playlist_folder.dart';
 import 'package:fadeplay/desktop/data/tracks/track.dart';
 
-class Playlist {
+class Playlist extends HasId {
+  @override
+  final int? id; // if id is null then the playlist is not in db
   String name;
-  List<Track> tracks;
+  Future<List<Track>> Function()? getTracks;
   Uri? imageUri;
-  PlaylistFolder? containingFolder;
+  FutureOr<PlaylistFolder> Function()? getContainingFolder;
 
   Playlist({
+    this.id,
     required this.name,
-    this.tracks = const [],
+    this.getTracks,
     this.imageUri,
-    this.containingFolder,
+    this.getContainingFolder,
   });
 
   @override
   bool operator ==(Object other) {
     if (other is Playlist) {
-      return other.name == name || other.containingFolder == containingFolder;
+      if (id == null) {
+        return other.id == null && other.name == name;
+      }
+      return other.id == id;
     }
     return false;
   }
 
   @override
-  int get hashCode => name.hashCode + containingFolder.hashCode;
+  int get hashCode => id.hashCode;
 }

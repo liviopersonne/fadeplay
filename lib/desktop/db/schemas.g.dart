@@ -21,6 +21,18 @@ class $AlbumsTable extends Albums with TableInfo<$AlbumsTable, Album> {
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _creationTimeMeta = const VerificationMeta(
+    'creationTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creationTime = GeneratedColumn<DateTime>(
+    'creation_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -53,7 +65,13 @@ class $AlbumsTable extends Albums with TableInfo<$AlbumsTable, Album> {
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, title, originalTitle, imagePath];
+  List<GeneratedColumn> get $columns => [
+    id,
+    creationTime,
+    title,
+    originalTitle,
+    imagePath,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -68,6 +86,15 @@ class $AlbumsTable extends Albums with TableInfo<$AlbumsTable, Album> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('creation_time')) {
+      context.handle(
+        _creationTimeMeta,
+        creationTime.isAcceptableOrUnknown(
+          data['creation_time']!,
+          _creationTimeMeta,
+        ),
+      );
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -105,6 +132,10 @@ class $AlbumsTable extends Albums with TableInfo<$AlbumsTable, Album> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      creationTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creation_time'],
+      )!,
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -128,11 +159,13 @@ class $AlbumsTable extends Albums with TableInfo<$AlbumsTable, Album> {
 
 class Album extends DataClass implements Insertable<Album> {
   final int id;
+  final DateTime creationTime;
   final String title;
   final String? originalTitle;
   final String? imagePath;
   const Album({
     required this.id,
+    required this.creationTime,
     required this.title,
     this.originalTitle,
     this.imagePath,
@@ -141,6 +174,7 @@ class Album extends DataClass implements Insertable<Album> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['creation_time'] = Variable<DateTime>(creationTime);
     map['title'] = Variable<String>(title);
     if (!nullToAbsent || originalTitle != null) {
       map['original_title'] = Variable<String>(originalTitle);
@@ -154,6 +188,7 @@ class Album extends DataClass implements Insertable<Album> {
   AlbumsCompanion toCompanion(bool nullToAbsent) {
     return AlbumsCompanion(
       id: Value(id),
+      creationTime: Value(creationTime),
       title: Value(title),
       originalTitle: originalTitle == null && nullToAbsent
           ? const Value.absent()
@@ -171,6 +206,7 @@ class Album extends DataClass implements Insertable<Album> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Album(
       id: serializer.fromJson<int>(json['id']),
+      creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       title: serializer.fromJson<String>(json['title']),
       originalTitle: serializer.fromJson<String?>(json['originalTitle']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
@@ -181,6 +217,7 @@ class Album extends DataClass implements Insertable<Album> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'creationTime': serializer.toJson<DateTime>(creationTime),
       'title': serializer.toJson<String>(title),
       'originalTitle': serializer.toJson<String?>(originalTitle),
       'imagePath': serializer.toJson<String?>(imagePath),
@@ -189,11 +226,13 @@ class Album extends DataClass implements Insertable<Album> {
 
   Album copyWith({
     int? id,
+    DateTime? creationTime,
     String? title,
     Value<String?> originalTitle = const Value.absent(),
     Value<String?> imagePath = const Value.absent(),
   }) => Album(
     id: id ?? this.id,
+    creationTime: creationTime ?? this.creationTime,
     title: title ?? this.title,
     originalTitle: originalTitle.present
         ? originalTitle.value
@@ -203,6 +242,9 @@ class Album extends DataClass implements Insertable<Album> {
   Album copyWithCompanion(AlbumsCompanion data) {
     return Album(
       id: data.id.present ? data.id.value : this.id,
+      creationTime: data.creationTime.present
+          ? data.creationTime.value
+          : this.creationTime,
       title: data.title.present ? data.title.value : this.title,
       originalTitle: data.originalTitle.present
           ? data.originalTitle.value
@@ -215,6 +257,7 @@ class Album extends DataClass implements Insertable<Album> {
   String toString() {
     return (StringBuffer('Album(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('title: $title, ')
           ..write('originalTitle: $originalTitle, ')
           ..write('imagePath: $imagePath')
@@ -223,12 +266,14 @@ class Album extends DataClass implements Insertable<Album> {
   }
 
   @override
-  int get hashCode => Object.hash(id, title, originalTitle, imagePath);
+  int get hashCode =>
+      Object.hash(id, creationTime, title, originalTitle, imagePath);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Album &&
           other.id == this.id &&
+          other.creationTime == this.creationTime &&
           other.title == this.title &&
           other.originalTitle == this.originalTitle &&
           other.imagePath == this.imagePath);
@@ -236,29 +281,34 @@ class Album extends DataClass implements Insertable<Album> {
 
 class AlbumsCompanion extends UpdateCompanion<Album> {
   final Value<int> id;
+  final Value<DateTime> creationTime;
   final Value<String> title;
   final Value<String?> originalTitle;
   final Value<String?> imagePath;
   const AlbumsCompanion({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     this.title = const Value.absent(),
     this.originalTitle = const Value.absent(),
     this.imagePath = const Value.absent(),
   });
   AlbumsCompanion.insert({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     required String title,
     this.originalTitle = const Value.absent(),
     this.imagePath = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Album> custom({
     Expression<int>? id,
+    Expression<DateTime>? creationTime,
     Expression<String>? title,
     Expression<String>? originalTitle,
     Expression<String>? imagePath,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (creationTime != null) 'creation_time': creationTime,
       if (title != null) 'title': title,
       if (originalTitle != null) 'original_title': originalTitle,
       if (imagePath != null) 'image_path': imagePath,
@@ -267,12 +317,14 @@ class AlbumsCompanion extends UpdateCompanion<Album> {
 
   AlbumsCompanion copyWith({
     Value<int>? id,
+    Value<DateTime>? creationTime,
     Value<String>? title,
     Value<String?>? originalTitle,
     Value<String?>? imagePath,
   }) {
     return AlbumsCompanion(
       id: id ?? this.id,
+      creationTime: creationTime ?? this.creationTime,
       title: title ?? this.title,
       originalTitle: originalTitle ?? this.originalTitle,
       imagePath: imagePath ?? this.imagePath,
@@ -284,6 +336,9 @@ class AlbumsCompanion extends UpdateCompanion<Album> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (creationTime.present) {
+      map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -301,6 +356,7 @@ class AlbumsCompanion extends UpdateCompanion<Album> {
   String toString() {
     return (StringBuffer('AlbumsCompanion(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('title: $title, ')
           ..write('originalTitle: $originalTitle, ')
           ..write('imagePath: $imagePath')
@@ -326,6 +382,18 @@ class $SourcesTable extends Sources with TableInfo<$SourcesTable, Source> {
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
+  );
+  static const VerificationMeta _creationTimeMeta = const VerificationMeta(
+    'creationTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creationTime = GeneratedColumn<DateTime>(
+    'creation_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
@@ -359,7 +427,13 @@ class $SourcesTable extends Sources with TableInfo<$SourcesTable, Source> {
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, title, originalTitle, imagePath];
+  List<GeneratedColumn> get $columns => [
+    id,
+    creationTime,
+    title,
+    originalTitle,
+    imagePath,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -374,6 +448,15 @@ class $SourcesTable extends Sources with TableInfo<$SourcesTable, Source> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('creation_time')) {
+      context.handle(
+        _creationTimeMeta,
+        creationTime.isAcceptableOrUnknown(
+          data['creation_time']!,
+          _creationTimeMeta,
+        ),
+      );
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -411,6 +494,10 @@ class $SourcesTable extends Sources with TableInfo<$SourcesTable, Source> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      creationTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creation_time'],
+      )!,
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -434,11 +521,13 @@ class $SourcesTable extends Sources with TableInfo<$SourcesTable, Source> {
 
 class Source extends DataClass implements Insertable<Source> {
   final int id;
+  final DateTime creationTime;
   final String title;
   final String? originalTitle;
   final String? imagePath;
   const Source({
     required this.id,
+    required this.creationTime,
     required this.title,
     this.originalTitle,
     this.imagePath,
@@ -447,6 +536,7 @@ class Source extends DataClass implements Insertable<Source> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['creation_time'] = Variable<DateTime>(creationTime);
     map['title'] = Variable<String>(title);
     if (!nullToAbsent || originalTitle != null) {
       map['original_title'] = Variable<String>(originalTitle);
@@ -460,6 +550,7 @@ class Source extends DataClass implements Insertable<Source> {
   SourcesCompanion toCompanion(bool nullToAbsent) {
     return SourcesCompanion(
       id: Value(id),
+      creationTime: Value(creationTime),
       title: Value(title),
       originalTitle: originalTitle == null && nullToAbsent
           ? const Value.absent()
@@ -477,6 +568,7 @@ class Source extends DataClass implements Insertable<Source> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Source(
       id: serializer.fromJson<int>(json['id']),
+      creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       title: serializer.fromJson<String>(json['title']),
       originalTitle: serializer.fromJson<String?>(json['originalTitle']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
@@ -487,6 +579,7 @@ class Source extends DataClass implements Insertable<Source> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'creationTime': serializer.toJson<DateTime>(creationTime),
       'title': serializer.toJson<String>(title),
       'originalTitle': serializer.toJson<String?>(originalTitle),
       'imagePath': serializer.toJson<String?>(imagePath),
@@ -495,11 +588,13 @@ class Source extends DataClass implements Insertable<Source> {
 
   Source copyWith({
     int? id,
+    DateTime? creationTime,
     String? title,
     Value<String?> originalTitle = const Value.absent(),
     Value<String?> imagePath = const Value.absent(),
   }) => Source(
     id: id ?? this.id,
+    creationTime: creationTime ?? this.creationTime,
     title: title ?? this.title,
     originalTitle: originalTitle.present
         ? originalTitle.value
@@ -509,6 +604,9 @@ class Source extends DataClass implements Insertable<Source> {
   Source copyWithCompanion(SourcesCompanion data) {
     return Source(
       id: data.id.present ? data.id.value : this.id,
+      creationTime: data.creationTime.present
+          ? data.creationTime.value
+          : this.creationTime,
       title: data.title.present ? data.title.value : this.title,
       originalTitle: data.originalTitle.present
           ? data.originalTitle.value
@@ -521,6 +619,7 @@ class Source extends DataClass implements Insertable<Source> {
   String toString() {
     return (StringBuffer('Source(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('title: $title, ')
           ..write('originalTitle: $originalTitle, ')
           ..write('imagePath: $imagePath')
@@ -529,12 +628,14 @@ class Source extends DataClass implements Insertable<Source> {
   }
 
   @override
-  int get hashCode => Object.hash(id, title, originalTitle, imagePath);
+  int get hashCode =>
+      Object.hash(id, creationTime, title, originalTitle, imagePath);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Source &&
           other.id == this.id &&
+          other.creationTime == this.creationTime &&
           other.title == this.title &&
           other.originalTitle == this.originalTitle &&
           other.imagePath == this.imagePath);
@@ -542,29 +643,34 @@ class Source extends DataClass implements Insertable<Source> {
 
 class SourcesCompanion extends UpdateCompanion<Source> {
   final Value<int> id;
+  final Value<DateTime> creationTime;
   final Value<String> title;
   final Value<String?> originalTitle;
   final Value<String?> imagePath;
   const SourcesCompanion({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     this.title = const Value.absent(),
     this.originalTitle = const Value.absent(),
     this.imagePath = const Value.absent(),
   });
   SourcesCompanion.insert({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     required String title,
     this.originalTitle = const Value.absent(),
     this.imagePath = const Value.absent(),
   }) : title = Value(title);
   static Insertable<Source> custom({
     Expression<int>? id,
+    Expression<DateTime>? creationTime,
     Expression<String>? title,
     Expression<String>? originalTitle,
     Expression<String>? imagePath,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (creationTime != null) 'creation_time': creationTime,
       if (title != null) 'title': title,
       if (originalTitle != null) 'original_title': originalTitle,
       if (imagePath != null) 'image_path': imagePath,
@@ -573,12 +679,14 @@ class SourcesCompanion extends UpdateCompanion<Source> {
 
   SourcesCompanion copyWith({
     Value<int>? id,
+    Value<DateTime>? creationTime,
     Value<String>? title,
     Value<String?>? originalTitle,
     Value<String?>? imagePath,
   }) {
     return SourcesCompanion(
       id: id ?? this.id,
+      creationTime: creationTime ?? this.creationTime,
       title: title ?? this.title,
       originalTitle: originalTitle ?? this.originalTitle,
       imagePath: imagePath ?? this.imagePath,
@@ -590,6 +698,9 @@ class SourcesCompanion extends UpdateCompanion<Source> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (creationTime.present) {
+      map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -607,6 +718,7 @@ class SourcesCompanion extends UpdateCompanion<Source> {
   String toString() {
     return (StringBuffer('SourcesCompanion(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('title: $title, ')
           ..write('originalTitle: $originalTitle, ')
           ..write('imagePath: $imagePath')
@@ -657,6 +769,18 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _trackTotalMeta = const VerificationMeta(
+    'trackTotal',
+  );
+  @override
+  late final GeneratedColumn<int> trackTotal = GeneratedColumn<int>(
+    'track_total',
+    aliasedName,
+    true,
+    check: () => validTrackDiskNumbers(trackTotal, diskTotal),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _diskNumberMeta = const VerificationMeta(
     'diskNumber',
   );
@@ -666,6 +790,18 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     aliasedName,
     true,
     check: () => validTrackDiskNumbers(trackNumber, diskNumber),
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _diskTotalMeta = const VerificationMeta(
+    'diskTotal',
+  );
+  @override
+  late final GeneratedColumn<int> diskTotal = GeneratedColumn<int>(
+    'disk_total',
+    aliasedName,
+    true,
+    check: () => validTrackDiskNumbers(trackTotal, diskTotal),
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
@@ -823,7 +959,9 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
     id,
     creationTime,
     trackNumber,
+    trackTotal,
     diskNumber,
+    diskTotal,
     duration,
     year,
     startTime,
@@ -871,10 +1009,22 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
         ),
       );
     }
+    if (data.containsKey('track_total')) {
+      context.handle(
+        _trackTotalMeta,
+        trackTotal.isAcceptableOrUnknown(data['track_total']!, _trackTotalMeta),
+      );
+    }
     if (data.containsKey('disk_number')) {
       context.handle(
         _diskNumberMeta,
         diskNumber.isAcceptableOrUnknown(data['disk_number']!, _diskNumberMeta),
+      );
+    }
+    if (data.containsKey('disk_total')) {
+      context.handle(
+        _diskTotalMeta,
+        diskTotal.isAcceptableOrUnknown(data['disk_total']!, _diskTotalMeta),
       );
     }
     if (data.containsKey('duration')) {
@@ -990,9 +1140,17 @@ class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
         DriftSqlType.int,
         data['${effectivePrefix}track_number'],
       ),
+      trackTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track_total'],
+      ),
       diskNumber: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}disk_number'],
+      ),
+      diskTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}disk_total'],
       ),
       duration: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -1059,7 +1217,9 @@ class Track extends DataClass implements Insertable<Track> {
   final int id;
   final DateTime creationTime;
   final int? trackNumber;
+  final int? trackTotal;
   final int? diskNumber;
+  final int? diskTotal;
   final int duration;
   final int? year;
   final int? startTime;
@@ -1077,7 +1237,9 @@ class Track extends DataClass implements Insertable<Track> {
     required this.id,
     required this.creationTime,
     this.trackNumber,
+    this.trackTotal,
     this.diskNumber,
+    this.diskTotal,
     required this.duration,
     this.year,
     this.startTime,
@@ -1100,8 +1262,14 @@ class Track extends DataClass implements Insertable<Track> {
     if (!nullToAbsent || trackNumber != null) {
       map['track_number'] = Variable<int>(trackNumber);
     }
+    if (!nullToAbsent || trackTotal != null) {
+      map['track_total'] = Variable<int>(trackTotal);
+    }
     if (!nullToAbsent || diskNumber != null) {
       map['disk_number'] = Variable<int>(diskNumber);
+    }
+    if (!nullToAbsent || diskTotal != null) {
+      map['disk_total'] = Variable<int>(diskTotal);
     }
     map['duration'] = Variable<int>(duration);
     if (!nullToAbsent || year != null) {
@@ -1144,9 +1312,15 @@ class Track extends DataClass implements Insertable<Track> {
       trackNumber: trackNumber == null && nullToAbsent
           ? const Value.absent()
           : Value(trackNumber),
+      trackTotal: trackTotal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackTotal),
       diskNumber: diskNumber == null && nullToAbsent
           ? const Value.absent()
           : Value(diskNumber),
+      diskTotal: diskTotal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(diskTotal),
       duration: Value(duration),
       year: year == null && nullToAbsent ? const Value.absent() : Value(year),
       startTime: startTime == null && nullToAbsent
@@ -1188,7 +1362,9 @@ class Track extends DataClass implements Insertable<Track> {
       id: serializer.fromJson<int>(json['id']),
       creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       trackNumber: serializer.fromJson<int?>(json['trackNumber']),
+      trackTotal: serializer.fromJson<int?>(json['trackTotal']),
       diskNumber: serializer.fromJson<int?>(json['diskNumber']),
+      diskTotal: serializer.fromJson<int?>(json['diskTotal']),
       duration: serializer.fromJson<int>(json['duration']),
       year: serializer.fromJson<int?>(json['year']),
       startTime: serializer.fromJson<int?>(json['startTime']),
@@ -1211,7 +1387,9 @@ class Track extends DataClass implements Insertable<Track> {
       'id': serializer.toJson<int>(id),
       'creationTime': serializer.toJson<DateTime>(creationTime),
       'trackNumber': serializer.toJson<int?>(trackNumber),
+      'trackTotal': serializer.toJson<int?>(trackTotal),
       'diskNumber': serializer.toJson<int?>(diskNumber),
+      'diskTotal': serializer.toJson<int?>(diskTotal),
       'duration': serializer.toJson<int>(duration),
       'year': serializer.toJson<int?>(year),
       'startTime': serializer.toJson<int?>(startTime),
@@ -1232,7 +1410,9 @@ class Track extends DataClass implements Insertable<Track> {
     int? id,
     DateTime? creationTime,
     Value<int?> trackNumber = const Value.absent(),
+    Value<int?> trackTotal = const Value.absent(),
     Value<int?> diskNumber = const Value.absent(),
+    Value<int?> diskTotal = const Value.absent(),
     int? duration,
     Value<int?> year = const Value.absent(),
     Value<int?> startTime = const Value.absent(),
@@ -1250,7 +1430,9 @@ class Track extends DataClass implements Insertable<Track> {
     id: id ?? this.id,
     creationTime: creationTime ?? this.creationTime,
     trackNumber: trackNumber.present ? trackNumber.value : this.trackNumber,
+    trackTotal: trackTotal.present ? trackTotal.value : this.trackTotal,
     diskNumber: diskNumber.present ? diskNumber.value : this.diskNumber,
+    diskTotal: diskTotal.present ? diskTotal.value : this.diskTotal,
     duration: duration ?? this.duration,
     year: year.present ? year.value : this.year,
     startTime: startTime.present ? startTime.value : this.startTime,
@@ -1276,9 +1458,13 @@ class Track extends DataClass implements Insertable<Track> {
       trackNumber: data.trackNumber.present
           ? data.trackNumber.value
           : this.trackNumber,
+      trackTotal: data.trackTotal.present
+          ? data.trackTotal.value
+          : this.trackTotal,
       diskNumber: data.diskNumber.present
           ? data.diskNumber.value
           : this.diskNumber,
+      diskTotal: data.diskTotal.present ? data.diskTotal.value : this.diskTotal,
       duration: data.duration.present ? data.duration.value : this.duration,
       year: data.year.present ? data.year.value : this.year,
       startTime: data.startTime.present ? data.startTime.value : this.startTime,
@@ -1307,7 +1493,9 @@ class Track extends DataClass implements Insertable<Track> {
           ..write('id: $id, ')
           ..write('creationTime: $creationTime, ')
           ..write('trackNumber: $trackNumber, ')
+          ..write('trackTotal: $trackTotal, ')
           ..write('diskNumber: $diskNumber, ')
+          ..write('diskTotal: $diskTotal, ')
           ..write('duration: $duration, ')
           ..write('year: $year, ')
           ..write('startTime: $startTime, ')
@@ -1330,7 +1518,9 @@ class Track extends DataClass implements Insertable<Track> {
     id,
     creationTime,
     trackNumber,
+    trackTotal,
     diskNumber,
+    diskTotal,
     duration,
     year,
     startTime,
@@ -1352,7 +1542,9 @@ class Track extends DataClass implements Insertable<Track> {
           other.id == this.id &&
           other.creationTime == this.creationTime &&
           other.trackNumber == this.trackNumber &&
+          other.trackTotal == this.trackTotal &&
           other.diskNumber == this.diskNumber &&
+          other.diskTotal == this.diskTotal &&
           other.duration == this.duration &&
           other.year == this.year &&
           other.startTime == this.startTime &&
@@ -1372,7 +1564,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
   final Value<int> id;
   final Value<DateTime> creationTime;
   final Value<int?> trackNumber;
+  final Value<int?> trackTotal;
   final Value<int?> diskNumber;
+  final Value<int?> diskTotal;
   final Value<int> duration;
   final Value<int?> year;
   final Value<int?> startTime;
@@ -1390,7 +1584,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
     this.id = const Value.absent(),
     this.creationTime = const Value.absent(),
     this.trackNumber = const Value.absent(),
+    this.trackTotal = const Value.absent(),
     this.diskNumber = const Value.absent(),
+    this.diskTotal = const Value.absent(),
     this.duration = const Value.absent(),
     this.year = const Value.absent(),
     this.startTime = const Value.absent(),
@@ -1409,7 +1605,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
     this.id = const Value.absent(),
     this.creationTime = const Value.absent(),
     this.trackNumber = const Value.absent(),
+    this.trackTotal = const Value.absent(),
     this.diskNumber = const Value.absent(),
+    this.diskTotal = const Value.absent(),
     required int duration,
     this.year = const Value.absent(),
     this.startTime = const Value.absent(),
@@ -1431,7 +1629,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
     Expression<int>? id,
     Expression<DateTime>? creationTime,
     Expression<int>? trackNumber,
+    Expression<int>? trackTotal,
     Expression<int>? diskNumber,
+    Expression<int>? diskTotal,
     Expression<int>? duration,
     Expression<int>? year,
     Expression<int>? startTime,
@@ -1450,7 +1650,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
       if (id != null) 'id': id,
       if (creationTime != null) 'creation_time': creationTime,
       if (trackNumber != null) 'track_number': trackNumber,
+      if (trackTotal != null) 'track_total': trackTotal,
       if (diskNumber != null) 'disk_number': diskNumber,
+      if (diskTotal != null) 'disk_total': diskTotal,
       if (duration != null) 'duration': duration,
       if (year != null) 'year': year,
       if (startTime != null) 'start_time': startTime,
@@ -1471,7 +1673,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
     Value<int>? id,
     Value<DateTime>? creationTime,
     Value<int?>? trackNumber,
+    Value<int?>? trackTotal,
     Value<int?>? diskNumber,
+    Value<int?>? diskTotal,
     Value<int>? duration,
     Value<int?>? year,
     Value<int?>? startTime,
@@ -1490,7 +1694,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
       id: id ?? this.id,
       creationTime: creationTime ?? this.creationTime,
       trackNumber: trackNumber ?? this.trackNumber,
+      trackTotal: trackTotal ?? this.trackTotal,
       diskNumber: diskNumber ?? this.diskNumber,
+      diskTotal: diskTotal ?? this.diskTotal,
       duration: duration ?? this.duration,
       year: year ?? this.year,
       startTime: startTime ?? this.startTime,
@@ -1519,8 +1725,14 @@ class TracksCompanion extends UpdateCompanion<Track> {
     if (trackNumber.present) {
       map['track_number'] = Variable<int>(trackNumber.value);
     }
+    if (trackTotal.present) {
+      map['track_total'] = Variable<int>(trackTotal.value);
+    }
     if (diskNumber.present) {
       map['disk_number'] = Variable<int>(diskNumber.value);
+    }
+    if (diskTotal.present) {
+      map['disk_total'] = Variable<int>(diskTotal.value);
     }
     if (duration.present) {
       map['duration'] = Variable<int>(duration.value);
@@ -1570,7 +1782,9 @@ class TracksCompanion extends UpdateCompanion<Track> {
           ..write('id: $id, ')
           ..write('creationTime: $creationTime, ')
           ..write('trackNumber: $trackNumber, ')
+          ..write('trackTotal: $trackTotal, ')
           ..write('diskNumber: $diskNumber, ')
+          ..write('diskTotal: $diskTotal, ')
           ..write('duration: $duration, ')
           ..write('year: $year, ')
           ..write('startTime: $startTime, ')
@@ -1607,6 +1821,18 @@ class $ArtistsTable extends Artists with TableInfo<$ArtistsTable, Artist> {
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _creationTimeMeta = const VerificationMeta(
+    'creationTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creationTime = GeneratedColumn<DateTime>(
+    'creation_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -1639,7 +1865,13 @@ class $ArtistsTable extends Artists with TableInfo<$ArtistsTable, Artist> {
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, originalName, imagePath];
+  List<GeneratedColumn> get $columns => [
+    id,
+    creationTime,
+    name,
+    originalName,
+    imagePath,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1654,6 +1886,15 @@ class $ArtistsTable extends Artists with TableInfo<$ArtistsTable, Artist> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('creation_time')) {
+      context.handle(
+        _creationTimeMeta,
+        creationTime.isAcceptableOrUnknown(
+          data['creation_time']!,
+          _creationTimeMeta,
+        ),
+      );
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -1691,6 +1932,10 @@ class $ArtistsTable extends Artists with TableInfo<$ArtistsTable, Artist> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      creationTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creation_time'],
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -1714,11 +1959,13 @@ class $ArtistsTable extends Artists with TableInfo<$ArtistsTable, Artist> {
 
 class Artist extends DataClass implements Insertable<Artist> {
   final int id;
+  final DateTime creationTime;
   final String name;
   final String? originalName;
   final String? imagePath;
   const Artist({
     required this.id,
+    required this.creationTime,
     required this.name,
     this.originalName,
     this.imagePath,
@@ -1727,6 +1974,7 @@ class Artist extends DataClass implements Insertable<Artist> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['creation_time'] = Variable<DateTime>(creationTime);
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || originalName != null) {
       map['original_name'] = Variable<String>(originalName);
@@ -1740,6 +1988,7 @@ class Artist extends DataClass implements Insertable<Artist> {
   ArtistsCompanion toCompanion(bool nullToAbsent) {
     return ArtistsCompanion(
       id: Value(id),
+      creationTime: Value(creationTime),
       name: Value(name),
       originalName: originalName == null && nullToAbsent
           ? const Value.absent()
@@ -1757,6 +2006,7 @@ class Artist extends DataClass implements Insertable<Artist> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Artist(
       id: serializer.fromJson<int>(json['id']),
+      creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       name: serializer.fromJson<String>(json['name']),
       originalName: serializer.fromJson<String?>(json['originalName']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
@@ -1767,6 +2017,7 @@ class Artist extends DataClass implements Insertable<Artist> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'creationTime': serializer.toJson<DateTime>(creationTime),
       'name': serializer.toJson<String>(name),
       'originalName': serializer.toJson<String?>(originalName),
       'imagePath': serializer.toJson<String?>(imagePath),
@@ -1775,11 +2026,13 @@ class Artist extends DataClass implements Insertable<Artist> {
 
   Artist copyWith({
     int? id,
+    DateTime? creationTime,
     String? name,
     Value<String?> originalName = const Value.absent(),
     Value<String?> imagePath = const Value.absent(),
   }) => Artist(
     id: id ?? this.id,
+    creationTime: creationTime ?? this.creationTime,
     name: name ?? this.name,
     originalName: originalName.present ? originalName.value : this.originalName,
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
@@ -1787,6 +2040,9 @@ class Artist extends DataClass implements Insertable<Artist> {
   Artist copyWithCompanion(ArtistsCompanion data) {
     return Artist(
       id: data.id.present ? data.id.value : this.id,
+      creationTime: data.creationTime.present
+          ? data.creationTime.value
+          : this.creationTime,
       name: data.name.present ? data.name.value : this.name,
       originalName: data.originalName.present
           ? data.originalName.value
@@ -1799,6 +2055,7 @@ class Artist extends DataClass implements Insertable<Artist> {
   String toString() {
     return (StringBuffer('Artist(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('name: $name, ')
           ..write('originalName: $originalName, ')
           ..write('imagePath: $imagePath')
@@ -1807,12 +2064,14 @@ class Artist extends DataClass implements Insertable<Artist> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, originalName, imagePath);
+  int get hashCode =>
+      Object.hash(id, creationTime, name, originalName, imagePath);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Artist &&
           other.id == this.id &&
+          other.creationTime == this.creationTime &&
           other.name == this.name &&
           other.originalName == this.originalName &&
           other.imagePath == this.imagePath);
@@ -1820,29 +2079,34 @@ class Artist extends DataClass implements Insertable<Artist> {
 
 class ArtistsCompanion extends UpdateCompanion<Artist> {
   final Value<int> id;
+  final Value<DateTime> creationTime;
   final Value<String> name;
   final Value<String?> originalName;
   final Value<String?> imagePath;
   const ArtistsCompanion({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     this.name = const Value.absent(),
     this.originalName = const Value.absent(),
     this.imagePath = const Value.absent(),
   });
   ArtistsCompanion.insert({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     required String name,
     this.originalName = const Value.absent(),
     this.imagePath = const Value.absent(),
   }) : name = Value(name);
   static Insertable<Artist> custom({
     Expression<int>? id,
+    Expression<DateTime>? creationTime,
     Expression<String>? name,
     Expression<String>? originalName,
     Expression<String>? imagePath,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (creationTime != null) 'creation_time': creationTime,
       if (name != null) 'name': name,
       if (originalName != null) 'original_name': originalName,
       if (imagePath != null) 'image_path': imagePath,
@@ -1851,12 +2115,14 @@ class ArtistsCompanion extends UpdateCompanion<Artist> {
 
   ArtistsCompanion copyWith({
     Value<int>? id,
+    Value<DateTime>? creationTime,
     Value<String>? name,
     Value<String?>? originalName,
     Value<String?>? imagePath,
   }) {
     return ArtistsCompanion(
       id: id ?? this.id,
+      creationTime: creationTime ?? this.creationTime,
       name: name ?? this.name,
       originalName: originalName ?? this.originalName,
       imagePath: imagePath ?? this.imagePath,
@@ -1868,6 +2134,9 @@ class ArtistsCompanion extends UpdateCompanion<Artist> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (creationTime.present) {
+      map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -1885,6 +2154,7 @@ class ArtistsCompanion extends UpdateCompanion<Artist> {
   String toString() {
     return (StringBuffer('ArtistsCompanion(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('name: $name, ')
           ..write('originalName: $originalName, ')
           ..write('imagePath: $imagePath')
@@ -1911,6 +2181,18 @@ class $PlaylistFolderTable extends PlaylistFolder
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
+  );
+  static const VerificationMeta _creationTimeMeta = const VerificationMeta(
+    'creationTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creationTime = GeneratedColumn<DateTime>(
+    'creation_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -1948,6 +2230,7 @@ class $PlaylistFolderTable extends PlaylistFolder
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    creationTime,
     name,
     imagePath,
     containingFolderId,
@@ -1966,6 +2249,15 @@ class $PlaylistFolderTable extends PlaylistFolder
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('creation_time')) {
+      context.handle(
+        _creationTimeMeta,
+        creationTime.isAcceptableOrUnknown(
+          data['creation_time']!,
+          _creationTimeMeta,
+        ),
+      );
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -2003,6 +2295,10 @@ class $PlaylistFolderTable extends PlaylistFolder
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      creationTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creation_time'],
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -2027,11 +2323,13 @@ class $PlaylistFolderTable extends PlaylistFolder
 class PlaylistFolderData extends DataClass
     implements Insertable<PlaylistFolderData> {
   final int id;
+  final DateTime creationTime;
   final String name;
   final String? imagePath;
   final int? containingFolderId;
   const PlaylistFolderData({
     required this.id,
+    required this.creationTime,
     required this.name,
     this.imagePath,
     this.containingFolderId,
@@ -2040,6 +2338,7 @@ class PlaylistFolderData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['creation_time'] = Variable<DateTime>(creationTime);
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || imagePath != null) {
       map['image_path'] = Variable<String>(imagePath);
@@ -2053,6 +2352,7 @@ class PlaylistFolderData extends DataClass
   PlaylistFolderCompanion toCompanion(bool nullToAbsent) {
     return PlaylistFolderCompanion(
       id: Value(id),
+      creationTime: Value(creationTime),
       name: Value(name),
       imagePath: imagePath == null && nullToAbsent
           ? const Value.absent()
@@ -2070,6 +2370,7 @@ class PlaylistFolderData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return PlaylistFolderData(
       id: serializer.fromJson<int>(json['id']),
+      creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       name: serializer.fromJson<String>(json['name']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
       containingFolderId: serializer.fromJson<int?>(json['containingFolderId']),
@@ -2080,6 +2381,7 @@ class PlaylistFolderData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'creationTime': serializer.toJson<DateTime>(creationTime),
       'name': serializer.toJson<String>(name),
       'imagePath': serializer.toJson<String?>(imagePath),
       'containingFolderId': serializer.toJson<int?>(containingFolderId),
@@ -2088,11 +2390,13 @@ class PlaylistFolderData extends DataClass
 
   PlaylistFolderData copyWith({
     int? id,
+    DateTime? creationTime,
     String? name,
     Value<String?> imagePath = const Value.absent(),
     Value<int?> containingFolderId = const Value.absent(),
   }) => PlaylistFolderData(
     id: id ?? this.id,
+    creationTime: creationTime ?? this.creationTime,
     name: name ?? this.name,
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
     containingFolderId: containingFolderId.present
@@ -2102,6 +2406,9 @@ class PlaylistFolderData extends DataClass
   PlaylistFolderData copyWithCompanion(PlaylistFolderCompanion data) {
     return PlaylistFolderData(
       id: data.id.present ? data.id.value : this.id,
+      creationTime: data.creationTime.present
+          ? data.creationTime.value
+          : this.creationTime,
       name: data.name.present ? data.name.value : this.name,
       imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
       containingFolderId: data.containingFolderId.present
@@ -2114,6 +2421,7 @@ class PlaylistFolderData extends DataClass
   String toString() {
     return (StringBuffer('PlaylistFolderData(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('name: $name, ')
           ..write('imagePath: $imagePath, ')
           ..write('containingFolderId: $containingFolderId')
@@ -2122,12 +2430,14 @@ class PlaylistFolderData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, name, imagePath, containingFolderId);
+  int get hashCode =>
+      Object.hash(id, creationTime, name, imagePath, containingFolderId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PlaylistFolderData &&
           other.id == this.id &&
+          other.creationTime == this.creationTime &&
           other.name == this.name &&
           other.imagePath == this.imagePath &&
           other.containingFolderId == this.containingFolderId);
@@ -2135,29 +2445,34 @@ class PlaylistFolderData extends DataClass
 
 class PlaylistFolderCompanion extends UpdateCompanion<PlaylistFolderData> {
   final Value<int> id;
+  final Value<DateTime> creationTime;
   final Value<String> name;
   final Value<String?> imagePath;
   final Value<int?> containingFolderId;
   const PlaylistFolderCompanion({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     this.name = const Value.absent(),
     this.imagePath = const Value.absent(),
     this.containingFolderId = const Value.absent(),
   });
   PlaylistFolderCompanion.insert({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     required String name,
     this.imagePath = const Value.absent(),
     this.containingFolderId = const Value.absent(),
   }) : name = Value(name);
   static Insertable<PlaylistFolderData> custom({
     Expression<int>? id,
+    Expression<DateTime>? creationTime,
     Expression<String>? name,
     Expression<String>? imagePath,
     Expression<int>? containingFolderId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (creationTime != null) 'creation_time': creationTime,
       if (name != null) 'name': name,
       if (imagePath != null) 'image_path': imagePath,
       if (containingFolderId != null)
@@ -2167,12 +2482,14 @@ class PlaylistFolderCompanion extends UpdateCompanion<PlaylistFolderData> {
 
   PlaylistFolderCompanion copyWith({
     Value<int>? id,
+    Value<DateTime>? creationTime,
     Value<String>? name,
     Value<String?>? imagePath,
     Value<int?>? containingFolderId,
   }) {
     return PlaylistFolderCompanion(
       id: id ?? this.id,
+      creationTime: creationTime ?? this.creationTime,
       name: name ?? this.name,
       imagePath: imagePath ?? this.imagePath,
       containingFolderId: containingFolderId ?? this.containingFolderId,
@@ -2184,6 +2501,9 @@ class PlaylistFolderCompanion extends UpdateCompanion<PlaylistFolderData> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (creationTime.present) {
+      map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -2201,6 +2521,7 @@ class PlaylistFolderCompanion extends UpdateCompanion<PlaylistFolderData> {
   String toString() {
     return (StringBuffer('PlaylistFolderCompanion(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('name: $name, ')
           ..write('imagePath: $imagePath, ')
           ..write('containingFolderId: $containingFolderId')
@@ -2227,6 +2548,18 @@ class $PlaylistsTable extends Playlists
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
+  );
+  static const VerificationMeta _creationTimeMeta = const VerificationMeta(
+    'creationTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creationTime = GeneratedColumn<DateTime>(
+    'creation_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -2264,6 +2597,7 @@ class $PlaylistsTable extends Playlists
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    creationTime,
     name,
     imagePath,
     containingFolderId,
@@ -2282,6 +2616,15 @@ class $PlaylistsTable extends Playlists
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('creation_time')) {
+      context.handle(
+        _creationTimeMeta,
+        creationTime.isAcceptableOrUnknown(
+          data['creation_time']!,
+          _creationTimeMeta,
+        ),
+      );
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -2319,6 +2662,10 @@ class $PlaylistsTable extends Playlists
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      creationTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creation_time'],
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -2342,11 +2689,13 @@ class $PlaylistsTable extends Playlists
 
 class Playlist extends DataClass implements Insertable<Playlist> {
   final int id;
+  final DateTime creationTime;
   final String name;
   final String? imagePath;
   final int? containingFolderId;
   const Playlist({
     required this.id,
+    required this.creationTime,
     required this.name,
     this.imagePath,
     this.containingFolderId,
@@ -2355,6 +2704,7 @@ class Playlist extends DataClass implements Insertable<Playlist> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['creation_time'] = Variable<DateTime>(creationTime);
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || imagePath != null) {
       map['image_path'] = Variable<String>(imagePath);
@@ -2368,6 +2718,7 @@ class Playlist extends DataClass implements Insertable<Playlist> {
   PlaylistsCompanion toCompanion(bool nullToAbsent) {
     return PlaylistsCompanion(
       id: Value(id),
+      creationTime: Value(creationTime),
       name: Value(name),
       imagePath: imagePath == null && nullToAbsent
           ? const Value.absent()
@@ -2385,6 +2736,7 @@ class Playlist extends DataClass implements Insertable<Playlist> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Playlist(
       id: serializer.fromJson<int>(json['id']),
+      creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       name: serializer.fromJson<String>(json['name']),
       imagePath: serializer.fromJson<String?>(json['imagePath']),
       containingFolderId: serializer.fromJson<int?>(json['containingFolderId']),
@@ -2395,6 +2747,7 @@ class Playlist extends DataClass implements Insertable<Playlist> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'creationTime': serializer.toJson<DateTime>(creationTime),
       'name': serializer.toJson<String>(name),
       'imagePath': serializer.toJson<String?>(imagePath),
       'containingFolderId': serializer.toJson<int?>(containingFolderId),
@@ -2403,11 +2756,13 @@ class Playlist extends DataClass implements Insertable<Playlist> {
 
   Playlist copyWith({
     int? id,
+    DateTime? creationTime,
     String? name,
     Value<String?> imagePath = const Value.absent(),
     Value<int?> containingFolderId = const Value.absent(),
   }) => Playlist(
     id: id ?? this.id,
+    creationTime: creationTime ?? this.creationTime,
     name: name ?? this.name,
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
     containingFolderId: containingFolderId.present
@@ -2417,6 +2772,9 @@ class Playlist extends DataClass implements Insertable<Playlist> {
   Playlist copyWithCompanion(PlaylistsCompanion data) {
     return Playlist(
       id: data.id.present ? data.id.value : this.id,
+      creationTime: data.creationTime.present
+          ? data.creationTime.value
+          : this.creationTime,
       name: data.name.present ? data.name.value : this.name,
       imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
       containingFolderId: data.containingFolderId.present
@@ -2429,6 +2787,7 @@ class Playlist extends DataClass implements Insertable<Playlist> {
   String toString() {
     return (StringBuffer('Playlist(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('name: $name, ')
           ..write('imagePath: $imagePath, ')
           ..write('containingFolderId: $containingFolderId')
@@ -2437,12 +2796,14 @@ class Playlist extends DataClass implements Insertable<Playlist> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, imagePath, containingFolderId);
+  int get hashCode =>
+      Object.hash(id, creationTime, name, imagePath, containingFolderId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Playlist &&
           other.id == this.id &&
+          other.creationTime == this.creationTime &&
           other.name == this.name &&
           other.imagePath == this.imagePath &&
           other.containingFolderId == this.containingFolderId);
@@ -2450,29 +2811,34 @@ class Playlist extends DataClass implements Insertable<Playlist> {
 
 class PlaylistsCompanion extends UpdateCompanion<Playlist> {
   final Value<int> id;
+  final Value<DateTime> creationTime;
   final Value<String> name;
   final Value<String?> imagePath;
   final Value<int?> containingFolderId;
   const PlaylistsCompanion({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     this.name = const Value.absent(),
     this.imagePath = const Value.absent(),
     this.containingFolderId = const Value.absent(),
   });
   PlaylistsCompanion.insert({
     this.id = const Value.absent(),
+    this.creationTime = const Value.absent(),
     required String name,
     this.imagePath = const Value.absent(),
     this.containingFolderId = const Value.absent(),
   }) : name = Value(name);
   static Insertable<Playlist> custom({
     Expression<int>? id,
+    Expression<DateTime>? creationTime,
     Expression<String>? name,
     Expression<String>? imagePath,
     Expression<int>? containingFolderId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (creationTime != null) 'creation_time': creationTime,
       if (name != null) 'name': name,
       if (imagePath != null) 'image_path': imagePath,
       if (containingFolderId != null)
@@ -2482,12 +2848,14 @@ class PlaylistsCompanion extends UpdateCompanion<Playlist> {
 
   PlaylistsCompanion copyWith({
     Value<int>? id,
+    Value<DateTime>? creationTime,
     Value<String>? name,
     Value<String?>? imagePath,
     Value<int?>? containingFolderId,
   }) {
     return PlaylistsCompanion(
       id: id ?? this.id,
+      creationTime: creationTime ?? this.creationTime,
       name: name ?? this.name,
       imagePath: imagePath ?? this.imagePath,
       containingFolderId: containingFolderId ?? this.containingFolderId,
@@ -2499,6 +2867,9 @@ class PlaylistsCompanion extends UpdateCompanion<Playlist> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (creationTime.present) {
+      map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -2516,6 +2887,7 @@ class PlaylistsCompanion extends UpdateCompanion<Playlist> {
   String toString() {
     return (StringBuffer('PlaylistsCompanion(')
           ..write('id: $id, ')
+          ..write('creationTime: $creationTime, ')
           ..write('name: $name, ')
           ..write('imagePath: $imagePath, ')
           ..write('containingFolderId: $containingFolderId')
@@ -2633,13 +3005,13 @@ class $TransitionsTable extends Transitions
   );
   static const VerificationMeta _delayMeta = const VerificationMeta('delay');
   @override
-  late final GeneratedColumn<double> delay = GeneratedColumn<double>(
+  late final GeneratedColumn<int> delay = GeneratedColumn<int>(
     'delay',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(0.0),
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _commentMeta = const VerificationMeta(
     'comment',
@@ -2810,7 +3182,7 @@ class $TransitionsTable extends Transitions
         data['${effectivePrefix}track_id2'],
       )!,
       delay: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.int,
         data['${effectivePrefix}delay'],
       )!,
       comment: attachedDatabase.typeMapping.read(
@@ -2844,7 +3216,7 @@ class Transition extends DataClass implements Insertable<Transition> {
   final int fadeinduration;
   final int trackId1;
   final int trackId2;
-  final double delay;
+  final int delay;
   final String? comment;
   final TransitionType type;
   const Transition({
@@ -2871,7 +3243,7 @@ class Transition extends DataClass implements Insertable<Transition> {
     map['fadeinduration'] = Variable<int>(fadeinduration);
     map['track_id1'] = Variable<int>(trackId1);
     map['track_id2'] = Variable<int>(trackId2);
-    map['delay'] = Variable<double>(delay);
+    map['delay'] = Variable<int>(delay);
     if (!nullToAbsent || comment != null) {
       map['comment'] = Variable<String>(comment);
     }
@@ -2913,7 +3285,7 @@ class Transition extends DataClass implements Insertable<Transition> {
       fadeinduration: serializer.fromJson<int>(json['fadeinduration']),
       trackId1: serializer.fromJson<int>(json['trackId1']),
       trackId2: serializer.fromJson<int>(json['trackId2']),
-      delay: serializer.fromJson<double>(json['delay']),
+      delay: serializer.fromJson<int>(json['delay']),
       comment: serializer.fromJson<String?>(json['comment']),
       type: $TransitionsTable.$convertertype.fromJson(
         serializer.fromJson<int>(json['type']),
@@ -2932,7 +3304,7 @@ class Transition extends DataClass implements Insertable<Transition> {
       'fadeinduration': serializer.toJson<int>(fadeinduration),
       'trackId1': serializer.toJson<int>(trackId1),
       'trackId2': serializer.toJson<int>(trackId2),
-      'delay': serializer.toJson<double>(delay),
+      'delay': serializer.toJson<int>(delay),
       'comment': serializer.toJson<String?>(comment),
       'type': serializer.toJson<int>(
         $TransitionsTable.$convertertype.toJson(type),
@@ -2949,7 +3321,7 @@ class Transition extends DataClass implements Insertable<Transition> {
     int? fadeinduration,
     int? trackId1,
     int? trackId2,
-    double? delay,
+    int? delay,
     Value<String?> comment = const Value.absent(),
     TransitionType? type,
   }) => Transition(
@@ -3049,7 +3421,7 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
   final Value<int> fadeinduration;
   final Value<int> trackId1;
   final Value<int> trackId2;
-  final Value<double> delay;
+  final Value<int> delay;
   final Value<String?> comment;
   final Value<TransitionType> type;
   const TransitionsCompanion({
@@ -3093,7 +3465,7 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     Expression<int>? fadeinduration,
     Expression<int>? trackId1,
     Expression<int>? trackId2,
-    Expression<double>? delay,
+    Expression<int>? delay,
     Expression<String>? comment,
     Expression<int>? type,
   }) {
@@ -3121,7 +3493,7 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
     Value<int>? fadeinduration,
     Value<int>? trackId1,
     Value<int>? trackId2,
-    Value<double>? delay,
+    Value<int>? delay,
     Value<String?>? comment,
     Value<TransitionType>? type,
   }) {
@@ -3168,7 +3540,7 @@ class TransitionsCompanion extends UpdateCompanion<Transition> {
       map['track_id2'] = Variable<int>(trackId2.value);
     }
     if (delay.present) {
-      map['delay'] = Variable<double>(delay.value);
+      map['delay'] = Variable<int>(delay.value);
     }
     if (comment.present) {
       map['comment'] = Variable<String>(comment.value);
@@ -4960,6 +5332,193 @@ class TrackArtistsCompanion extends UpdateCompanion<TrackArtist> {
   }
 }
 
+class $SafetiesTable extends Safeties with TableInfo<$SafetiesTable, Safety> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SafetiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, label];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'safeties';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Safety> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Safety map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Safety(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+    );
+  }
+
+  @override
+  $SafetiesTable createAlias(String alias) {
+    return $SafetiesTable(attachedDatabase, alias);
+  }
+}
+
+class Safety extends DataClass implements Insertable<Safety> {
+  final int id;
+  final String label;
+  const Safety({required this.id, required this.label});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['label'] = Variable<String>(label);
+    return map;
+  }
+
+  SafetiesCompanion toCompanion(bool nullToAbsent) {
+    return SafetiesCompanion(id: Value(id), label: Value(label));
+  }
+
+  factory Safety.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Safety(
+      id: serializer.fromJson<int>(json['id']),
+      label: serializer.fromJson<String>(json['label']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'label': serializer.toJson<String>(label),
+    };
+  }
+
+  Safety copyWith({int? id, String? label}) =>
+      Safety(id: id ?? this.id, label: label ?? this.label);
+  Safety copyWithCompanion(SafetiesCompanion data) {
+    return Safety(
+      id: data.id.present ? data.id.value : this.id,
+      label: data.label.present ? data.label.value : this.label,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Safety(')
+          ..write('id: $id, ')
+          ..write('label: $label')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, label);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Safety && other.id == this.id && other.label == this.label);
+}
+
+class SafetiesCompanion extends UpdateCompanion<Safety> {
+  final Value<int> id;
+  final Value<String> label;
+  const SafetiesCompanion({
+    this.id = const Value.absent(),
+    this.label = const Value.absent(),
+  });
+  SafetiesCompanion.insert({
+    this.id = const Value.absent(),
+    required String label,
+  }) : label = Value(label);
+  static Insertable<Safety> custom({
+    Expression<int>? id,
+    Expression<String>? label,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (label != null) 'label': label,
+    });
+  }
+
+  SafetiesCompanion copyWith({Value<int>? id, Value<String>? label}) {
+    return SafetiesCompanion(id: id ?? this.id, label: label ?? this.label);
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SafetiesCompanion(')
+          ..write('id: $id, ')
+          ..write('label: $label')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TrackSafetiesTable extends TrackSafeties
     with TableInfo<$TrackSafetiesTable, TrackSafety> {
   @override
@@ -4980,15 +5539,20 @@ class $TrackSafetiesTable extends TrackSafeties
       'REFERENCES tracks (id) ON UPDATE CASCADE ON DELETE CASCADE',
     ),
   );
+  static const VerificationMeta _safetyIdMeta = const VerificationMeta(
+    'safetyId',
+  );
   @override
-  late final GeneratedColumnWithTypeConverter<Safety, int> safetyId =
-      GeneratedColumn<int>(
-        'safety_id',
-        aliasedName,
-        false,
-        type: DriftSqlType.int,
-        requiredDuringInsert: true,
-      ).withConverter<Safety>($TrackSafetiesTable.$convertersafetyId);
+  late final GeneratedColumn<int> safetyId = GeneratedColumn<int>(
+    'safety_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES safeties (id) ON UPDATE CASCADE ON DELETE CASCADE',
+    ),
+  );
   @override
   List<GeneratedColumn> get $columns => [trackId, safetyId];
   @override
@@ -5011,6 +5575,14 @@ class $TrackSafetiesTable extends TrackSafeties
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
+    if (data.containsKey('safety_id')) {
+      context.handle(
+        _safetyIdMeta,
+        safetyId.isAcceptableOrUnknown(data['safety_id']!, _safetyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_safetyIdMeta);
+    }
     return context;
   }
 
@@ -5028,12 +5600,10 @@ class $TrackSafetiesTable extends TrackSafeties
         DriftSqlType.int,
         data['${effectivePrefix}track_id'],
       )!,
-      safetyId: $TrackSafetiesTable.$convertersafetyId.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}safety_id'],
-        )!,
-      ),
+      safetyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}safety_id'],
+      )!,
     );
   }
 
@@ -5041,24 +5611,17 @@ class $TrackSafetiesTable extends TrackSafeties
   $TrackSafetiesTable createAlias(String alias) {
     return $TrackSafetiesTable(attachedDatabase, alias);
   }
-
-  static JsonTypeConverter2<Safety, int, int> $convertersafetyId =
-      const EnumIndexConverter<Safety>(Safety.values);
 }
 
 class TrackSafety extends DataClass implements Insertable<TrackSafety> {
   final int trackId;
-  final Safety safetyId;
+  final int safetyId;
   const TrackSafety({required this.trackId, required this.safetyId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['track_id'] = Variable<int>(trackId);
-    {
-      map['safety_id'] = Variable<int>(
-        $TrackSafetiesTable.$convertersafetyId.toSql(safetyId),
-      );
-    }
+    map['safety_id'] = Variable<int>(safetyId);
     return map;
   }
 
@@ -5076,9 +5639,7 @@ class TrackSafety extends DataClass implements Insertable<TrackSafety> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrackSafety(
       trackId: serializer.fromJson<int>(json['trackId']),
-      safetyId: $TrackSafetiesTable.$convertersafetyId.fromJson(
-        serializer.fromJson<int>(json['safetyId']),
-      ),
+      safetyId: serializer.fromJson<int>(json['safetyId']),
     );
   }
   @override
@@ -5086,13 +5647,11 @@ class TrackSafety extends DataClass implements Insertable<TrackSafety> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'trackId': serializer.toJson<int>(trackId),
-      'safetyId': serializer.toJson<int>(
-        $TrackSafetiesTable.$convertersafetyId.toJson(safetyId),
-      ),
+      'safetyId': serializer.toJson<int>(safetyId),
     };
   }
 
-  TrackSafety copyWith({int? trackId, Safety? safetyId}) => TrackSafety(
+  TrackSafety copyWith({int? trackId, int? safetyId}) => TrackSafety(
     trackId: trackId ?? this.trackId,
     safetyId: safetyId ?? this.safetyId,
   );
@@ -5124,7 +5683,7 @@ class TrackSafety extends DataClass implements Insertable<TrackSafety> {
 
 class TrackSafetiesCompanion extends UpdateCompanion<TrackSafety> {
   final Value<int> trackId;
-  final Value<Safety> safetyId;
+  final Value<int> safetyId;
   final Value<int> rowid;
   const TrackSafetiesCompanion({
     this.trackId = const Value.absent(),
@@ -5133,7 +5692,7 @@ class TrackSafetiesCompanion extends UpdateCompanion<TrackSafety> {
   });
   TrackSafetiesCompanion.insert({
     required int trackId,
-    required Safety safetyId,
+    required int safetyId,
     this.rowid = const Value.absent(),
   }) : trackId = Value(trackId),
        safetyId = Value(safetyId);
@@ -5151,7 +5710,7 @@ class TrackSafetiesCompanion extends UpdateCompanion<TrackSafety> {
 
   TrackSafetiesCompanion copyWith({
     Value<int>? trackId,
-    Value<Safety>? safetyId,
+    Value<int>? safetyId,
     Value<int>? rowid,
   }) {
     return TrackSafetiesCompanion(
@@ -5168,9 +5727,7 @@ class TrackSafetiesCompanion extends UpdateCompanion<TrackSafety> {
       map['track_id'] = Variable<int>(trackId.value);
     }
     if (safetyId.present) {
-      map['safety_id'] = Variable<int>(
-        $TrackSafetiesTable.$convertersafetyId.toSql(safetyId.value),
-      );
+      map['safety_id'] = Variable<int>(safetyId.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -5438,6 +5995,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TrackSolosTable trackSolos = $TrackSolosTable(this);
   late final $TrackLanguagesTable trackLanguages = $TrackLanguagesTable(this);
   late final $TrackArtistsTable trackArtists = $TrackArtistsTable(this);
+  late final $SafetiesTable safeties = $SafetiesTable(this);
   late final $TrackSafetiesTable trackSafeties = $TrackSafetiesTable(this);
   late final $PlaylistTracksTable playlistTracks = $PlaylistTracksTable(this);
   @override
@@ -5460,6 +6018,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     trackSolos,
     trackLanguages,
     trackArtists,
+    safeties,
     trackSafeties,
     playlistTracks,
   ];
@@ -5691,6 +6250,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
+        'safeties',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('track_safeties', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'safeties',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('track_safeties', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
         'playlists',
         limitUpdateKind: UpdateKind.delete,
       ),
@@ -5726,6 +6299,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$AlbumsTableCreateCompanionBuilder =
     AlbumsCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       required String title,
       Value<String?> originalTitle,
       Value<String?> imagePath,
@@ -5733,6 +6307,7 @@ typedef $$AlbumsTableCreateCompanionBuilder =
 typedef $$AlbumsTableUpdateCompanionBuilder =
     AlbumsCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       Value<String> title,
       Value<String?> originalTitle,
       Value<String?> imagePath,
@@ -5773,6 +6348,11 @@ class $$AlbumsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5831,6 +6411,11 @@ class $$AlbumsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get title => $composableBuilder(
     column: $table.title,
     builder: (column) => ColumnOrderings(column),
@@ -5858,6 +6443,11 @@ class $$AlbumsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
@@ -5925,11 +6515,13 @@ class $$AlbumsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String?> originalTitle = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
               }) => AlbumsCompanion(
                 id: id,
+                creationTime: creationTime,
                 title: title,
                 originalTitle: originalTitle,
                 imagePath: imagePath,
@@ -5937,11 +6529,13 @@ class $$AlbumsTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 required String title,
                 Value<String?> originalTitle = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
               }) => AlbumsCompanion.insert(
                 id: id,
+                creationTime: creationTime,
                 title: title,
                 originalTitle: originalTitle,
                 imagePath: imagePath,
@@ -5996,6 +6590,7 @@ typedef $$AlbumsTableProcessedTableManager =
 typedef $$SourcesTableCreateCompanionBuilder =
     SourcesCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       required String title,
       Value<String?> originalTitle,
       Value<String?> imagePath,
@@ -6003,6 +6598,7 @@ typedef $$SourcesTableCreateCompanionBuilder =
 typedef $$SourcesTableUpdateCompanionBuilder =
     SourcesCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       Value<String> title,
       Value<String?> originalTitle,
       Value<String?> imagePath,
@@ -6043,6 +6639,11 @@ class $$SourcesTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6101,6 +6702,11 @@ class $$SourcesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get title => $composableBuilder(
     column: $table.title,
     builder: (column) => ColumnOrderings(column),
@@ -6128,6 +6734,11 @@ class $$SourcesTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
@@ -6195,11 +6806,13 @@ class $$SourcesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String?> originalTitle = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
               }) => SourcesCompanion(
                 id: id,
+                creationTime: creationTime,
                 title: title,
                 originalTitle: originalTitle,
                 imagePath: imagePath,
@@ -6207,11 +6820,13 @@ class $$SourcesTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 required String title,
                 Value<String?> originalTitle = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
               }) => SourcesCompanion.insert(
                 id: id,
+                creationTime: creationTime,
                 title: title,
                 originalTitle: originalTitle,
                 imagePath: imagePath,
@@ -6269,7 +6884,9 @@ typedef $$TracksTableCreateCompanionBuilder =
       Value<int> id,
       Value<DateTime> creationTime,
       Value<int?> trackNumber,
+      Value<int?> trackTotal,
       Value<int?> diskNumber,
+      Value<int?> diskTotal,
       required int duration,
       Value<int?> year,
       Value<int?> startTime,
@@ -6289,7 +6906,9 @@ typedef $$TracksTableUpdateCompanionBuilder =
       Value<int> id,
       Value<DateTime> creationTime,
       Value<int?> trackNumber,
+      Value<int?> trackTotal,
       Value<int?> diskNumber,
+      Value<int?> diskTotal,
       Value<int> duration,
       Value<int?> year,
       Value<int?> startTime,
@@ -6533,8 +7152,18 @@ class $$TracksTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get trackTotal => $composableBuilder(
+    column: $table.trackTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get diskNumber => $composableBuilder(
     column: $table.diskNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get diskTotal => $composableBuilder(
+    column: $table.diskTotal,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6889,8 +7518,18 @@ class $$TracksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get trackTotal => $composableBuilder(
+    column: $table.trackTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get diskNumber => $composableBuilder(
     column: $table.diskNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get diskTotal => $composableBuilder(
+    column: $table.diskTotal,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -7018,10 +7657,18 @@ class $$TracksTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get trackTotal => $composableBuilder(
+    column: $table.trackTotal,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get diskNumber => $composableBuilder(
     column: $table.diskNumber,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get diskTotal =>
+      $composableBuilder(column: $table.diskTotal, builder: (column) => column);
 
   GeneratedColumn<int> get duration =>
       $composableBuilder(column: $table.duration, builder: (column) => column);
@@ -7377,7 +8024,9 @@ class $$TracksTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<DateTime> creationTime = const Value.absent(),
                 Value<int?> trackNumber = const Value.absent(),
+                Value<int?> trackTotal = const Value.absent(),
                 Value<int?> diskNumber = const Value.absent(),
+                Value<int?> diskTotal = const Value.absent(),
                 Value<int> duration = const Value.absent(),
                 Value<int?> year = const Value.absent(),
                 Value<int?> startTime = const Value.absent(),
@@ -7395,7 +8044,9 @@ class $$TracksTableTableManager
                 id: id,
                 creationTime: creationTime,
                 trackNumber: trackNumber,
+                trackTotal: trackTotal,
                 diskNumber: diskNumber,
+                diskTotal: diskTotal,
                 duration: duration,
                 year: year,
                 startTime: startTime,
@@ -7415,7 +8066,9 @@ class $$TracksTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<DateTime> creationTime = const Value.absent(),
                 Value<int?> trackNumber = const Value.absent(),
+                Value<int?> trackTotal = const Value.absent(),
                 Value<int?> diskNumber = const Value.absent(),
+                Value<int?> diskTotal = const Value.absent(),
                 required int duration,
                 Value<int?> year = const Value.absent(),
                 Value<int?> startTime = const Value.absent(),
@@ -7433,7 +8086,9 @@ class $$TracksTableTableManager
                 id: id,
                 creationTime: creationTime,
                 trackNumber: trackNumber,
+                trackTotal: trackTotal,
                 diskNumber: diskNumber,
+                diskTotal: diskTotal,
                 duration: duration,
                 year: year,
                 startTime: startTime,
@@ -7754,6 +8409,7 @@ typedef $$TracksTableProcessedTableManager =
 typedef $$ArtistsTableCreateCompanionBuilder =
     ArtistsCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       required String name,
       Value<String?> originalName,
       Value<String?> imagePath,
@@ -7761,6 +8417,7 @@ typedef $$ArtistsTableCreateCompanionBuilder =
 typedef $$ArtistsTableUpdateCompanionBuilder =
     ArtistsCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       Value<String> name,
       Value<String?> originalName,
       Value<String?> imagePath,
@@ -7800,6 +8457,11 @@ class $$ArtistsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7858,6 +8520,11 @@ class $$ArtistsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -7885,6 +8552,11 @@ class $$ArtistsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -7952,11 +8624,13 @@ class $$ArtistsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> originalName = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
               }) => ArtistsCompanion(
                 id: id,
+                creationTime: creationTime,
                 name: name,
                 originalName: originalName,
                 imagePath: imagePath,
@@ -7964,11 +8638,13 @@ class $$ArtistsTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 required String name,
                 Value<String?> originalName = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
               }) => ArtistsCompanion.insert(
                 id: id,
+                creationTime: creationTime,
                 name: name,
                 originalName: originalName,
                 imagePath: imagePath,
@@ -8031,6 +8707,7 @@ typedef $$ArtistsTableProcessedTableManager =
 typedef $$PlaylistFolderTableCreateCompanionBuilder =
     PlaylistFolderCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       required String name,
       Value<String?> imagePath,
       Value<int?> containingFolderId,
@@ -8038,6 +8715,7 @@ typedef $$PlaylistFolderTableCreateCompanionBuilder =
 typedef $$PlaylistFolderTableUpdateCompanionBuilder =
     PlaylistFolderCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       Value<String> name,
       Value<String?> imagePath,
       Value<int?> containingFolderId,
@@ -8110,6 +8788,11 @@ class $$PlaylistFolderTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8186,6 +8869,11 @@ class $$PlaylistFolderTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -8231,6 +8919,11 @@ class $$PlaylistFolderTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -8318,11 +9011,13 @@ class $$PlaylistFolderTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
                 Value<int?> containingFolderId = const Value.absent(),
               }) => PlaylistFolderCompanion(
                 id: id,
+                creationTime: creationTime,
                 name: name,
                 imagePath: imagePath,
                 containingFolderId: containingFolderId,
@@ -8330,11 +9025,13 @@ class $$PlaylistFolderTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 required String name,
                 Value<String?> imagePath = const Value.absent(),
                 Value<int?> containingFolderId = const Value.absent(),
               }) => PlaylistFolderCompanion.insert(
                 id: id,
+                creationTime: creationTime,
                 name: name,
                 imagePath: imagePath,
                 containingFolderId: containingFolderId,
@@ -8434,6 +9131,7 @@ typedef $$PlaylistFolderTableProcessedTableManager =
 typedef $$PlaylistsTableCreateCompanionBuilder =
     PlaylistsCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       required String name,
       Value<String?> imagePath,
       Value<int?> containingFolderId,
@@ -8441,6 +9139,7 @@ typedef $$PlaylistsTableCreateCompanionBuilder =
 typedef $$PlaylistsTableUpdateCompanionBuilder =
     PlaylistsCompanion Function({
       Value<int> id,
+      Value<DateTime> creationTime,
       Value<String> name,
       Value<String?> imagePath,
       Value<int?> containingFolderId,
@@ -8505,6 +9204,11 @@ class $$PlaylistsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8581,6 +9285,11 @@ class $$PlaylistsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -8626,6 +9335,11 @@ class $$PlaylistsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get creationTime => $composableBuilder(
+    column: $table.creationTime,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -8714,11 +9428,13 @@ class $$PlaylistsTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> imagePath = const Value.absent(),
                 Value<int?> containingFolderId = const Value.absent(),
               }) => PlaylistsCompanion(
                 id: id,
+                creationTime: creationTime,
                 name: name,
                 imagePath: imagePath,
                 containingFolderId: containingFolderId,
@@ -8726,11 +9442,13 @@ class $$PlaylistsTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<DateTime> creationTime = const Value.absent(),
                 required String name,
                 Value<String?> imagePath = const Value.absent(),
                 Value<int?> containingFolderId = const Value.absent(),
               }) => PlaylistsCompanion.insert(
                 id: id,
+                creationTime: creationTime,
                 name: name,
                 imagePath: imagePath,
                 containingFolderId: containingFolderId,
@@ -8837,7 +9555,7 @@ typedef $$TransitionsTableCreateCompanionBuilder =
       required int fadeinduration,
       required int trackId1,
       required int trackId2,
-      Value<double> delay,
+      Value<int> delay,
       Value<String?> comment,
       required TransitionType type,
     });
@@ -8851,7 +9569,7 @@ typedef $$TransitionsTableUpdateCompanionBuilder =
       Value<int> fadeinduration,
       Value<int> trackId1,
       Value<int> trackId2,
-      Value<double> delay,
+      Value<int> delay,
       Value<String?> comment,
       Value<TransitionType> type,
     });
@@ -8936,7 +9654,7 @@ class $$TransitionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get delay => $composableBuilder(
+  ColumnFilters<int> get delay => $composableBuilder(
     column: $table.delay,
     builder: (column) => ColumnFilters(column),
   );
@@ -9038,7 +9756,7 @@ class $$TransitionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get delay => $composableBuilder(
+  ColumnOrderings<int> get delay => $composableBuilder(
     column: $table.delay,
     builder: (column) => ColumnOrderings(column),
   );
@@ -9137,7 +9855,7 @@ class $$TransitionsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<double> get delay =>
+  GeneratedColumn<int> get delay =>
       $composableBuilder(column: $table.delay, builder: (column) => column);
 
   GeneratedColumn<String> get comment =>
@@ -9229,7 +9947,7 @@ class $$TransitionsTableTableManager
                 Value<int> fadeinduration = const Value.absent(),
                 Value<int> trackId1 = const Value.absent(),
                 Value<int> trackId2 = const Value.absent(),
-                Value<double> delay = const Value.absent(),
+                Value<int> delay = const Value.absent(),
                 Value<String?> comment = const Value.absent(),
                 Value<TransitionType> type = const Value.absent(),
               }) => TransitionsCompanion(
@@ -9255,7 +9973,7 @@ class $$TransitionsTableTableManager
                 required int fadeinduration,
                 required int trackId1,
                 required int trackId2,
-                Value<double> delay = const Value.absent(),
+                Value<int> delay = const Value.absent(),
                 Value<String?> comment = const Value.absent(),
                 required TransitionType type,
               }) => TransitionsCompanion.insert(
@@ -11912,16 +12630,241 @@ typedef $$TrackArtistsTableProcessedTableManager =
       TrackArtist,
       PrefetchHooks Function({bool trackId, bool artistId})
     >;
+typedef $$SafetiesTableCreateCompanionBuilder =
+    SafetiesCompanion Function({Value<int> id, required String label});
+typedef $$SafetiesTableUpdateCompanionBuilder =
+    SafetiesCompanion Function({Value<int> id, Value<String> label});
+
+final class $$SafetiesTableReferences
+    extends BaseReferences<_$AppDatabase, $SafetiesTable, Safety> {
+  $$SafetiesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$TrackSafetiesTable, List<TrackSafety>>
+  _trackSafetiesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.trackSafeties,
+    aliasName: $_aliasNameGenerator(db.safeties.id, db.trackSafeties.safetyId),
+  );
+
+  $$TrackSafetiesTableProcessedTableManager get trackSafetiesRefs {
+    final manager = $$TrackSafetiesTableTableManager(
+      $_db,
+      $_db.trackSafeties,
+    ).filter((f) => f.safetyId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_trackSafetiesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$SafetiesTableFilterComposer
+    extends Composer<_$AppDatabase, $SafetiesTable> {
+  $$SafetiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> trackSafetiesRefs(
+    Expression<bool> Function($$TrackSafetiesTableFilterComposer f) f,
+  ) {
+    final $$TrackSafetiesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackSafeties,
+      getReferencedColumn: (t) => t.safetyId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackSafetiesTableFilterComposer(
+            $db: $db,
+            $table: $db.trackSafeties,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$SafetiesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SafetiesTable> {
+  $$SafetiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SafetiesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SafetiesTable> {
+  $$SafetiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  Expression<T> trackSafetiesRefs<T extends Object>(
+    Expression<T> Function($$TrackSafetiesTableAnnotationComposer a) f,
+  ) {
+    final $$TrackSafetiesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.trackSafeties,
+      getReferencedColumn: (t) => t.safetyId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TrackSafetiesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.trackSafeties,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$SafetiesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SafetiesTable,
+          Safety,
+          $$SafetiesTableFilterComposer,
+          $$SafetiesTableOrderingComposer,
+          $$SafetiesTableAnnotationComposer,
+          $$SafetiesTableCreateCompanionBuilder,
+          $$SafetiesTableUpdateCompanionBuilder,
+          (Safety, $$SafetiesTableReferences),
+          Safety,
+          PrefetchHooks Function({bool trackSafetiesRefs})
+        > {
+  $$SafetiesTableTableManager(_$AppDatabase db, $SafetiesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SafetiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SafetiesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SafetiesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> label = const Value.absent(),
+              }) => SafetiesCompanion(id: id, label: label),
+          createCompanionCallback:
+              ({Value<int> id = const Value.absent(), required String label}) =>
+                  SafetiesCompanion.insert(id: id, label: label),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SafetiesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({trackSafetiesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (trackSafetiesRefs) db.trackSafeties,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (trackSafetiesRefs)
+                    await $_getPrefetchedData<
+                      Safety,
+                      $SafetiesTable,
+                      TrackSafety
+                    >(
+                      currentTable: table,
+                      referencedTable: $$SafetiesTableReferences
+                          ._trackSafetiesRefsTable(db),
+                      managerFromTypedResult: (p0) => $$SafetiesTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).trackSafetiesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.safetyId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SafetiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SafetiesTable,
+      Safety,
+      $$SafetiesTableFilterComposer,
+      $$SafetiesTableOrderingComposer,
+      $$SafetiesTableAnnotationComposer,
+      $$SafetiesTableCreateCompanionBuilder,
+      $$SafetiesTableUpdateCompanionBuilder,
+      (Safety, $$SafetiesTableReferences),
+      Safety,
+      PrefetchHooks Function({bool trackSafetiesRefs})
+    >;
 typedef $$TrackSafetiesTableCreateCompanionBuilder =
     TrackSafetiesCompanion Function({
       required int trackId,
-      required Safety safetyId,
+      required int safetyId,
       Value<int> rowid,
     });
 typedef $$TrackSafetiesTableUpdateCompanionBuilder =
     TrackSafetiesCompanion Function({
       Value<int> trackId,
-      Value<Safety> safetyId,
+      Value<int> safetyId,
       Value<int> rowid,
     });
 
@@ -11950,6 +12893,25 @@ final class $$TrackSafetiesTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static $SafetiesTable _safetyIdTable(_$AppDatabase db) =>
+      db.safeties.createAlias(
+        $_aliasNameGenerator(db.trackSafeties.safetyId, db.safeties.id),
+      );
+
+  $$SafetiesTableProcessedTableManager get safetyId {
+    final $_column = $_itemColumn<int>('safety_id')!;
+
+    final manager = $$SafetiesTableTableManager(
+      $_db,
+      $_db.safeties,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_safetyIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 }
 
 class $$TrackSafetiesTableFilterComposer
@@ -11961,12 +12923,6 @@ class $$TrackSafetiesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnWithTypeConverterFilters<Safety, Safety, int> get safetyId =>
-      $composableBuilder(
-        column: $table.safetyId,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
-
   $$TracksTableFilterComposer get trackId {
     final $$TracksTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -11989,6 +12945,29 @@ class $$TrackSafetiesTableFilterComposer
     );
     return composer;
   }
+
+  $$SafetiesTableFilterComposer get safetyId {
+    final $$SafetiesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.safetyId,
+      referencedTable: $db.safeties,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SafetiesTableFilterComposer(
+            $db: $db,
+            $table: $db.safeties,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$TrackSafetiesTableOrderingComposer
@@ -12000,11 +12979,6 @@ class $$TrackSafetiesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get safetyId => $composableBuilder(
-    column: $table.safetyId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   $$TracksTableOrderingComposer get trackId {
     final $$TracksTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -12027,6 +13001,29 @@ class $$TrackSafetiesTableOrderingComposer
     );
     return composer;
   }
+
+  $$SafetiesTableOrderingComposer get safetyId {
+    final $$SafetiesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.safetyId,
+      referencedTable: $db.safeties,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SafetiesTableOrderingComposer(
+            $db: $db,
+            $table: $db.safeties,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$TrackSafetiesTableAnnotationComposer
@@ -12038,9 +13035,6 @@ class $$TrackSafetiesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumnWithTypeConverter<Safety, int> get safetyId =>
-      $composableBuilder(column: $table.safetyId, builder: (column) => column);
-
   $$TracksTableAnnotationComposer get trackId {
     final $$TracksTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -12055,6 +13049,29 @@ class $$TrackSafetiesTableAnnotationComposer
           }) => $$TracksTableAnnotationComposer(
             $db: $db,
             $table: $db.tracks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SafetiesTableAnnotationComposer get safetyId {
+    final $$SafetiesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.safetyId,
+      referencedTable: $db.safeties,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SafetiesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.safeties,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -12078,7 +13095,7 @@ class $$TrackSafetiesTableTableManager
           $$TrackSafetiesTableUpdateCompanionBuilder,
           (TrackSafety, $$TrackSafetiesTableReferences),
           TrackSafety,
-          PrefetchHooks Function({bool trackId})
+          PrefetchHooks Function({bool trackId, bool safetyId})
         > {
   $$TrackSafetiesTableTableManager(_$AppDatabase db, $TrackSafetiesTable table)
     : super(
@@ -12094,7 +13111,7 @@ class $$TrackSafetiesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> trackId = const Value.absent(),
-                Value<Safety> safetyId = const Value.absent(),
+                Value<int> safetyId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrackSafetiesCompanion(
                 trackId: trackId,
@@ -12104,7 +13121,7 @@ class $$TrackSafetiesTableTableManager
           createCompanionCallback:
               ({
                 required int trackId,
-                required Safety safetyId,
+                required int safetyId,
                 Value<int> rowid = const Value.absent(),
               }) => TrackSafetiesCompanion.insert(
                 trackId: trackId,
@@ -12119,7 +13136,7 @@ class $$TrackSafetiesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({trackId = false}) {
+          prefetchHooksCallback: ({trackId = false, safetyId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -12152,6 +13169,19 @@ class $$TrackSafetiesTableTableManager
                               )
                               as T;
                     }
+                    if (safetyId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.safetyId,
+                                referencedTable: $$TrackSafetiesTableReferences
+                                    ._safetyIdTable(db),
+                                referencedColumn: $$TrackSafetiesTableReferences
+                                    ._safetyIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
 
                     return state;
                   },
@@ -12176,7 +13206,7 @@ typedef $$TrackSafetiesTableProcessedTableManager =
       $$TrackSafetiesTableUpdateCompanionBuilder,
       (TrackSafety, $$TrackSafetiesTableReferences),
       TrackSafety,
-      PrefetchHooks Function({bool trackId})
+      PrefetchHooks Function({bool trackId, bool safetyId})
     >;
 typedef $$PlaylistTracksTableCreateCompanionBuilder =
     PlaylistTracksCompanion Function({
@@ -12569,6 +13599,8 @@ class $AppDatabaseManager {
       $$TrackLanguagesTableTableManager(_db, _db.trackLanguages);
   $$TrackArtistsTableTableManager get trackArtists =>
       $$TrackArtistsTableTableManager(_db, _db.trackArtists);
+  $$SafetiesTableTableManager get safeties =>
+      $$SafetiesTableTableManager(_db, _db.safeties);
   $$TrackSafetiesTableTableManager get trackSafeties =>
       $$TrackSafetiesTableTableManager(_db, _db.trackSafeties);
   $$PlaylistTracksTableTableManager get playlistTracks =>

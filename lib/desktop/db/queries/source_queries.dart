@@ -4,8 +4,6 @@ Future<List<obj.Source>> _getSources({
   List<OrderingTerm Function(db.$SourcesTable u)>? orderBy,
   Expression<bool> Function(db.$SourcesTable u)? filter,
 }) async {
-  final database = db.AppDatabase();
-
   final query = database.select(database.sources);
 
   if (filter != null) {
@@ -29,10 +27,8 @@ Future<List<obj.Source>> _getSources({
       .toList();
 }
 
-Future<void> _upsertSource({required obj.Source source}) async {
-  final database = db.AppDatabase();
-
-  await database
+Future<int> _upsertSource({required obj.Source source}) async {
+  return await database
       .into(database.sources)
       .insertOnConflictUpdate(
         db.SourcesCompanion.insert(

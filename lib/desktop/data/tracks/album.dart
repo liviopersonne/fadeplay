@@ -1,8 +1,12 @@
+import 'package:fadeplay/desktop/data/has_id.dart';
+
 /// An album and its metadata
-class Album {
+class Album extends HasId {
+  @override
+  int? id;
   String title;
   String? originalTitle;
   Uri? imageUri;
 
-  Album({required this.title, this.originalTitle, this.imageUri});
+  Album({this.id, required this.title, this.originalTitle, this.imageUri});
 }

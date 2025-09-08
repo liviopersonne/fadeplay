@@ -1,3 +1,6 @@
+import 'package:fadeplay/desktop/data/tracks/instrument.dart';
+import 'package:fadeplay/desktop/data/tracks/mood.dart';
+import 'package:fadeplay/desktop/data/tracks/safety.dart';
 import 'package:fadeplay/desktop/db/schemas/enums.dart';
 import 'package:fadeplay/desktop/data/tracks/album.dart';
 import 'package:fadeplay/desktop/data/tracks/artist.dart';
@@ -55,21 +58,26 @@ class TestTrackInfo extends StatelessWidget {
       imageUri: Uri.file(image6),
       album: album,
       createdAt: DateTime.now(),
-      diskNumber: PositionAndTotal(number: 1, totalNumber: 3),
-      trackNumber: PositionAndTotal(number: 4, totalNumber: 28),
+      diskNumber: 1,
+      diskTotal: 3,
+      trackNumber: 4,
+      trackTotal: 28,
       releaseYear: 2025,
       rating: 6,
       startTime: Duration(seconds: 31),
       endTime: Duration(seconds: 90),
-      moods: ["Mood 1", "Mood 2", "Mood 3"],
-      instruments: ["Instrument 1", "Instrument 2", "Instrument 3"],
+      moods: List.generate(3, (i) => Mood(mood: "Mood $i")),
+      instruments: List.generate(
+        3,
+        (i) => Instrument(instrument: "Instrument $i"),
+      ),
       artists: {
         artist1: ArtistRole.artist,
         artist2: ArtistRole.composer,
         artist3: ArtistRole.cover,
       },
       source: source,
-      safety: Safety.safe,
+      safeties: [Safety(safety: "Safe")],
       lyricsUri: null,
     );
 

@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:window_size/window_size.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
+final logger = Logging("DesktopMain");
+
 void desktopMain() {
   WidgetsFlutterBinding.ensureInitialized();
   SingleMusicPlayer.initialize(); // for audio playing
@@ -28,7 +30,6 @@ void desktopMain() {
   registerAllColumns(); // for the columnBrowser
   setWindowTitle("Fadeplay");
   hotKeyManager.unregisterAll(); // useful for hot reload
-
   // setWindowMinSize(Size(300, 300)); // TODO: Set this
 
   // database

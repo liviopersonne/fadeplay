@@ -2,8 +2,6 @@ enum TransitionType { manual, automatic, mix }
 
 enum ArtistRole { artist, featured, composer, remixer, cover }
 
-enum Safety { safe, lyrics, language, weirdVoice, screaming, ost, other }
-
 const moodElems = [
   "Banger",
   "Battle",
@@ -36,4 +34,13 @@ const instrumentElems = [
   "Traditional Japanese",
   "Violon",
   "Voix",
+];
+
+const safetyElems = [
+  "Safe",
+  "Lyrics",
+  "Language",
+  "Weird Voice",
+  "Screaming",
+  "Ost",
 ];
