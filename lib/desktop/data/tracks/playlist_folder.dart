@@ -29,4 +29,9 @@ class PlaylistFolder extends HasId {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'PlaylistFolder<${id != null ? "id:$id" : "no id"}, $name>';
+  }
 }

@@ -9,4 +9,9 @@ class Album extends HasId {
   Uri? imageUri;
 
   Album({this.id, required this.title, this.originalTitle, this.imageUri});
+
+  @override
+  String toString() {
+    return 'Album<${id != null ? "id:$id" : "no id"}, $title>';
+  }
 }

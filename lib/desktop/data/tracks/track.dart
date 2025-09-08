@@ -118,4 +118,38 @@ class Track extends HasId {
   // TODO: Use the database id ??
   @override
   int get hashCode => fileUri.hashCode;
+
+  @override
+  String toString() {
+    return 'Track<${id != null ? "id:$id" : "no id"}, $title>';
+  }
+
+  String detailedString() {
+    return '''Track {
+    id: $id,
+    createdAt: $createdAt,
+    title: $title,
+    originalTitle: $originalTitle,
+    artistString: $artistString,
+    artists: $artists,
+    album: $album,
+    trackNumber: $trackNumber,
+    trackTotal: $trackTotal,
+    diskNumber: $diskNumber,
+    diskTotal: $diskTotal,
+    releaseYear: $releaseYear,
+    fileUri: $fileUri,
+    file: $file,
+    imageUri: $imageUri,
+    lyricsUri: $lyricsUri,
+    duration: $duration,
+    startTime: $startTime,
+    endTime: $endTime,
+    rating: $rating,
+    moods: $moods,
+    instruments: $instruments,
+    source: $source,
+    safeties: $safeties,
+}''';
+  }
 }

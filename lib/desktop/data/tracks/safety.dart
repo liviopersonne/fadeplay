@@ -6,4 +6,9 @@ class Safety extends HasId {
   final String safety;
 
   Safety({this.id, required this.safety});
+
+  @override
+  String toString() {
+    return 'Safety<${id != null ? "id:$id" : "no id"}, $safety>';
+  }
 }

@@ -12,6 +12,6 @@ class Artist extends HasId {
 
   @override
   String toString() {
-    return "Source<$name${originalName == null ? "" : "($originalName)"}, ${imageUri == null ? 'noImg' : 'Img'}>";
+    return 'Artist<${id != null ? "id:$id" : "no id"}, $name>';
   }
 }

@@ -33,4 +33,9 @@ class Playlist extends HasId {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Playlist<${id != null ? "id:$id" : "no id"}, $name>';
+  }
 }

@@ -96,10 +96,16 @@ Future<List<Track>> testTracks() async {
       title: "Track 1",
       artistString: "Artists of track 1",
       album: Album(title: "Album 1"),
-      source: Source(title: "Source 1"),
+      // source: Source(title: "Source 1"),
       // FIXME: Replace with left joins to get the tracks
     ),
   );
 
-  return await DbQuery.getTracks();
+  final tracks = await DbQuery.getTracks();
+
+  for (var track in tracks) {
+    logger.log(track.detailedString());
+  }
+
+  return tracks;
 }

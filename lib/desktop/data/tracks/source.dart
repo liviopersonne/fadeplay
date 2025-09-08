@@ -13,6 +13,6 @@ class Source extends HasId {
 
   @override
   String toString() {
-    return "Source<$title${originalTitle == null ? "" : "($originalTitle)"}, ${imageUri == null ? 'noImg' : 'Img'}>";
+    return 'Source<${id != null ? "id:$id" : "no id"}, $title>';
   }
 }
