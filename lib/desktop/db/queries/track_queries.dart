@@ -64,6 +64,10 @@ Future<List<obj.Track>> _getTracks({
       database.trackSafeties,
       database.trackSafeties.trackId.equalsExp(database.tracks.id),
     ),
+    innerJoin(
+      database.safeties,
+      database.safeties.id.equalsExp(database.trackSafeties.safetyId),
+    ),
   ]);
 
   final allRows = await fullQuery.get();
@@ -242,7 +246,9 @@ Future<int> _upsertTrack({required obj.Track track}) async {
     );
     await database
         .into(database.trackMoods)
-        .insert(TrackMoodsCompanion.insert(trackId: trackId, moodId: mood.id!));
+        .insert(
+          db.TrackMoodsCompanion.insert(trackId: trackId, moodId: mood.id!),
+        );
   }
   for (obj.Instrument instrument in track.instruments) {
     logger.check(
@@ -254,7 +260,7 @@ Future<int> _upsertTrack({required obj.Track track}) async {
     await database
         .into(database.trackInstruments)
         .insert(
-          TrackInstrumentsCompanion.insert(
+          db.TrackInstrumentsCompanion.insert(
             trackId: trackId,
             instrumentId: instrument.id!,
           ),
@@ -270,7 +276,10 @@ Future<int> _upsertTrack({required obj.Track track}) async {
     await database
         .into(database.trackSafeties)
         .insert(
-          TrackSafetiesCompanion.insert(trackId: trackId, safetyId: safety.id!),
+          db.TrackSafetiesCompanion.insert(
+            trackId: trackId,
+            safetyId: safety.id!,
+          ),
         );
   }
 
