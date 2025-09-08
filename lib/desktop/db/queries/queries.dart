@@ -32,15 +32,33 @@ final database = db.AppDatabase();
 class DbQuery {
   DbQuery._();
 
-  static List<obj.Mood> allMoods = [];
-  // ignore: non_constant_identifier_names, unused_field
-  static final __ = _updateAllMoods();
-  static List<obj.Instrument> allInstruments = [];
-  // ignore: non_constant_identifier_names, unused_field
-  static final ___ = _updateAllInstruments();
-  static List<obj.Safety> allSafeties = [];
-  // ignore: non_constant_identifier_names, unused_field
-  static final ____ = _updateAllSafeties();
+  static bool _initialized = false;
+
+  static Future<void> _init() async {
+    await _updateAllMoods();
+    await _updateAllInstruments();
+    await _updateAllSafeties();
+    _initialized = true;
+  }
+
+  static List<obj.Mood> _allMoods = [];
+  static List<obj.Instrument> _allInstruments = [];
+  static List<obj.Safety> _allSafeties = [];
+
+  static Future<List<obj.Mood>> get allMoods async {
+    if (!_initialized) await _init();
+    return _allMoods;
+  }
+
+  static Future<List<obj.Instrument>> get allInstruments async {
+    if (!_initialized) await _init();
+    return _allInstruments;
+  }
+
+  static Future<List<obj.Safety>> get allSafeties async {
+    if (!_initialized) await _init();
+    return _allSafeties;
+  }
 
   static Future<int> upsertMood({required obj.Mood mood}) =>
       _upsertMood(mood: mood);

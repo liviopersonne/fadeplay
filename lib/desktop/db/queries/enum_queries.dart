@@ -2,7 +2,7 @@ part of 'queries.dart';
 
 Future<void> _updateAllMoods() async {
   final moods = await (database.select(database.moods)).get();
-  DbQuery.allMoods = moods
+  DbQuery._allMoods = moods
       .map((row) => obj.Mood(mood: row.label, id: row.id))
       .toList();
 }
@@ -24,7 +24,7 @@ Future<int> _upsertMood({required obj.Mood mood}) async {
 
 Future<void> _updateAllInstruments() async {
   final instruments = await (database.select(database.instruments)).get();
-  DbQuery.allInstruments = instruments
+  DbQuery._allInstruments = instruments
       .map((row) => obj.Instrument(instrument: row.label, id: row.id))
       .toList();
 }
@@ -46,7 +46,7 @@ Future<int> _upsertInstrument({required obj.Instrument instrument}) async {
 
 Future<void> _updateAllSafeties() async {
   final safeties = await (database.select(database.safeties)).get();
-  DbQuery.allSafeties = safeties
+  DbQuery._allSafeties = safeties
       .map((row) => obj.Safety(safety: row.label, id: row.id))
       .toList();
 }

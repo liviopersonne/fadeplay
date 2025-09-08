@@ -1,9 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:fadeplay/desktop/data/tracks/album.dart';
 import 'package:fadeplay/desktop/data/tracks/artist.dart';
-import 'package:fadeplay/desktop/data/tracks/instrument.dart';
-import 'package:fadeplay/desktop/data/tracks/mood.dart';
-import 'package:fadeplay/desktop/data/tracks/safety.dart';
 import 'package:fadeplay/desktop/data/tracks/source.dart';
 import 'package:fadeplay/desktop/data/tracks/track.dart';
 import 'package:fadeplay/desktop/db/queries/queries.dart';
@@ -120,6 +117,13 @@ Future<List<Track>> testTracks() async {
     originalTitle: "Original album title",
     imageUri: Uri.file(image5),
   );
+  final moods = await DbQuery.allMoods;
+  final instruments = await DbQuery.allInstruments;
+  final safeties = await DbQuery.allSafeties;
+
+  logger.log(moods.toString());
+  logger.log(instruments.toString());
+  logger.log(safeties.toString());
 
   final Track track = Track(
     title: "Song title",
@@ -136,18 +140,15 @@ Future<List<Track>> testTracks() async {
     rating: 3.5,
     startTime: Duration(seconds: 31),
     endTime: Duration(seconds: 90),
-    moods: List.generate(3, (i) => Mood(mood: "Mood $i")),
-    // instruments: List.generate(
-    //   3,
-    //   (i) => Instrument(instrument: "Instrument $i"),
-    // ),
+    moods: List.generate(3, (i) => moods[i]),
+    instruments: List.generate(3, (i) => instruments[i]),
     artists: {
       artist1: ArtistRole.artist,
       artist2: ArtistRole.composer,
       artist3: ArtistRole.cover,
     },
     source: source,
-    // safeties: [Safety(safety: "Safe")],
+    safeties: List.generate(1, (i) => safeties[i]),
     lyricsUri: null,
   );
 
@@ -155,6 +156,10 @@ Future<List<Track>> testTracks() async {
   database.delete(database.albums).go();
   database.delete(database.artists).go();
   database.delete(database.sources).go();
+  database.delete(database.trackArtists).go();
+  database.delete(database.trackInstruments).go();
+  database.delete(database.trackMoods).go();
+  database.delete(database.trackSafeties).go();
   await DbQuery.upsertTrack(track: track);
 
   final tracks = await DbQuery.getTracks();
