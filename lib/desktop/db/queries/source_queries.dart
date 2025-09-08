@@ -19,6 +19,7 @@ Future<List<obj.Source>> _getSources({
   return allSources
       .map(
         (s) => obj.Source(
+          id: s.id,
           title: s.title,
           originalTitle: s.originalTitle,
           imageUri: s.imagePath != null ? Uri.parse(s.imagePath!) : null,

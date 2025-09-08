@@ -117,6 +117,7 @@ Future<List<obj.Track>> _getTracks({
         source: source == null
             ? null
             : obj.Source(
+                id: source.id,
                 title: source.title,
                 originalTitle: source.originalTitle,
                 imageUri: source.imagePath != null
@@ -126,6 +127,7 @@ Future<List<obj.Track>> _getTracks({
         album: album == null
             ? null
             : obj.Album(
+                id: album.id,
                 title: album.title,
                 originalTitle: album.originalTitle,
                 imageUri: album.imagePath != null
@@ -138,6 +140,7 @@ Future<List<obj.Track>> _getTracks({
             final artist = row.readTable(database.artists);
             return MapEntry(
               obj.Artist(
+                id: artist.id,
                 name: artist.name,
                 originalName: artist.originalName,
                 imageUri: artist.imagePath != null

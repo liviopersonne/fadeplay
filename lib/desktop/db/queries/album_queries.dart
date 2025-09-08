@@ -19,6 +19,7 @@ Future<List<obj.Album>> _getAlbums({
   return allAlbums
       .map(
         (a) => obj.Album(
+          id: a.id,
           title: a.title,
           originalTitle: a.originalTitle,
           imageUri: a.imagePath != null ? Uri.parse(a.imagePath!) : null,

@@ -20,6 +20,7 @@ Future<List<obj.Playlist>> _getPlaylists({
 
   return allPlaylists.map((p) {
     return obj.Playlist(
+      id: p.id,
       name: p.name,
       imageUri: p.imagePath != null ? Uri.parse(p.imagePath!) : null,
       getContainingFolder: p.containingFolderId != null
