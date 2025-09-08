@@ -9,4 +9,9 @@ class Artist extends HasId {
   Uri? imageUri;
 
   Artist({this.id, required this.name, this.originalName, this.imageUri});
+
+  @override
+  String toString() {
+    return "Source<$name${originalName == null ? "" : "($originalName)"}, ${imageUri == null ? 'noImg' : 'Img'}>";
+  }
 }

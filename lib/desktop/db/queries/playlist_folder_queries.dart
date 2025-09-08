@@ -66,6 +66,7 @@ Future<int> _upsertPlaylistFolder({required obj.PlaylistFolder folder}) async {
       .into(database.playlistFolder)
       .insertOnConflictUpdate(
         db.PlaylistFolderCompanion.insert(
+          id: Value.absentIfNull(folder.id),
           name: folder.name,
           containingFolderId: Value(containingFolderId),
           imagePath: Value(folder.imageUri?.toString()),

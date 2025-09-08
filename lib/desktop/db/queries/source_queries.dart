@@ -32,6 +32,7 @@ Future<int> _upsertSource({required obj.Source source}) async {
       .into(database.sources)
       .insertOnConflictUpdate(
         db.SourcesCompanion.insert(
+          id: Value.absentIfNull(source.id),
           title: source.title,
           originalTitle: Value(source.originalTitle),
           imagePath: Value(source.imageUri?.toString()),

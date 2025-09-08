@@ -32,6 +32,7 @@ Future<int> _upsertArtist({required obj.Artist artist}) async {
       .into(database.artists)
       .insertOnConflictUpdate(
         db.ArtistsCompanion.insert(
+          id: Value.absentIfNull(artist.id),
           name: artist.name,
           originalName: Value(artist.originalName),
           imagePath: Value(artist.imageUri?.toString()),

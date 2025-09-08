@@ -93,6 +93,3 @@ class TestColumnBrowserWidget extends StatelessWidget {
     );
   }
 }
-
-// FIXME: Fix removing and adding columns
-// TODO: Create a button widget

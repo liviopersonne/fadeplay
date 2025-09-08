@@ -70,7 +70,7 @@ class TestAudioMetadata extends StatelessWidget {
   }
 }
 
-/* FIXME: 
+/*
   [x] Artiste de l'album au lieu de artiste
   [x] Genre dupliqué
   [x] Année pas lue

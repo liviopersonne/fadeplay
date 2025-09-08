@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:fadeplay/desktop/data/tracks/artist.dart';
 import 'package:fadeplay/desktop/data/tracks/source.dart';
 import 'package:fadeplay/desktop/db/queries/queries.dart';
 import 'package:fadeplay/desktop/db/schemas.dart' as db;
@@ -14,7 +15,8 @@ class TestDbQueries extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final request = testGetSources();
+    // final request = testSources();
+    final request = testArtists();
     return Scaffold(
       body: Center(
         child: ColorSizeBox(
@@ -39,7 +41,7 @@ class TestDbQueries extends StatelessWidget {
   }
 }
 
-Future<List<Source>> testGetSources() async {
+Future<List<Source>> testSources() async {
   final imgUri1 = Uri.file("/home/livio/Bureau/fadeplay_tests/img1.png");
   database.delete(database.sources).go();
   await DbQuery.upsertSource(
@@ -55,4 +57,24 @@ Future<List<Source>> testGetSources() async {
     ],
     filter: (u) => u.title.isBiggerOrEqualValue("source 2"),
   );
+}
+
+Future<List<Artist>> testArtists() async {
+  final imgUri1 = Uri.file("/home/livio/Bureau/fadeplay_tests/img1.png");
+  database.delete(database.artists).go();
+  final artistId = await DbQuery.upsertArtist(
+    artist: Artist(
+      name: "artist 1",
+      originalName: "og artist 1",
+      imageUri: imgUri1,
+    ),
+  );
+
+  logger.log("Id: $artistId");
+
+  await DbQuery.upsertArtist(
+    artist: Artist(id: artistId, name: "artist 1 new name"),
+  );
+
+  return await DbQuery.getArtists();
 }
